@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\h\\.ohos\\config\\default_video-demo-master_KVbmnhmvddg9XmrbA-YVIqIsx03GFn3ofpf-ExF1HA8=.cer",
+          "certpath": "C:\\Users\\h\\.ohos\\config\\default_video_kSJ3uULxK2ttdisOFgAN6RXPYfaT45zo3088v2XB2jw=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001A79B5753F0A37561552E48C5CAD91449C8D630F00961568798262225ADC6D576017067C725143",
-          "profile": "C:\\Users\\h\\.ohos\\config\\default_video-demo-master_KVbmnhmvddg9XmrbA-YVIqIsx03GFn3ofpf-ExF1HA8=.p7b",
+          "keyPassword": "0000001BC1B1F7E1C478F84B25E86CAE5815DC5B9D27D49A4D0A5431CB6021D9C9F7D7844A70C0093ADDC9",
+          "profile": "C:\\Users\\h\\.ohos\\config\\default_video_kSJ3uULxK2ttdisOFgAN6RXPYfaT45zo3088v2XB2jw=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\h\\.ohos\\config\\default_video-demo-master_KVbmnhmvddg9XmrbA-YVIqIsx03GFn3ofpf-ExF1HA8=.p12",
-          "storePassword": "0000001A32CBAA3CE774DA136AED9CE724AA98E65B830ADB0687730B80D4848B0486D51EF908869BAC5A"
+          "storeFile": "C:\\Users\\h\\.ohos\\config\\default_video_kSJ3uULxK2ttdisOFgAN6RXPYfaT45zo3088v2XB2jw=.p12",
+          "storePassword": "0000001BEAA5C96F4B3DEBF4DDE2D29D2720A939156AC7D4EC7F1E3832B9602E599D6FBB4EFC950EE0A242"
         }
       }
     ],
@@ -19,7 +19,7 @@
       {
         "name": "default",
         "signingConfig": "default",
-        "compatibleSdkVersion": "5.0.1(13)",
+        "compatibleSdkVersion": "5.0.3(15)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
           "strictMode": {
