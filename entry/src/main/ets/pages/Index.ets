@@ -6,20 +6,20 @@
 //   private controller: VideoController = new VideoController()
 import { unifiedDataChannel, uniformTypeDescriptor } from '@kit.ArkData';
 //import { LengthMetrics } from '@kit.ArkUI'
-import { curves } from '@kit.ArkUI'
+import { curves } from '@kit.ArkUI' // 导入ArkUI动画曲线库
 
 @Entry
 @Component
-
-struct VideoCreateComponent {
+// 使用@Entry装饰器标记为入口组件，@Component表示自定义组件
+struct VideoCreateComponent {// 创建滚动控制器实例
   @State videoSrc: Resource | string = $rawfile('a.mp4');
   @State previewUri: Resource = $rawfile('a.jpg')
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
-  @State isAutoPlay: boolean = true
+  @State isAutoPlay: boolean = false
   @State showControls: boolean = true
   @State isShortcutKeyEnabled: boolean = false
 
-  scroller: Scroller = new Scroller()
+  scroller: Scroller = new Scroller()// 初始化数据数组（用于生成滚动内容）
   private arr: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
   /*@State listPosition: number = 0; // 0代表滚动到List顶部，1代表中间值，2代表滚动到List底部。
@@ -41,7 +41,7 @@ struct VideoCreateComponent {
       })
         .width('100%')
         .height(500)
-        .autoPlay(this.isAutoPlay)
+        //.autoPlay(this.isAutoPlay)
         .controls(this.showControls)
         .enableShortcutKey(this.isShortcutKeyEnabled)
         .onStart(() => {
@@ -161,44 +161,44 @@ struct VideoCreateComponent {
           this.curRate = PlaybackSpeed.Speed_Forward_2_00_X // 2倍速播放
         }).margin(5)
       }*/
-
-      Stack({ alignContent: Alignment.TopStart }) {
-        Scroll(this.scroller) {
-          Column() {
+      // 使用堆叠布局，顶部起始对齐
+      Stack({ alignContent: Alignment.TopStart }) {// 滚动容器组件
+        Scroll(this.scroller) {// 垂直排列的子组件容器
+          Column() { // 循环生成滚动内容项
             ForEach(this.arr, (item: number) => {
               Text(item.toString())
                 .width('90%')
                 .height(150)
-                .backgroundColor(0xFFFFFF)
-                .borderRadius(15)
-                .fontSize(16)
-                .textAlign(TextAlign.Center)
-                .margin({ top: 10 })
-            }, (item: string) => item)
-          }.width('100%')
+                .backgroundColor(0xFFFFFF)  // 白色背景
+                .borderRadius(15)           // 圆角半径
+                .fontSize(16)               // 文字大小
+                .textAlign(TextAlign.Center)// 文字居中
+                .margin({ top: 10 })         // 顶部间距
+            }, (item: string) => item)       // 使用项值作为唯一标识
+          }.width('100%')                    // 列宽度填满容器
         }
         .scrollable(ScrollDirection.Vertical) // 滚动方向纵向
         .scrollBar(BarState.On) // 滚动条常驻显示
         .scrollBarColor(Color.Gray) // 滚动条颜色
         .scrollBarWidth(10) // 滚动条宽度
-        .friction(0.6)
+        .friction(0.6)                      // 设置滚动摩擦系数（影响滚动惯性）
         .edgeEffect(EdgeEffect.None)
         .onWillScroll((xOffset: number, yOffset: number, scrollState: ScrollState) => {
-          console.info(xOffset + ' ' + yOffset)
+          console.info(xOffset + ' ' + yOffset) // 滚动即将发生时触发
         })
-        .onScrollEdge((side: Edge) => {
+        .onScrollEdge((side: Edge) => {       // 滚动到边缘时触发
           console.info('To the edge')
         })
-        .onScrollStop(() => {
+        .onScrollStop(() => {                // 滚动停止时触发
           console.info('Scroll Stop')
         })
 
-        Button('2025新春愿照九天')
+        Button('2025新春愿照九天视频')
           .height('5%')
           .onClick(() => {
           this.videoSrc = $rawfile('a.mp4') // 切换视频源
         }).margin({ top: 10, left: 200 })
-        Button('2025新春愿照九天')
+        Button('2025新春愿照九天封面')
           .height('5%')
           .onClick(() => {
           this.previewUri = $rawfile('a.jpg') // 切换视频预览海报
@@ -213,12 +213,25 @@ struct VideoCreateComponent {
           this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
         }).margin({ top: 160, left: 200 })
 
-        Button('下滑 150  →切换视频')
+        Button('test')
+          .onClick(() => {
+            this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
+          }).margin({ top: 160, left: 380 })
+
+        Button('下滑 100 →切换视频')
+          .height('5%')
+          .onClick(() => { // 点击后滑动到指定位置，即下滑100.0vp的距离，滑动过程配置有动画
+            let curve = curves.interpolatingSpring(10, 1, 228, 30) //创建一个阶梯曲线
+            const yOffset: number = this.scroller.currentOffset().yOffset;
+            this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100, animation: { duration: 1000, curve: curve } })
+          })
+          .margin({ top: 10, left: 20 })
+        /*Button('下滑 150  →切换视频')
           .height('5%')
           .onClick(() => { // 点击后下滑指定距离150.0vp
             this.scroller.scrollBy(0, 150)
           })
-          .margin({ top: 10, left: 20 })
+          .margin({ top: 10, left: 20 })*/
         /*Button('下滑100.0vp')
           .height('5%')
           .onClick(() => { // 点击后滑动到指定位置，即下滑100.0vp的距离
@@ -226,38 +239,38 @@ struct VideoCreateComponent {
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100 })
           })
           .margin({ top: 60, left: 20 })*/
-        Button('下滑 100 →切换封面')
+        Button('下滑 150 →切换封面')
           .height('5%')
           .onClick(() => { // 点击后滑动到指定位置，即下滑100.0vp的距离，滑动过程配置有动画
             let curve = curves.interpolatingSpring(10, 1, 228, 30) //创建一个阶梯曲线
             const yOffset: number = this.scroller.currentOffset().yOffset;
-            this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100, animation: { duration: 1000, curve: curve } })
+            this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 150, animation: { duration: 1000, curve: curve } })
           })
-          .margin({ top: 110, left: 20 })
+          .margin({ top: 60, left: 20 })
         Button('返回顶部')
           .height('5%')
           .onClick(() => { // 点击后回到顶部 back top
             this.scroller.scrollEdge(Edge.Top)
           })
-          .margin({ top: 160, left: 20 })
+          .margin({ top: 110, left: 20 })
         Button('下一页')
           .height('5%')
           .onClick(() => { // 点击后滑到下一页
             this.scroller.scrollPage({ next: true ,animation: true })
           })
-          .margin({ top: 210, left: 20 })
+          .margin({ top: 160, left: 20 })
         Button('触发初始速度为-3000vp/s的惯性滚动')
           .height('5%')
           .onClick(() => { // 点击后触发初始速度为-3000vp/s的惯性滚动 fling -3000
             this.scroller.fling(-3000)
           })
-          .margin({ top: 260, left: 20 })
+          .margin({ top: 210, left: 20 })
         Button('滑到下边缘，速度值是700vp/s')
           .height('5%')
           .onClick(() => { // 点击后滑到下边缘，速度值是700vp/s scroll to bottom 700
             this.scroller.scrollEdge(Edge.Bottom, { velocity: 700 })
           })
-          .margin({ top: 310, left: 20 })
+          .margin({ top: 260, left: 20 })
       }.width('100%').height('100%').backgroundColor(0xDCDCDC)
     }
   }
