@@ -292,7 +292,7 @@ interface FullscreenObject {
 //       Text('Video演示')
 //         .textAlign(TextAlign.Center)
 //         .fontSize(20)
-//       MySubTitle({ shili: '示例1', subTitle: '加载视频资源' })
+//       MySubTitle({ example: '示例1', subTitle: '加载视频资源' })
 //       Row({ space: 10 }) {
 //         Column({ space: 5 }) {
 //           Video({
