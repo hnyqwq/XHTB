@@ -18,7 +18,7 @@
 
 [avplayer-video](https://gitee.com/scenario-samples/avplayer-video)
 
-[scenario-samples](https://gitee.com/scenario-samples)&[鸿蒙场景化示例合集](https://gitee.com/scenario-samples/demo-index)
+[scenario-samples](https://gitee.com/scenario-samples) & [鸿蒙场景化示例合集](https://gitee.com/scenario-samples/demo-index)
 
     
 
