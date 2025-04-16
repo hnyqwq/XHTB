@@ -2,13 +2,13 @@
 
 指南>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>添加组件>视频播放 (Video)
 
-[视频播放 (Video)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-common-components-video-player)
+## [视频播放 (Video)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-common-components-video-player)
 
 更新时间: 2025-04-08 14:22
 
 指南>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>添加组件>按钮 (Button)
 
-[按钮 (Button)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-common-components-button)
+## [按钮 (Button)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-common-components-button)
 
 更新时间: 2025-04-08 14:22
 
