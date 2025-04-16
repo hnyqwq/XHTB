@@ -1,5 +1,7 @@
 # 快速跳转 
 
+## [开发指南 All versions](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/application-dev-guide)
+
 ## [视频播放 (Video)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-common-components-video-player)
 
 指南>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>添加组件>视频播放 (Video)
@@ -47,5 +49,17 @@ entry/src/main/ets/
 ## [HarmonyOS 5 支持机型](https://consumer.huawei.com/cn/support/harmonyos/models-next/)
 [![HarmonyOS 5 支持机型](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/images/interconnection/harmonyos-next-collaboration-2x.webp)](https://consumer.huawei.com/cn/support/harmonyos/models-next/)
 
+
+## [DEVELOPERS](https://developer.huawei.com/consumer/cn/)
+[![DEVELOPERS](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/home-1223/pc-0116.jpeg)](https://developer.huawei.com/consumer/cn/)
+
+## [开发入门](https://developer.huawei.com/consumer/cn/devstarts/)
+[![开发入门](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/Ark/overview-pathway/rukouye-banner-2560x517-0311-v2.jpg)](https://developer.huawei.com/consumer/cn/devstarts/)
+
+## [AppGallery Connect](https://developer.huawei.com/consumer/cn/service/josp/agc/index.html#/)
+[![AppGallery Connect](https://developer.huawei.com/consumer/cn/service/josp/agc/static/img/logo.dd58f71c.png)](https://developer.huawei.com/consumer/cn/service/josp/agc/index.html#/)
+
+## [AppGallery](https://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.appgallery)
+[![HarmonyOS 5](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/Ark/overview-pathway/AGC-icon-gaoqing.png)](https://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.appgallery)
 
 ## [HUAWEI Share](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/videos/1025/harmonyos-next-huawei-share-video.mp4)
