@@ -12,7 +12,7 @@
 
 更新时间: 2025-04-08 14:22
 
-------------------------------------
+---
 
 # 参考项目
 
@@ -22,8 +22,7 @@
 
 ### [scenario-samples](https://gitee.com/scenario-samples) & [鸿蒙场景化示例合集](https://gitee.com/scenario-samples/demo-index)
 
-    
-
+---
 
 # [工程目录 entry/src/main/ets/](https://gitee.com/hnyqwq/video/tree/master/entry/src/main/ets)
 ```
