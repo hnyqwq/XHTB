@@ -79,6 +79,6 @@ entry/src/main/ets/
 [![HarmonyOS 5 支持机型](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/images/interconnection/harmonyos-next-collaboration-2x.webp)](https://consumer.huawei.com/cn/support/harmonyos/models-next/)
 
 > ## [AppGallery](https://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.appgallery)
-[![HarmonyOS 5](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/Ark/overview-pathway/AGC-icon-gaoqing.png)](https://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.appgallery)
+[![HarmonyOS 5](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/Ark/overview-pathway/AGC-icon-gaoqing.png#pic_center =60x60)](https://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.appgallery)
 
 > ## [HUAWEI Share](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/videos/1025/harmonyos-next-huawei-share-video.mp4)
