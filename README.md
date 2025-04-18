@@ -1,3 +1,7 @@
+Video
+
+---
+
 # 快速跳转 
 
 ## [开发指南 All versions](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/application-dev-guide)
