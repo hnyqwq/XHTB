@@ -32,6 +32,8 @@
 
 ### [用户认证、指纹认证、锁屏密码认证](https://gitee.com/scenario-samples/user-auth-demo)
 
+---
+
 # Ready
 
 ### [获取视频信息](https://gitee.com/scenario-samples/get-video-size-and-duration)
@@ -41,6 +43,8 @@
 ### [Scroll中点击图片移动到顶端](https://gitee.com/scenario-samples/move-to-top)
 
 ### [Menu显隐demo](https://gitee.com/scenario-samples/menu-hidden)
+
+---
 
 # 工程目录
 ### [entry/src/main/ets/](https://gitee.com/hnyqwq/video/tree/master/entry/src/main/ets)
