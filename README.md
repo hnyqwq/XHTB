@@ -22,9 +22,9 @@
 
 # 参考项目
 
-## [鸿蒙场景化示例合集](https://gitee.com/scenario-samples/demo-index)
+> ## [鸿蒙场景化示例合集](https://gitee.com/scenario-samples/demo-index)
 
-### [video-demo](https://gitee.com/scenario-samples/video-demo)
+> ### [video-demo](https://gitee.com/scenario-samples/video-demo)
 
 ### [avplayer-video](https://gitee.com/scenario-samples/avplayer-video)
 
