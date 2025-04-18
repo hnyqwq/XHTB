@@ -66,19 +66,19 @@ entry/src/main/ets/
 
 # 链接
 
-## [DEVELOPERS](https://developer.huawei.com/consumer/cn/)
+> ## [DEVELOPERS](https://developer.huawei.com/consumer/cn/)
 [![DEVELOPERS](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/home-1223/pc-0116.jpeg)](https://developer.huawei.com/consumer/cn/)
 
-## [开发入门](https://developer.huawei.com/consumer/cn/devstarts/)
+> ## [开发入门](https://developer.huawei.com/consumer/cn/devstarts/)
 [![开发入门](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/Ark/overview-pathway/rukouye-banner-2560x517-0311-v2.jpg)](https://developer.huawei.com/consumer/cn/devstarts/)
 
-## [HarmonyOS 5](https://consumer.huawei.com/cn/harmonyos-next/)
+> ## [HarmonyOS 5](https://consumer.huawei.com/cn/harmonyos-next/)
 [![HarmonyOS 5](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/images/update/harmonyos-next-update-2x.webp)](https://consumer.huawei.com/cn/harmonyos-next/)
 
 > ## [HarmonyOS 5 支持机型](https://consumer.huawei.com/cn/support/harmonyos/models-next/)
 [![HarmonyOS 5 支持机型](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/images/interconnection/harmonyos-next-collaboration-2x.webp)](https://consumer.huawei.com/cn/support/harmonyos/models-next/)
 
->> ## [AppGallery](https://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.appgallery)
+> ## [AppGallery](https://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.appgallery)
 [![HarmonyOS 5](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/Ark/overview-pathway/AGC-icon-gaoqing.png)](https://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.appgallery)
 
->> ## [HUAWEI Share](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/videos/1025/harmonyos-next-huawei-share-video.mp4)
+> ## [HUAWEI Share](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/videos/1025/harmonyos-next-huawei-share-video.mp4)
