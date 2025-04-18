@@ -317,7 +317,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.scroller.fling(-3000)
           })
           .margin({ top: 210, left: 20 })
-        Button('滑到下边缘，速度值是700vp/s')
+        Button('滑到下边缘,速度值是700vp/s')
           .height('5%')
           .onClick(() => { // 点击后滑到下边缘，速度值是700vp/s scroll to bottom 700
             this.scroller.scrollEdge(Edge.Bottom, { velocity: 700 })
