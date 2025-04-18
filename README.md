@@ -18,11 +18,13 @@
 
 # 参考项目
 
+## [鸿蒙场景化示例合集](https://gitee.com/scenario-samples/demo-index)
+
 ### [video-demo](https://gitee.com/scenario-samples/video-demo)
 
 ### [avplayer-video](https://gitee.com/scenario-samples/avplayer-video)
 
-### [scenario-samples](https://gitee.com/scenario-samples) & [鸿蒙场景化示例合集](https://gitee.com/scenario-samples/demo-index)
+### [scenario-samples](https://gitee.com/scenario-samples)
 
 ---
 
@@ -30,8 +32,15 @@
 
 ### [用户认证、指纹认证、锁屏密码认证](https://gitee.com/scenario-samples/user-auth-demo)
 
+# Ready
 
+### [获取视频信息](https://gitee.com/scenario-samples/get-video-size-and-duration)
 
+### [沉浸式布局demo](https://gitee.com/scenario-samples/immersive)
+
+### [Scroll中点击图片移动到顶端](https://gitee.com/scenario-samples/move-to-top)
+
+### [Menu显隐demo](https://gitee.com/scenario-samples/menu-hidden)
 
 # 工程目录
 ### [entry/src/main/ets/](https://gitee.com/hnyqwq/video/tree/master/entry/src/main/ets)

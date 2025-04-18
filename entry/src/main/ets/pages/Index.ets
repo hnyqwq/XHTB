@@ -7,6 +7,10 @@
 import { unifiedDataChannel, uniformTypeDescriptor } from '@kit.ArkData';
 //import { LengthMetrics } from '@kit.ArkUI'
 import { curves } from '@kit.ArkUI' // 导入ArkUI动画曲线库
+//import userAuth from '@ohos.userIAM.userAuth'
+//import { promptAction } from '@kit.ArkUI';
+
+//const TAG = 'User_Auth';
 
 @Entry
 @Component
@@ -18,6 +22,8 @@ struct VideoCreateComponent {// 创建滚动控制器实例
   @State isAutoPlay: boolean = false
   @State showControls: boolean = true
   @State isShortcutKeyEnabled: boolean = false
+//  @State message: string = '用户认证'
+//  @State userAuthResult?: userAuth.UserAuthResult = undefined
 
   scroller: Scroller = new Scroller()// 初始化数据数组（用于生成滚动内容）
   private arr: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -31,6 +37,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
   //@State isControls: boolean = false
   private controller: VideoController = new VideoController();
   //controller: VideoController = new VideoController()
+
   build() {
     Column() {
       Video({
@@ -192,6 +199,51 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         .onScrollStop(() => {                // 滚动停止时触发
           console.info('Scroll Stop')
         })
+        /*Button('查询是否支持面容识别和ATL4认证')
+          .margin({ bottom: 20 })
+          .onClick(() => {
+            this.checkAvailableStatus(userAuth.UserAuthType.FACE, userAuth.AuthTrustLevel.ATL4)
+          })
+
+        Button('查询是否支持指纹和ATL1认证')
+          .margin({ bottom: 20 })
+          .onClick(() => {
+            this.checkAvailableStatus(userAuth.UserAuthType.FINGERPRINT, userAuth.AuthTrustLevel.ATL1)
+          })
+
+        Button('查询是否支持密码和ATL1认证')
+          .margin({ bottom: 20 })
+          .onClick(() => {
+            this.checkAvailableStatus(userAuth.UserAuthType.PIN, userAuth.AuthTrustLevel.ATL1)
+          })
+
+        Button('拉起指纹认证')
+          .margin({ bottom: 20 })
+          .onClick(() => {
+            const authParam : userAuth.AuthParam = {
+              challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+              authType: [userAuth.UserAuthType.FINGERPRINT],
+              authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+            }
+            const widgetParam :userAuth.WidgetParam = {
+              title: '请认证指纹'
+            }
+            this.startUserAuth(authParam, widgetParam)
+          })
+
+        Button('拉起锁屏认证')
+          .margin({ bottom: 20 })
+          .onClick(() => {
+            const authParam : userAuth.AuthParam = {
+              challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+              authType: [userAuth.UserAuthType.PIN],
+              authTrustLevel: userAuth.AuthTrustLevel.ATL2,
+            }
+            const widgetParam :userAuth.WidgetParam = {
+              title: '请输入密码'
+            }
+            this.startUserAuth(authParam, widgetParam)
+          })*/
 
         Button('2025新春愿照九天视频')
           .height('5%')
@@ -275,18 +327,38 @@ struct VideoCreateComponent {// 创建滚动控制器实例
     }
   }
 }
-
-interface DurationObject {
-  duration: number;
+  /*checkAvailableStatus (authType: number, trustLevel: number) {
+    try {
+      userAuth.getAvailableStatus(authType, trustLevel);
+      promptAction.showToast({
+        message: '支持'
+      })
+    } catch (e) {
+      promptAction.showToast({
+        message: '不支持'
+      })
+    }
+  }
+  startUserAuth (authParam: userAuth.AuthParam, widgetParam: userAuth.WidgetParam) {
+    try {
+      const userAuthInstance = userAuth.getUserAuthInstance(authParam, widgetParam);
+      userAuthInstance.on('result', {
+        onResult: (result) => {
+          // 认证成功
+          if (result.result === userAuth.UserAuthResultCode.SUCCESS) {
+            this.userAuthResult = result
+            console.log(TAG, 'userAuthInstance callback result ' + JSON.stringify(result));
+          }
+        }
+      })
+      userAuthInstance.start()
+    } catch (e) {
+      promptAction.showToast({
+        message: `拉起用户认证失败 ${e.code} ${e.message}`
+      })
+    }
 }
-
-interface TimeObject {
-  time: number;
-}
-
-interface FullscreenObject {
-  fullscreen: boolean;
-}
+*/
 //   build() {
 //     Column({ space: 10 }) {
 //       Text('Video演示')
@@ -325,3 +397,15 @@ interface FullscreenObject {
 //     .width('100%')
 //   }
 // }
+
+interface DurationObject {
+  duration: number;
+}
+
+interface TimeObject {
+  time: number;
+}
+
+interface FullscreenObject {
+  fullscreen: boolean;
+}
