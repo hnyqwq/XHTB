@@ -11,12 +11,20 @@
 >>> 指南>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>添加组件>视频播放 (Video)
 
 >>> 更新时间: 2025-04-08 14:22
+>>> 更新时间: 2025-04-21 17:01
 
 >> ## [按钮 (Button)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-common-components-button)
 
 >>> 指南>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>添加组件>按钮 (Button)
 
 >>> 更新时间: 2025-04-08 14:22
+>>> 更新时间: 2025-04-21 17:01
+ 
+>> ## [Scroll](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-container-scroll)
+
+>>> API参考>应用框架>ArkUI（方舟UI框架）>ArkTS组件>滚动与滑动>Scroll
+
+>>> 更新时间: 2025-04-21 17:01
 
 ---
 

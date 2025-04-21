@@ -252,7 +252,21 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100, animation: { duration: 1000, curve: curve } })
           }).margin({ top: 10, left: 20 })
 
-        Button('拉起指纹认证')
+        Button('想看看你的脸')
+          .margin({ bottom: 20 })
+          .onClick(() => {
+            const authParam : userAuth.AuthParam = {
+              challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+              authType: [userAuth.UserAuthType.FACE],
+              authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+            }
+            const widgetParam :userAuth.WidgetParam = {
+              title: '请认证人脸'
+            }
+            this.startUserAuth(authParam, widgetParam)
+          })
+
+        Button('想亲亲你的手指')
           .margin({ bottom: 20 })
           .onClick(() => {
             const authParam : userAuth.AuthParam = {
@@ -266,7 +280,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.startUserAuth(authParam, widgetParam)
           }).margin({ top: 210, left: 20 })
 
-        Button('拉起锁屏认证')
+        Button('就想偷窥你密码')
           .margin({ bottom: 20 })
           .onClick(() => {
             const authParam : userAuth.AuthParam = {
