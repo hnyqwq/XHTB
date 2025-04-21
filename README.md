@@ -2,13 +2,13 @@
 
 > 测试运行环境：
 
->> HUAWEI Mate 60
+>> HUAWEI Mate 60 BRA-AL00
 
 >>> HarmonyOS版本：HarmonyOS 5.0.0.155 (SP6C00E155R4P30patch01)
 
 >>> API版本：5.0.4(16)
 
->> HUAWEI MatePad Pro 12.2
+>> HUAWEI MatePad Pro MRO-W00
 
 >>> HarmonyOS版本：HarmonyOS 5.0.0.155 (SP6C00E155R1P6patch02)
 
