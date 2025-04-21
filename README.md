@@ -1,5 +1,19 @@
 # **Video**
 
+> 测试运行环境：
+
+>> HUAWEI Mate 60
+
+>>> HarmonyOS版本：HarmonyOS 5.0.0.155(SP6C00E155R4P30patch01)
+
+>>> API版本：5.0.4(16)
+
+>> HUAWEI MatePad Pro 12.2
+
+>>> HarmonyOS版本：HarmonyOS 5.0.0.155(SP6C00E155R4P30patch02)
+
+>>> API版本：5.0.4(16)
+
 ---
 
 # 快速跳转 
@@ -12,7 +26,7 @@
 
 >>> 更新时间: 2025-04-08 14:22
 > 
->>> 更新时间: 2025-04-21 17:01
+>>>> 更新时间: 2025-04-21 17:01
 
 >> ## [按钮 (Button)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-common-components-button)
 
@@ -20,7 +34,7 @@
 
 >>> 更新时间: 2025-04-08 14:22
 > 
->>> 更新时间: 2025-04-21 17:01
+>>>> 更新时间: 2025-04-21 17:01
  
 >> ## [Scroll](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-container-scroll)
 
