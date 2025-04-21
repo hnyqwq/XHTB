@@ -173,15 +173,8 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         Scroll(this.scroller) {// 垂直排列的子组件容器
           Column() { // 循环生成滚动内容项
             ForEach(this.arr, (item: number) => {
-              /*Text(item.toString())
-                .width('90%')
-                .height(150)
-                .backgroundColor(0xFFFFFF)  // 白色背景
-                .borderRadius(15)           // 圆角半径
-                .fontSize(16)               // 文字大小
-                .textAlign(TextAlign.Center)// 文字居中
-                .margin({ top: 10 })         // 顶部间距*/
-              Button('想看看你的小脸')
+              Text(item.toString())
+                Button('想看看你的小脸')
                 .margin({ bottom: 20 })
                 .onClick(() => {
                   const authParam : userAuth.AuthParam = {
@@ -193,7 +186,15 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                     title: '请认证人脸'
                   }
                   this.startUserAuth(authParam, widgetParam)
-                }).margin({ top: 210, left: 20 })
+                })
+                  .margin({ top: 210, left: 20 })
+                  .width('90%')
+                  .height(150)
+                  .backgroundColor(0xFFFFFF)  // 白色背景
+                  .borderRadius(15)           // 圆角半径
+                  .fontSize(16)               // 文字大小
+                  //.textAlign(TextAlign.Center)// 文字居中
+                  .margin({ top: 10 })         // 顶部间距
             }, (item: string) => item)       // 使用项值作为唯一标识
           }.width('100%')                    // 列宽度填满容器
         }
