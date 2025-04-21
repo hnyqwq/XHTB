@@ -174,8 +174,8 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           Column() { // 循环生成滚动内容项
             //ForEach(this.arr, (item: number) => {
               //Text(item.toString())
-                Button('想看看你的小脸')
-                .margin({ bottom: 20 })
+            Button('想看看你的小脸')
+              .margin({ bottom: 20 })
                 .onClick(() => {
                   const authParam : userAuth.AuthParam = {
                     challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
@@ -186,17 +186,69 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                     title: '请认证人脸'
                   }
                   this.startUserAuth(authParam, widgetParam)
-                })
-                  .margin({ top: 210, left: 20 })
-                  .width('90%')
-                  .height(150)
-                  .backgroundColor(0x99CCFF)  // 白色背景
-                  .borderRadius(15)           // 圆角半径
-                  .fontSize(16)               // 文字大小
-                  //.textAlign(TextAlign.Center)// 文字居中
-                  .margin({ top: 10 })         // 顶部间距
+                }).width('90%')
+              .height(150)
+              .backgroundColor(0x99CCFF)  // 白色背景
+              .borderRadius(15)           // 圆角半径
+              .margin({ top: 10 })         // 顶部间距
+            Button('想亲亲你的手指')
+              .margin({ bottom: 20 })
+              .onClick(() => {
+                const authParam : userAuth.AuthParam = {
+                  challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+                  authType: [userAuth.UserAuthType.FINGERPRINT],
+                  authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+                }
+                const widgetParam :userAuth.WidgetParam = {
+                  title: '把你的小手手放在指纹感应区~~'
+                }
+                this.startUserAuth(authParam, widgetParam)
+              })//margin({ top: 210, left: 200 })
+                  //.margin({ top: 210, left: 20 })
+              .width('90%')
+              .height(150)
+              .backgroundColor(0x99CCFF)  // 白色背景
+              .borderRadius(15)           // 圆角半径
+              .margin({ top: 10 })         // 顶部间距
+              //.fontSize(16)               // 文字大小
+                // .textAlign(TextAlign.Center)// 文字居中
+            Button('想亲亲你的手指')
+              .margin({ bottom: 20 })
+              .onClick(() => {
+                const authParam : userAuth.AuthParam = {
+                  challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+                  authType: [userAuth.UserAuthType.FINGERPRINT],
+                  authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+                }
+                const widgetParam :userAuth.WidgetParam = {
+                  title: '把你的小手手放在指纹感应区~~'
+                }
+                this.startUserAuth(authParam, widgetParam)
+              })
+              .width('90%')
+              .height(150)
+              .backgroundColor(0x99CCFF)  // 白色背景
+              .borderRadius(15)           // 圆角半径
+              .margin({ top: 10 })         // 顶部间距
             //}, (item: string) => item)       // 使用项值作为唯一标识
-          }.width('100%')                    // 列宽度填满容器
+            Button('想看看你的小脸')
+              .margin({ bottom: 20 })
+              .onClick(() => {
+                const authParam : userAuth.AuthParam = {
+                  challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+                  authType: [userAuth.UserAuthType.FACE],
+                  authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+                }
+                const widgetParam :userAuth.WidgetParam = {
+                  title: '请认证人脸'
+                }
+                this.startUserAuth(authParam, widgetParam)
+              }).width('90%')
+              .height(150)
+              .backgroundColor(0x99CCFF)  // 白色背景
+              .borderRadius(15)           // 圆角半径
+              .margin({ top: 10 })         // 顶部间距
+          }
         }
         .scrollable(ScrollDirection.Vertical) // 滚动方向纵向
         .scrollBar(BarState.On) // 滚动条常驻显示
