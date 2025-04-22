@@ -245,13 +245,15 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .borderRadius(15)           // 圆角半径
               .margin({ top: 10 })         // 顶部间距
           }
-          .height('80%') // 明确设置可滚动区域高度
+          //.height('80%') // 明确设置可滚动区域高度
           .width('100%')
         }
         .scrollable(ScrollDirection.Vertical) // 滚动方向纵向
         .scrollBar(BarState.On) // 滚动条常驻显示
         .scrollBarColor(Color.Gray) // 滚动条颜色
         .scrollBarWidth(10) // 滚动条宽度
+        .height('70%') // 关键高度设置
+        .backgroundColor(Color.White)
         .friction(0.6)                      // 设置滚动摩擦系数（影响滚动惯性）
         .edgeEffect(EdgeEffect.None)
         .onWillScroll((xOffset: number, yOffset: number, scrollState: ScrollState) => {
