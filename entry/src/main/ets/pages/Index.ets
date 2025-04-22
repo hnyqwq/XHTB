@@ -248,7 +248,9 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .backgroundColor(0x99CCFF)  // 白色背景
               .borderRadius(15)           // 圆角半径
               .margin({ top: 10 })         // 顶部间距
-          }.width('100%')
+          }
+          .height('80%') // 明确设置可滚动区域高度
+          .width('100%')
         }
         .scrollable(ScrollDirection.Vertical) // 滚动方向纵向
         .scrollBar(BarState.On) // 滚动条常驻显示
