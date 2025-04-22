@@ -270,6 +270,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           }
           //.height('80%') // 明确设置可滚动区域高度
           .width('100%')
+
         }
         .scrollable(ScrollDirection.Vertical) // 滚动方向纵向
         .scrollBar(BarState.On) // 滚动条常驻显示
@@ -288,6 +289,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         .onScrollStop(() => {                // 滚动停止时触发
           console.info('Scroll Stop')
         })
+
         /*Button('查询是否支持面容识别和ATL4认证')
           .margin({ bottom: 20 })
           .onClick(() => {
@@ -316,12 +318,12 @@ struct VideoCreateComponent {// 创建滚动控制器实例
 
 
 
-        Button('下滑 150')
+        /*Button('下滑 150')
           .height('5%')
           .onClick(() => { // 点击后下滑指定距离150.0vp
             this.scroller.scrollBy(0, 150)
           })
-          .margin({ top: 10, left: 20 })
+          .margin({ top: 10, left: 20 })*/
         /*Button('下滑100.0vp')
           .height('5%')
           .onClick(() => { // 点击后滑动到指定位置，即下滑100.0vp的距离
@@ -336,19 +338,19 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             const yOffset: number = this.scroller.currentOffset().yOffset;
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 150, animation: { duration: 1000, curve: curve } })
           })
-          .margin({ top: 60, left: 20 })
+          .margin({ top: 10, left: 20 })
         Button('返回顶部')
           .height('5%')
           .onClick(() => { // 点击后回到顶部 back top
             this.scroller.scrollEdge(Edge.Top)
           })
-          .margin({ top: 110, left: 20 })
+          .margin({ top: 60, left: 20 })
         Button('下一页')
           .height('5%')
           .onClick(() => { // 点击后滑到下一页
             this.scroller.scrollPage({ next: true ,animation: true })
           })
-          .margin({ top: 160, left: 20 })
+          .margin({ top: 110, left: 20 })
         /*Button('触发初始速度为-3000vp/s的惯性滚动')
           .height('5%')
           .onClick(() => { // 点击后触发初始速度为-3000vp/s的惯性滚动 fling -3000
