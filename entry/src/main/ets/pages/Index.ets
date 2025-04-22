@@ -211,24 +211,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .margin({ top: 10 })         // 顶部间距
               //.fontSize(16)               // 文字大小
               // .textAlign(TextAlign.Center)// 文字居中
-            Button('想亲亲你的手指')
-              .onClick(() => {
-                const authParam : userAuth.AuthParam = {
-                  challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
-                  authType: [userAuth.UserAuthType.FINGERPRINT],
-                  authTrustLevel: userAuth.AuthTrustLevel.ATL1,
-                }
-                const widgetParam :userAuth.WidgetParam = {
-                  title: '把你的小手手放在指纹感应区~~'
-                }
-                this.startUserAuth(authParam, widgetParam)
-              })
-              .width('90%')
-              .height(150)
-              .backgroundColor(0x99CCFF)  // 白色背景
-              .borderRadius(15)           // 圆角半径
-              .margin({ top: 10 })         // 顶部间距
-            //}, (item: string) => item)       // 使用项值作为唯一标识
+              //}, (item: string) => item)       // 使用项值作为唯一标识
             Button('就想偷窥你密码')
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
