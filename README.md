@@ -94,6 +94,9 @@ entry/src/main/ets/
 > ##  [OpenHarmony 教程指南](https://gitee.com/explore/harmonyos-guide)
 > ##  [HarmonyOS NEXT开源组件市场](https://gitee.com/harmonyos-cases/cases)
 
+> ## [APPGallery Connect](https://developer.huawei.com/consumer/cn/service/josp/agc/index.html#/)
+[![APPGallery Connect](https://developer.huawei.com/consumer/cn/service/josp/agc/static/img/logo-white.b4f1c5f9.png)](https://developer.huawei.com/consumer/cn/service/josp/agc/index.html#/)
+
 > ## [DEVELOPERS](https://developer.huawei.com/consumer/cn/)
 [![DEVELOPERS](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/home-1223/pc-0116.jpeg)](https://developer.huawei.com/consumer/cn/)
 
