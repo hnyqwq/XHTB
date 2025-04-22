@@ -42,6 +42,11 @@
 
 >>> 更新时间: 2025-04-21 17:01
 
+>> ## [开发应用沉浸式效果](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-develop-apply-immersive-effects)
+
+>>> API参考>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>开发布局>开发应用沉浸式效果
+
+>>> 更新时间: 2025-04-21 17:01
 ---
 
 # 参考项目
