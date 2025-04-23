@@ -95,6 +95,8 @@
 
 # Ready
 
+> ### [视频全屏切换案例](https://gitee.com/harmonyos-cases/cases/tree/master/CommonAppDevelopment/feature/mediafullscreen)
+
 > ### [获取视频信息](https://gitee.com/scenario-samples/get-video-size-and-duration)
 
 > ### [沉浸式布局demo](https://gitee.com/scenario-samples/immersive)
