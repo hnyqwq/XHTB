@@ -189,7 +189,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .globalButtonStyle()
               .onClick(() => {
                 // 设置网络视频源（请替换为实际的视频URL）
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/tutxCnOn_8668_0.mp4?sign=dcb74283b19587782014ce7372a6f93f&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E7%A9%BA%E7%A9%BA%E5%84%BF.mp4';
 
                 // 启动视频播放（假设Video组件的controller已经正确初始化）
                 this.controller.start();
@@ -197,79 +197,73 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             Button('蛇年限定 愿照九天')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_0.mp4?sign=58d6ae8fe07561bf0c81fc45ea9c8e59&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E6%84%BF%E7%85%A7%E4%B9%9D%E5%A4%A9.mp4';
                 this.controller.start();
               })
             Button('影')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_8.mp4?sign=a235f10374fdecd1a9bd5cd0b0f5bdbd&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E5%BD%B1.mp4';
                 this.controller.start();
               })
             Button('群星魔术团')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_9.mp4?sign=b1c79f5595a3ecf321a90978b6eda63b&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E7%BE%A4%E6%98%9F%E9%AD%94%E6%9C%AF%E5%9B%A2.mp4';
                 this.controller.start();
               })
             Button('少司缘')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_1.mp4?sign=6ebcb9b0e2a92b9b53dd3174f8218cdc&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E5%B0%91%E5%8F%B8%E7%BC%98.mp4';
                 this.controller.start();
               })
-            Button('柯南')
+            Button('55')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_2.mp4?sign=b43ce56b150c4183d9d6f8a61f9b0d67&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/55.mp4';
                 this.controller.start();
               })
             Button('穿透信念')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_3.mp4?sign=d3632d70818b6bb0bdf2fba59a570687&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E7%A9%BF%E9%80%8F%E4%BF%A1%E5%BF%B5.mp4';
                 this.controller.start();
               })
             Button('朵莉亚')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_5.mp4?sign=35c1730b009a54a26909ef7080be7c92&t=68093ae0';
-                this.controller.start();
-              })
-            Button('云梦有灵')
-              .globalButtonStyle()
-              .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_4.mp4?sign=5d4abfea526125358b8fd3dcdfb12df3&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E6%9C%B5%E8%8E%89%E4%BA%9A.mp4';
                 this.controller.start();
               })
             Button('冰雪奇缘')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_6.mp4?sign=56ea4c7af392532f2a1831f9224f6d7e&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E5%86%B0%E9%9B%AA%E5%A5%87%E7%BC%98.mp4';
                 this.controller.start();
               })
             Button('元流之子')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_7.mp4?sign=f8770b93df9bb7411b3f8d79ae4fd2e0&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E5%85%83%E6%B5%81%E4%B9%8B%E5%AD%90.mp4';
                 this.controller.start();
               })
             Button('大司命')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_10.mp4?sign=fae06a205bcc904385e2cb73ccc3f632&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E5%A4%A7%E5%8F%B8%E5%91%BD.mp4';
                 this.controller.start();
               })
             Button('熬隐')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_11.mp4?sign=9310b7b41fa3d5018799414d8a3f2b51&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E7%86%AC%E9%9A%90.mp4';
                 this.controller.start();
               })
             Button('九周年限定 鸣野蒿 桑启')
               .globalButtonStyle()
               .onClick(() => {
-                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/40gHHiSw_8668_0.mp4?sign=444a587e5f8e2e3b6d81adb1465bab8d&t=68093ae0';
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E4%B9%9D%E5%91%A8%E5%B9%B4.mp4';
                 this.controller.start();
               })
             Button('想看看你的小脸')
