@@ -6,9 +6,9 @@ import { promptAction } from '@kit.ArkUI';
 const TAG = 'User_Auth';
 
 @Extend(Button) function globalButtonStyle() {
-  .width('90%')
-  .height(150)
-  .backgroundColor(0x99CCFF)  // 白色背景
+  .width('60%')
+  .height(80)
+  //.backgroundColor(0x99CCFF)  // 白色背景
   .borderRadius(15)           // 圆角半径
   .margin({ top: 10 })         // 顶部间距
 }
@@ -196,78 +196,91 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               })
             Button('蛇年限定 愿照九天')
               .globalButtonStyle()
+              .backgroundColor(0xFF0000)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E6%84%BF%E7%85%A7%E4%B9%9D%E5%A4%A9.mp4';
                 this.controller.start();
               })
             Button('影')
               .globalButtonStyle()
+              .backgroundColor(0xFF6633)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E5%BD%B1.mp4';
                 this.controller.start();
               })
             Button('群星魔术团')
               .globalButtonStyle()
+              .backgroundColor(0x3366CC)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E7%BE%A4%E6%98%9F%E9%AD%94%E6%9C%AF%E5%9B%A2.mp4';
                 this.controller.start();
               })
             Button('少司缘')
               .globalButtonStyle()
+              .backgroundColor(0xCC3333)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E5%B0%91%E5%8F%B8%E7%BC%98.mp4';
                 this.controller.start();
               })
             Button('55')
               .globalButtonStyle()
+              .backgroundColor(0xFF66CC)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/55.mp4';
                 this.controller.start();
               })
             Button('穿透信念')
               .globalButtonStyle()
+              .backgroundColor(0x3300CC)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E7%A9%BF%E9%80%8F%E4%BF%A1%E5%BF%B5.mp4';
                 this.controller.start();
               })
             Button('朵莉亚')
               .globalButtonStyle()
+              .backgroundColor(0x00CCFF)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E6%9C%B5%E8%8E%89%E4%BA%9A.mp4';
                 this.controller.start();
               })
             Button('冰雪奇缘')
               .globalButtonStyle()
+              .backgroundColor(0x00CCFF)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E5%86%B0%E9%9B%AA%E5%A5%87%E7%BC%98.mp4';
                 this.controller.start();
               })
             Button('元流之子')
               .globalButtonStyle()
+              .backgroundColor(0x99CCFF)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E5%85%83%E6%B5%81%E4%B9%8B%E5%AD%90.mp4';
                 this.controller.start();
               })
             Button('大司命')
               .globalButtonStyle()
+              .backgroundColor(0x3300CC)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E5%A4%A7%E5%8F%B8%E5%91%BD.mp4';
                 this.controller.start();
               })
             Button('熬隐')
               .globalButtonStyle()
+              .backgroundColor(0x66FFFF)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E7%86%AC%E9%9A%90.mp4';
                 this.controller.start();
               })
             Button('九周年限定 鸣野蒿 桑启')
               .globalButtonStyle()
+              .backgroundColor(0x00FF66)
               .onClick(() => {
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E4%B9%9D%E5%91%A8%E5%B9%B4.mp4';
                 this.controller.start();
               })
             Button('想看看你的小脸')
               .globalButtonStyle()
+              .backgroundColor(0xFF66CC)
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
                   challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
@@ -281,6 +294,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               })
             Button('想亲亲你的手指')
               .globalButtonStyle()
+              .backgroundColor(0xFF66CC)
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
                   challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
@@ -297,6 +311,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               //}, (item: string) => item)       // 使用项值作为唯一标识
             Button('就想偷窥你密码')
               .globalButtonStyle()
+              .backgroundColor(0xFF66CC)
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
                   challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
@@ -335,7 +350,8 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         .scrollBar(BarState.On) // 滚动条常驻显示
         .scrollBarColor(Color.Gray) // 滚动条颜色
         .scrollBarWidth(10) // 滚动条宽度
-        .height('54%') // 关键高度设置
+        //.height('54%') // 关键高度设置
+        .height('49.9%')
         .backgroundColor(Color.White)
         .friction(0.6)                      // 设置滚动摩擦系数（影响滚动惯性）
         .edgeEffect(EdgeEffect.None)
@@ -390,7 +406,8 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100 })
           })
           .margin({ top: 60, left: 20 })*/
-        Button('下滑 150')
+        Button('下滑')// 150
+          .backgroundColor(0x330066)
           .height('5%')
           .onClick(() => { // 点击后滑动到指定位置，即下滑100.0vp的距离，滑动过程配置有动画
             let curve = curves.interpolatingSpring(10, 1, 228, 30) //创建一个阶梯曲线
@@ -398,19 +415,23 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 150, animation: { duration: 1000, curve: curve } })
           })
           .margin({ top: 10, left: 20 })
-        Button('返回顶部')
+        Button('回顶')
+          .backgroundColor(0x330066)
           .height('5%')
           .onClick(() => { // 点击后回到顶部 back top
             this.scroller.scrollEdge(Edge.Top)
           })
           .margin({ top: 60, left: 20 })
-        Button('下一页')
+        Button('翻页')
+          .backgroundColor(0x330066)
           .height('5%')
           .onClick(() => { // 点击后滑到下一页
             this.scroller.scrollPage({ next: true ,animation: true })
           })
           .margin({ top: 110, left: 20 })
         Button('全屏')
+          .backgroundColor(0x330066)
+          .height('5%')
           .onClick(() => {
             this.controller.requestFullscreen(true)
           }).margin({ top: 160, left: 20 })
