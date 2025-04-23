@@ -1,16 +1,7 @@
-// import { MySubTitle } from '../common/CommonTitle';
-//
-// @Entry
-// @Component
-// struct VideoDemo {
-//   private controller: VideoController = new VideoController()
 import { unifiedDataChannel, uniformTypeDescriptor } from '@kit.ArkData';
-//import { LengthMetrics } from '@kit.ArkUI'
 import { curves } from '@kit.ArkUI' // 导入ArkUI动画曲线库
 import userAuth from '@ohos.userIAM.userAuth'
 import { promptAction } from '@kit.ArkUI';
-
-
 
 const TAG = 'User_Auth';
 
@@ -21,7 +12,6 @@ const TAG = 'User_Auth';
   .borderRadius(15)           // 圆角半径
   .margin({ top: 10 })         // 顶部间距
 }
-
 
 @Entry
 @Component

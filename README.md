@@ -40,9 +40,35 @@
 
 >>> 更新时间: 2025-04-21 17:01
 
+> Ready
+
 >> ## [开发应用沉浸式效果](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-develop-apply-immersive-effects)
 
 >>> API参考>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>开发布局>开发应用沉浸式效果
+
+>>> 更新时间: 2025-04-21 17:01
+
+>> ## [使用AVPlayer播放视频(ArkTS)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-develop-apply-immersive-effects)
+
+>>> 指南>媒体>Media Kit（媒体服务）>媒体开发指导(ArkTS)>播放>使用AVPlayer播放视频(ArkTS)
+
+>>> 更新时间: 2025-04-21 17:01
+
+>> ## [使用AVPlayer设置播放URL(ArkTS)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/playback-url-setting-method)
+
+>>> 指南>媒体>Media Kit（媒体服务）>媒体开发指导(ArkTS)>播放>使用AVPlayer设置播放URL(ArkTS)
+
+>>> 更新时间: 2025-04-21 17:01
+
+>> ## [使用AVPlayer播放流媒体(ArkTS)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/streaming-media-playback-development-guide)
+
+>>> 指南>媒体>Media Kit（媒体服务）>媒体开发指导(ArkTS)>播放>使用AVPlayer播放流媒体(ArkTS)
+
+>>> 更新时间: 2025-04-21 17:01
+
+>> ## [应用接续开发指导](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-continuation-guide)
+
+>>> 指南>自由流转>应用接续>应用接续开发指导
 
 >>> 更新时间: 2025-04-21 17:01
 ---
@@ -50,6 +76,8 @@
 # 参考项目
 
 > ## [鸿蒙场景化示例合集](https://gitee.com/scenario-samples/demo-index)
+
+> ## [HarmonyOS-Cases/Cases](https://gitee.com/harmonyos-cases/cases)
 
 >> ### [video-demo](https://gitee.com/scenario-samples/video-demo)
 
@@ -74,6 +102,17 @@
 > ### [Scroll中点击图片移动到顶端](https://gitee.com/scenario-samples/move-to-top)
 
 > ### [Menu显隐demo](https://gitee.com/scenario-samples/menu-hidden)
+
+> ### [视频横竖屏切换及进度条热区拖动案例](https://gitee.com/harmonyos-cases/cases/tree/master/CommonAppDevelopment/feature/videoscreendirectionswitching)
+
+> ### [网络状态监听](https://gitee.com/harmonyos-cases/cases/blob/master/CommonAppDevelopment/feature/networkstatusobserver/README.md)
+
+> ### [视频截取gif图](https://gitee.com/harmonyos-cases/cases/blob/master/CommonAppDevelopment/feature/videocreategif/README.md)
+
+> ### [视频悬浮窗](https://gitee.com/harmonyos-cases/cases/blob/master/CommonAppDevelopment/feature/pipwindow/README.md)
+
+> ### [实现视频播放的功能](https://gitee.com/harmonyos_samples/video-show#%E5%AE%9E%E7%8E%B0%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E7%9A%84%E5%8A%9F%E8%83%BD)
+
 
 ---
 
