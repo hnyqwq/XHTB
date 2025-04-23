@@ -69,7 +69,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         .loop(true) // 设置是否循环播放
         .objectFit(ImageFit.Contain) // 设置视频适配模式
         .width('100%')
-        .height('50%')
+        .height('30%')
         //.autoPlay(this.isAutoPlay)
         .controls(this.showControls)
         .enableShortcutKey(this.isShortcutKeyEnabled)
@@ -269,7 +269,6 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               })
           }
           .width('100%')
-
         }
         .scrollable(ScrollDirection.Vertical) // 滚动方向纵向
         .scrollBar(BarState.On) // 滚动条常驻显示
