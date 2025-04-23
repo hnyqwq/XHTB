@@ -200,7 +200,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .globalButtonStyle()
               .onClick(() => {
                 // 设置网络视频源（请替换为实际的视频URL）
-                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/test/LoginBg53%20(2).mp4';
+                this.networkVideoSrc = 'https://media.yitulu.com/videotulu/column/20250424/rXC7vvxE/tutxCnOn_8668_0.mp4?sign=7f4d5058eafd7ef6ae899b6592a83093&t=68092c87';
 
                 // 启动视频播放（假设Video组件的controller已经正确初始化）
                 this.controller.start();
