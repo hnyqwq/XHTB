@@ -112,7 +112,7 @@ entry/src/main/ets/
 |---entryability
 |   |---EntryAbility.ets    
 |---pages
-|   |---Index.ets              // 主页
+|   |---Index.ets
 ```
 
 ---
