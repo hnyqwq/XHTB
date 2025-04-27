@@ -5,10 +5,10 @@
     "description": "$string:module_desc",
     "mainElement": "EntryAbility",
     "requestPermissions": [{
-      "name": "ohos.permission.ACCESS_BIOMETRIC",
+      "name": "ohos.permission.ACCESS_BIOMETRIC"
     },
     {
-      "name": "ohos.permission.INTERNET",
+      "name": "ohos.permission.INTERNET"
     }],
     "deviceTypes": [
       "phone",
@@ -28,6 +28,14 @@
         "startWindowIcon": "$media:start",
         "startWindowBackground": "$color:start_window_background",
         "exported": true,
+        "continuable": true,
+        "metadata": [
+          {
+            "name": "ohos.ability.continuation",
+            "value": "true"
+          }
+        ],
+        "launchType": "singleton",
         "skills": [
           {
             "entities": [
