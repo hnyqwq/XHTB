@@ -1,0 +1,25 @@
+{
+  "forms": [
+    {
+      "name": "widget",
+      "displayName": "快捷启动卡片",
+      "description": "快捷打开",
+      "src": "./ets/StartAPP/pages/StartAPP.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "colorMode": "light",
+      "isDynamic": false,
+      "isDefault": false,
+      "updateEnabled": false,
+      "scheduledUpdateTime": "10:30",
+      "updateDuration": 1,
+      "defaultDimension": "2*2",
+      "supportDimensions": [
+        "2*2","4*4","1*1"
+      ]
+    }
+  ]
+}

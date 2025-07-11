@@ -1,0 +1,89 @@
+{
+	"module":{
+		"abilities":[
+			{
+				"exported":true,
+				"skills":[
+					{
+						"entities":[
+							"entity.system.home",
+							"entity.system.browsable"
+						],
+						"actions":[
+							"action.system.home",
+							"ohos.want.action.viewData"
+						],
+						"uris":[
+							{
+								// scheme须配置为https
+								"scheme":"https",
+								// host须配置为关联的域名
+								"host":"www.hnyqwq.cn",
+								// path可选，表示域名服务器上的目录或文件路径，例如www.example.com/path1中的path1
+								// 如果应用只能处理部分特定的path，则此处应该配置应用所支持的path，避免出现应用不能处理的path链接也被引流到应用中的问题
+								"pathStartWith":"hvideo"
+							},
+							{
+								// scheme须配置为https
+								"scheme":"https",
+								// host须配置为关联的域名
+								"host":"hnyqwq.cn",
+								// path可选，表示域名服务器上的目录或文件路径，例如www.example.com/path1中的path1
+								// 如果应用只能处理部分特定的path，则此处应该配置应用所支持的path，避免出现应用不能处理的path链接也被引流到应用中的问题
+								"pathStartWith":"hvideo"
+							}
+						],
+						"domainVerify":true
+					}
+				],
+				"continuable":true,
+				"metadata":[
+					{
+						"name":"ohos.ability.continuation",
+						"value":"true"
+					}
+				],
+				"srcEntry":"./ets/entryability/EntryAbility.ets",
+				"startWindowBackground":"$color:start_window_background",
+				"name":"EntryAbility",
+				"icon":"$media:layered_image",
+				"startWindowIcon":"$media:startIcon",
+				"description":"$string:EntryAbility_desc",
+				"label":"$string:EntryAbility_label",
+				"launchType":"singleton"
+			}
+		],
+		"mainElement":"EntryAbility",
+		"deviceTypes":[
+			"phone",
+			"tablet",
+			"2in1"
+		],
+		"pages":"$profile:main_pages",
+		"installationFree":false,
+		"name":"entry",
+		"requestPermissions":[
+			{
+				"name":"ohos.permission.INTERNET"
+			}
+		],
+		"deliveryWithInstall":true,
+		"description":"$string:module_desc",
+		"type":"entry",
+		"extensionAbilities":[
+			{
+				"name":"EntryFormAbility",
+				"srcEntry":"./ets/entryformability/EntryFormAbility.ets",
+				"label":"$string:defaultForm_label",
+				"description":"$string:defaultForm_desc",
+				"type":"form",
+				"metadata":[
+					{
+						"name":"ohos.extension.form",
+						"resource":"$profile:form_config"
+					}
+				]
+			}
+		]
+	}
+}

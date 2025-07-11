@@ -1,0 +1,8 @@
+scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
+  this.networkVideoSrc = result.scanResult; // 正确字段名
+  promptAction.showToast({ message: '扫码成功: ' + result.scanResult });
+}).catch((error: BusinessError) => {
+  promptAction.showToast({ message: '扫码失败: ' + error.message });
+  hilog.error(0x0001, '[Scan CPSample]',
+    `Failed to get ScanResult by promise with options. Code:${error.code}, message: ${error.message}`);
+});

@@ -1,0 +1,6 @@
+{"modelVersion": "6.0.0",
+  "dependencies": {
+    "@ohos/hypium": "1.0.19",
+    "@ohos/hamock": "1.0.0"
+  }
+}

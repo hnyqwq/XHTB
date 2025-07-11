@@ -1,0 +1,144 @@
+{
+  "integer": [
+    {
+      "name": "bottom_icon_size",
+      "value": 24
+    },
+    {
+      "name": "cancel_icon_size_mini",
+      "value": 10
+    },
+    {
+      "name": "cancel_icon_size_mini1",
+      "value": 12
+    },
+    {
+      "name": "cancel_icon_right",
+      "value": 8
+    },
+    {
+      "name": "cancel_icon_left",
+      "value": 8
+    },
+    {
+      "name": "cancel_icon_bottom",
+      "value": 2
+    },
+    {
+      "name": "text_size_body3",
+      "value": 12
+    },
+    {
+      "name": "text_size_body1",
+      "value": 16
+    },
+    {
+      "name": "text_size_headline8",
+      "value": 20
+    },
+    {
+      "name": "border_radius3",
+      "value": 10
+    },
+    {
+      "name": "border_radius5",
+      "value": 14
+    },
+    {
+      "name": "border_radius28",
+      "value": 28
+    },
+    {
+      "name": "text_publish_height",
+      "value": 28
+    },
+    {
+      "name": "comm_padding_margin",
+      "value": 16
+    },
+    {
+      "name": "comm_padding_margin_mini",
+      "value": 8
+    },
+    {
+      "name": "top_area_height",
+      "value": 40
+    },
+    {
+      "name": "add_image_area_size",
+      "value": 96
+    },
+    {
+      "name": "add_icon_size",
+      "value": 26
+    },
+    {
+      "name": "add_default_pic_right",
+      "value": 8
+    },
+    {
+      "name": "add_default_pic_bottom",
+      "value": 21
+    },
+    {
+      "name": "default_border_width",
+      "value": 1
+    },
+    {
+      "name": "location_icon_size",
+      "value": 15
+    },
+    {
+      "name": "location_icon_left",
+      "value": 10
+    },
+    {
+      "name": "location_icon_right",
+      "value": 8
+    },
+    {
+      "name": "location_row_right",
+      "value": 11
+    },
+    {
+      "name": "location_info_height",
+      "value": 45
+    },
+    {
+      "name": "bottom_icon_region_height",
+      "value": 56
+    },
+    {
+      "name": "text_input_height",
+      "value": 48
+    },
+    {
+      "name": "text_input_margin",
+      "value": 8
+    },
+    {
+      "name": "flex_input_margin",
+      "value": 10
+    },
+    {
+      "name": "flex_input_height",
+      "value": 500
+    },
+    {
+      "name": "location_info_row_height",
+      "value": 28
+    },
+    {
+      "name": "location_row_height",
+      "value": 38
+    },
+    {
+      "name": "top_area_size",
+      "value": 40
+    },
+    {
+      "name": "top_area_radius",
+      "value": 40
+    }
+  ]
+}

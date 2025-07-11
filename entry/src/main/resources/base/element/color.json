@@ -1,0 +1,20 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "add_image_background",
+      "value": "#A2A6AC"
+    },
+    {
+      "name": "add_image_border_color",
+      "value": "#CCCCCC"
+    },
+    {
+      "name": "bottom_border_color",
+      "value": "#DBDCDE"
+    }
+  ]
+}
