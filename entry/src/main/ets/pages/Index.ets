@@ -1,14 +1,11 @@
 import { unifiedDataChannel, uniformTypeDescriptor } from '@kit.ArkData';
-//import { curves } from '@kit.ArkUI'; // 导入ArkUI动画曲线库
 import { promptAction } from '@kit.ArkUI';
 import window from '@ohos.window';
 import { common } from '@kit.AbilityKit';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 // 导入默认界面需要的日志模块和错误码模块
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import { BusinessError } from '@kit.BasicServicesKit';
-import { router } from '@kit.ArkUI';
-import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
+import { BusinessError  } from '@kit.BasicServicesKit';
 
 import { resourceManager } from '@kit.LocalizationKit';
 import { systemShare } from '@kit.ShareKit';
@@ -17,20 +14,23 @@ import Logger from '../utils/Logger';
 
 import { textRecognition } from '@kit.CoreVisionKit'
 import { image } from '@kit.ImageKit';
-import { fileIo } from '@kit.CoreFileKit';
-import { photoAccessHelper } from '@kit.MediaLibraryKit';
-import { AddPic } from '../view/AddPic';
+
+import {
+  createCollaborationServiceMenuItems,
+  CollaborationServiceStateDialog,
+  CollaborationServiceFilter
+} from '@kit.ServiceCollaborationKit';
 
 let logger = Logger.getLogger('[TextScenario]');
 
-
+/*
 @Extend(Button) function globalButtonStyle() {
   .width('60%')
   .height(80)
   //.backgroundColor(0x99CCFF)  // 白色背景
   .borderRadius(15)           // 圆角半径
   .margin({ top: 10 })         // 顶部间距
-}
+}*/
 /*
 export default class EntryAbility extends UIAbility {
   // 正确的类属性声明（无需@State装饰器）
@@ -81,6 +81,15 @@ struct VideoCreateComponent {
   private imageSource: image.ImageSource | undefined = undefined;
   @State chooseImage: PixelMap | undefined = undefined;
   @State dataValues: string = '';
+
+  @State picture: PixelMap|undefined = undefined;
+
+  @Builder
+  MyTestMenu() {
+    Menu() {
+      createCollaborationServiceMenuItems([CollaborationServiceFilter.ALL])
+    }
+  }
 
   /*aboutToAppear() {
     // 获取UIAbilityContext并处理URL参数
@@ -141,38 +150,6 @@ struct VideoCreateComponent {
     hilog.info(0x0000, 'OCRDemo', 'OCR service released successfully');
   }
 
-  private async selectImage() {
-
-    let uri = await this.openPhoto();
-    if (uri === undefined) {
-      hilog.error(0x0000, 'OCRDemo', "Failed to get uri.");
-      return;
-    }
-    this.loadImage(uri);
-  }
-
-  private openPhoto(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      let photoPicker: photoAccessHelper.PhotoViewPicker = new photoAccessHelper.PhotoViewPicker();
-      photoPicker.select({
-        MIMEType: photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE,
-        maxSelectNumber: 1
-      }).then((res: photoAccessHelper.PhotoSelectResult) => {
-        resolve(res.photoUris[0]);
-      }).catch((err: BusinessError) => {
-        hilog.error(0x0000, 'OCRDemo', `Failed to get photo image uri. code：${err.code}，message：${err.message}`);
-        reject('');
-      })
-    })
-  }
-
-  private loadImage(name: string) {
-    setTimeout(async () => {
-      let fileSource = await fileIo.open(name, fileIo.OpenMode.READ_ONLY);
-      this.imageSource = image.createImageSource(fileSource.fd);
-      this.chooseImage = await this.imageSource.createPixelMap();
-    }, 100)
-  }
   private async share() {
     if (!this.networkVideoSrc) {
       promptAction.showToast({message: '请输入有效的视频链接'});
@@ -203,23 +180,22 @@ struct VideoCreateComponent {
       promptAction.showToast({message: '分享失败: ' + error.message});
     });
   }
-
   build() {
     Column() {
       // 固定在顶部的输入框区域
       Video({
-          previewUri: this.networkPreviewUri,
-          currentProgressRate: this.curRate,
-          src: this.networkVideoSrc,
-          controller: this.controller
-        })
+        previewUri: this.networkPreviewUri,
+        currentProgressRate: this.curRate,
+        src: this.networkVideoSrc,
+        controller: this.controller
+      })
         .muted(false) // 设置是否静音
         .controls(this.isControls) // 设置是否显示默认控制条
         .autoPlay(true) // 设置是否自动播放
         .loop(true) // 设置是否循环播放
         .objectFit(this.currentFitMode)
         .width('100%')
-        .aspectRatio(16/9) // 根据视频长宽比自动计算高度
+        .aspectRatio(16 / 9) // 根据视频长宽比自动计算高度
         .constraintSize({ maxWidth: 900, minWidth: 600 })
         .onClick(() => {
           this.isControls = !this.isControls;
@@ -276,7 +252,7 @@ struct VideoCreateComponent {
               }
             }).catch((err: Error) => {
               console.error('方向设置失败:', err);
-              promptAction.showToast({message: '方向设置失败'});
+              promptAction.showToast({ message: '方向设置失败' });
             });
           }
         })
@@ -292,7 +268,7 @@ struct VideoCreateComponent {
         })
       Row() {
         TextInput({ placeholder: '󰒔 请输入视频直链'/*, text: 'https://hnyqwq.cn/hvideo/.mp4'*/ })
-          //.backgroundColor('#FF9CCE')
+        //.backgroundColor('#FF9CCE')
           .width('55%')
           .height(50)
           .margin({ right: 10 })
@@ -300,7 +276,7 @@ struct VideoCreateComponent {
             this.networkVideoSrc = value;
           })
         Button('分享')
-          //.type(ButtonType.Capsule)
+        //.type(ButtonType.Capsule)
           .width('20%')
           .height(50)
           .backgroundColor(0x66CCFF)
@@ -311,25 +287,26 @@ struct VideoCreateComponent {
               this.share();
             } catch (error) {
               logger.error(`分享按钮点击异常: ${error.message}`);
-              promptAction.showToast({message: '分享功能异常: ' + error.message});
+              promptAction.showToast({ message: '分享功能异常: ' + error.message });
             }
           })
         Button('播放')
-          //.type(ButtonType.Capsule)
+        //.type(ButtonType.Capsule)
           .width('20%')
           .height(50)
           .backgroundColor(0xFF66CC)
           .onClick(() => {
             if (this.networkVideoSrc) {
               this.controller.start();
-              promptAction.showToast({message: '正在播放视频...'});
+              promptAction.showToast({ message: '正在播放视频...' });
             } else {
-              promptAction.showToast({message: '请输入视频链接'});
+              promptAction.showToast({ message: '请输入视频链接' });
             }
           })
       }
       .width('90%')
       .margin({ top: 5, bottom: 10 })
+
       Row() {
         TextArea({ placeholder: '󰒔 使用测试视频，仅需输入名称，如w/k/55' })
         //.backgroundColor('#FF9CCE')
@@ -337,10 +314,10 @@ struct VideoCreateComponent {
           //.height(50)
           .margin({ right: 10 })
           .onChange((value: string) => {
-            this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/'+value+'.mp4';
+            this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/' + value + '.mp4';
           })
         Button('󰀨󰄨 扫码播放')
-          //.globalButtonStyle()
+        //.globalButtonStyle()
           .backgroundColor('#0044fc')
           .width('40%')
           //.height(70)
@@ -358,25 +335,26 @@ struct VideoCreateComponent {
                 // 正确获取扫描结果的字符串值
                 const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
                 this.networkVideoSrc = originalValue;
-                promptAction.showToast({duration: 10000,message: '扫码成功: ' + originalValue});
+                promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
               }).catch((error: BusinessError) => {
                 hilog.error(0x0001, '[Scan Sample]',
                   `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
-                promptAction.showToast({message: '扫码失败: ' + error.message});
+                promptAction.showToast({ message: '扫码失败: ' + error.message });
               });
             } catch (error) {
-              promptAction.showToast({message: '扫码失败: ' + error.message});
+              promptAction.showToast({ message: '扫码失败: ' + error.message });
               hilog.error(0x0001, '[Scan CPSample]',
                 `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
             }
           })
-          .bindPopup(this.handlePopup, {message: '点击扫码输入视频链接'});
+          .bindPopup(this.handlePopup, { message: '点击扫码输入视频链接' });
       }
       .width('90%')
       .margin({ top: 5, bottom: 10 })
+
       Row() {
         Button(this.curRate === PlaybackSpeed.Speed_Forward_2_00_X ? '原速' : '倍速')
-          //.backgroundColor('#0044fc')
+        //.backgroundColor('#0044fc')
           .backgroundColor(0xFF66CC)
           .width('20%')
           .onClick(() => {
@@ -395,7 +373,7 @@ struct VideoCreateComponent {
               win.setPreferredOrientation(window.Orientation.LANDSCAPE);
             });
           })*/
-        Button(this.currentFitMode === ImageFit.Fill ? '自适应' :'强制填充屏幕')
+        Button(this.currentFitMode === ImageFit.Fill ? '自适应' : '强制填充屏幕')
           .backgroundColor(0xFF66CC)
           .margin({ left: 10 })
           .onClick(() => {
@@ -406,7 +384,7 @@ struct VideoCreateComponent {
               message: `当前模式: ${this.currentFitMode === ImageFit.Fill ? 'Fill(强制填充屏幕)' : 'Auto(自适应)'}`
             });
           })
-        Button(this.currentFitMode === ImageFit.Cover ? '保持比例' :'比例放大填充')
+        Button(this.currentFitMode === ImageFit.Cover ? '保持比例' : '比例放大填充')
           .backgroundColor(0xFF66CC)
           .margin({ left: 10 })
           .onClick(() => {
@@ -414,25 +392,37 @@ struct VideoCreateComponent {
               ? ImageFit.Contain
               : ImageFit.Cover;
             promptAction.showToast({
-              message: `当前模式: ${this.currentFitMode === ImageFit.Cover ? 'Contain(保持比例)' : 'Cover(比例放大填充)'}`
+              message: `当前模式: ${this.currentFitMode === ImageFit.Cover ? 'Contain(保持比例)' :
+                'Cover(比例放大填充)'}`
             });
           })
       }
-      Row()
-      {
+
+      Row() {
+        CollaborationServiceStateDialog({
+          onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer):void => this.doInsertPicture(stateCode, bufferType, buffer)
+        })
         Button('选图')
           .type(ButtonType.Capsule)
           .fontColor(Color.White)
-          .alignSelf(ItemAlign.Center)
           .width('20%')
           .margin({ right: 10 })
           .height(50)
           .backgroundColor(0xffd143)
-          .onClick(() => {
-            // Start the gallery and obtain image resources.
-            this.selectImage();
-          })
-        Button('识别')
+          .bindMenu(this.MyTestMenu)
+        /*if (this.picture) {
+          Image(this.picture)
+            .borderStyle(BorderStyle.Dotted)
+            .borderWidth(1)
+            .objectFit(ImageFit.Contain)
+            .height('80%')
+            .onComplete((event) => {
+              if (event != undefined) {
+                hilog.info(0x0000, 'testTag', 'onComplete %{public}s', event.loadingStatus);
+              }
+            })
+        }*/
+        Button('OCR')
           .type(ButtonType.Capsule)
           .fontColor(Color.White)
           .alignSelf(ItemAlign.Center)
@@ -443,13 +433,15 @@ struct VideoCreateComponent {
             this.textRecognitionTest();
           })
       }.margin({ top: 10 })
+
+
+
       // 使用堆叠布局，顶部起始对齐
       Stack({ alignContent: Alignment.TopStart }) {
         // 滚动区域
         Scroll(this.scroller) {
           //.height('80%') // 固定百分比高度
           Column() {
-            AddPic()
             /*Button('start link', { type: ButtonType.Capsule, stateEffect: true })
               .width('87%')
               .height('5%')
@@ -471,14 +463,16 @@ struct VideoCreateComponent {
 
             Text(this.dataValues)
               .copyOption(CopyOptions.LocalDevice)
+              .width('100%')
             Image(this.chooseImage)
               .objectFit(ImageFit.Contain)
-              //.height('60%')
+              .aspectRatio(16 / 9) // 根据视频长宽比自动计算高度
+              .constraintSize({ maxWidth: 900, minWidth: 600 })
 
 
             //Scroll() {
-                //.margin(10)
-                //.width('60%')
+            //.margin(10)
+            //.width('60%')
             //}
             //.height('15%')
             //.scrollable(ScrollDirection.Vertical)
@@ -569,7 +563,7 @@ struct VideoCreateComponent {
         .scrollBarColor(Color.Gray) // 滚动条颜色
         .scrollBarWidth(10) // 滚动条宽度
         .backgroundColor($r('app.color.start_window_background'))
-        .friction(0.6)                      // 设置滚动摩擦系数（影响滚动惯性）
+        .friction(0.6) // 设置滚动摩擦系数（影响滚动惯性）
         .edgeEffect(EdgeEffect.None)
         .flexGrow(1) // 自动填充剩余空间
         .layoutWeight(1) // 添加layoutWeight确保padding生效
@@ -591,7 +585,6 @@ struct VideoCreateComponent {
             const yOffset: number = this.scroller.currentOffset().yOffset;
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100, animation: { duration: 1000, curve: curve } })
           }).margin({ top: 10, left: 20 })*/
-
 
 
         /*Button('下滑 150')
@@ -712,12 +705,20 @@ struct VideoCreateComponent {
           })
           .margin({ top: 260, left: 20 })*/
 
-      }/*.width('100%').height('100%').backgroundColor(0xDCDCDC)*/
-
+      } /*.width('100%').height('100%').backgroundColor(0xDCDCDC)*/
     }
-
   }
-
+  doInsertPicture(stateCode: number, bufferType: string, buffer: ArrayBuffer): void {
+    if (stateCode != 0) {
+      return;
+    }
+    if (bufferType == "general.image") {
+      let imageSource = image.createImageSource(buffer);
+      imageSource.createPixelMap().then((pixelMap) => {
+        this.chooseImage = pixelMap; // 直接赋值给目标变量
+      })
+    }
+  }
 }
 
 

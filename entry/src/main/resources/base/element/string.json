@@ -1,68 +1,28 @@
 {
-	"string": [
-		{
-			"name": "module_desc",
-			"value": "video"
-		},
-		{
-			"name": "EntryAbility_desc",
-			"value": "mainvideo"
-		},
-		{
-			"name": "EntryAbility_label",
-			"value": "hvideo"
-		},
-		{
-			"name": "richEditor_placeholder",
-			"value": "Click to enter text......"
-		},
-		{
-			"name": "text_posts",
-			"value": "App Continue(Content Publish)"
-		},
-		{
-			"name": "add_local",
-			"value": "Add Location"
-		},
-		{
-			"name": "text_input_placeholder",
-			"value": "Add a title to be more likely to recommend (optional)"
-		},
-		{
-			"name": "add_high_img",
-			"value": "Add Image"
-		},
-		{
-			"name": "trigger_event",
-			"value": "Function to be developed."
-		},
-		{
-			"name": "add_picture_prompt",
-			"value": "The number of added pictures reaches the upper limit."
-		},
-		{
-			"name": "continue_add",
-			"value": "Continue Add"
-		},
-		{
-			"name": "image_add",
-			"value": "Upper Limit"
-		},
-		{
-			"name": "default_location",
-			"value": "Building %d, XX Road, Wuhan"
-		},
-		{
-			"name": "local_device",
-			"value": "Local Devices"
-		},
-		{
-			"name":"defaultForm_label",
-			"value":"form_label"
-		},
-		{
-			"name":"defaultForm_desc",
-			"value":"form_description"
-		}
-	]
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "NotepadMock"
+    },
+    {
+      "name": "servicecollabutton",
+      "value": "Use remote device to insert images"
+    },
+    {
+      "name": "defaultForm_label",
+      "value": "Default Form Label"
+    },
+    {
+      "name": "defaultForm_desc",
+      "value": "Default Form Description"
+    }
+  ]
 }

@@ -60,6 +60,10 @@
 
 >>> 指南>基础入门>开发基础知识>应用配置文件（Stage模型）>app.json5配置文件
 
+>> ## [module.json5配置文件](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/module-configuration-file)
+
+>>> 指南>基础入门>开发基础知识>应用配置文件（Stage模型）>module.json5配置文件
+
 >> ## [即时反馈（Toast）](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-create-toast)
 
 >>> API参考>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>使用弹窗>即时反馈（Toast）
@@ -117,7 +121,11 @@
 >> ## [应用接续开发指导](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-continuation-guide)
 
 >>> 指南>自由流转>应用接续>应用接续开发指导
->
+
+>> ## [跨设备互通开发指导](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/servicecollaboration-dev-guides)
+
+>>> 指南>系统>网络>Service Collaboration Kit（协同服务）>跨设备互通（ArkTS）>跨设备互通开发指导
+
 ---
 
 # 参考项目
@@ -133,6 +141,10 @@
 >> ### [scenario-samples](https://gitee.com/scenario-samples)
 
 >> ### [通用文字识别](https://gitee.com/harmonyos_samples/core-vision-kit-sample-code-ark-ts-ocr-demo)
+
+>> ### [基于应用接续及跨设备互通功能实现内容发布功能 ContinuePublish](https://gitee.com/harmonyos_samples/ContinuePublish/tree/br_release_hmos)
+
+>> ### [跨设备互通 ServiceCollaborationKit-SampleCode-ArkTS](https://gitee.com/harmonyos_samples/service-collaboration-kit-sample-code-arkts)
 
 ---
 
