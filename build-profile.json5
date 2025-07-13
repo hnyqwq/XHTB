@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\h\\.ohos\\config\\default_video_kSJ3uULxK2ttdisOFgAN6RXPYfaT45zo3088v2XB2jw=.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001BA91E73242C2E16F6649993912247B816D6B14BF9563798E744E44834005DD6FB267AD1A64B8DB8",
-          "profile": "C:\\Users\\h\\.ohos\\config\\default_video_kSJ3uULxK2ttdisOFgAN6RXPYfaT45zo3088v2XB2jw=.p7b",
+          "storeFile": "D:/Huawei/hvideo/video.p12",
+          "storePassword": "00000018FA4033EB641BBC35E3EC07D4136B9F6C94BF1B29E1AB3C8EE99E17BFC71EC18C68A2C6E6",
+          "keyAlias": "hvideo",
+          "keyPassword": "00000018B53608B94BF8E01125B80E28F6D7DBAC71D1F1C5B847B4C0B89E1C1326DDC3B17A50612D",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\h\\.ohos\\config\\default_video_kSJ3uULxK2ttdisOFgAN6RXPYfaT45zo3088v2XB2jw=.p12",
-          "storePassword": "0000001BB4885E7DFAA1006A2C779C2C99C1C026AC53BA12860890381352F5397A6EA13D9427DB0DC0B450"
+          "profile": "D:/Huawei/hvideo/hvideoRelease.p7b",
+          "certpath": "D:/Huawei/hvideo/hvideo.cer"
         }
       }
     ],
