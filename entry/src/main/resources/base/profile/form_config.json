@@ -12,7 +12,7 @@
       },
       "colorMode": "light",
       "isDynamic": false,
-      "isDefault": false,
+      "isDefault": true,
       "updateEnabled": false,
       "scheduledUpdateTime": "10:30",
       "updateDuration": 1,
