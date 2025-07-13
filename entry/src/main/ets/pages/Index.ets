@@ -20,7 +20,7 @@ export struct Index {
         SecondPage()
       }.tabBar({
         //icon: $r('app.media.list'),
-        text: '第二页'
+        text: 'OCR'
       })
 
       TabContent() {

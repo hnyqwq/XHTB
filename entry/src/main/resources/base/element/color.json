@@ -5,16 +5,20 @@
       "value": "#FFFFFF"
     },
     {
-      "name": "add_image_background",
-      "value": "#A2A6AC"
+      "name": "font_color_00000",
+      "value": "#0c000000"
     },
     {
-      "name": "add_image_border_color",
-      "value": "#CCCCCC"
+      "name": "font_color_182431",
+      "value": "#182431"
     },
     {
-      "name": "bottom_border_color",
-      "value": "#DBDCDE"
+      "name": "font_color_FFFFFF",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "listColor",
+      "value": "#F1F3F5"
     }
   ]
 }

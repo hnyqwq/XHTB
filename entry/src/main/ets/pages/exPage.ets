@@ -2,6 +2,10 @@ import { common, Want } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import router from '@ohos.router';
 
+import userAuth from '@ohos.userIAM.userAuth';
+import { promptAction } from '@kit.ArkUI';
+const TAG = 'User_Auth';
+
 @Observed
   //设置条目信息构造
 class SettingMenu {
@@ -21,15 +25,22 @@ class SettingMenu {
 
 @Entry
 @Component
-export struct MinePage {
+export struct exPage {
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
   //设置条目信息数组
   @State menuGroup: SettingMenu[] = [
-    new SettingMenu('setting', $r('app.media.mine_settings'), '前往官网', $r('app.string.void')),
-    new SettingMenu('vipownsetting', $r('app.media.mine_vipsettings'), '设备认证能力', $r('app.string.void')),
-    new SettingMenu('mycollection', $r('app.media.ic_collect'), '关注哔哩哔哩', $r('app.string.void')),
-    new SettingMenu('mylike', $r('app.media.mine_like'), '关注抖音', $r('app.string.void')),
-    new SettingMenu('browsinghistory', $r('app.media.mine_time'), '前往个人博客', $r('app.string.void'))
+    new SettingMenu('setting', $r('app.media.mine_settings'), '想亲亲你的小脸 =-= ', $r('app.string.void')),
+    new SettingMenu('vipownsetting', $r('app.media.mine_vipsettings'), '想摸摸你的小手指 QwQ ', $r('app.string.void')),
+    new SettingMenu('mycollection', $r('app.media.ic_collect'), '想看看你的密码 awa ', $r('app.string.void')),
+    //new SettingMenu('mylike', $r('app.media.mine_like'), '关注抖音', $r('app.string.void')),
+    //new SettingMenu('browsinghistory', $r('app.media.mine_time'), '前往个人博客', $r('app.string.void'))
   ];
+
+  @State message: string = '用户认证'
+  @State userAuthResult?: userAuth.UserAuthResult = undefined
 
   build() {
     Stack() {
@@ -38,11 +49,11 @@ export struct MinePage {
           Image($r('app.media.startIcon'))
             .width(60)
             .height(60);
-          Text('hvideo')
+          Text('by hnyqwq')
             .fontWeight(700)
             .fontSize('14fp')
             .margin({ top: 10 });
-          Text('版本 1.3.0（1000030）')
+          Text('当前最新支持的API版本：6.0.0(20) Beta1')
             .fontWeight(600)
             .fontSize('12fp')
             .margin({ top: 10 });
@@ -65,28 +76,49 @@ export struct MinePage {
                     const context = getContext(this) as common.UIAbilityContext;
                     let uri = '';
                     switch (item.id) {
-                      case 'setting': // 官网
-                        uri = 'https://hnyqwq.cn';
-                        break;
-                      case 'vipownsetting':
-                        // 应用内页面跳转
-                        router.pushUrl({ url: 'pages/exPage' })
-                          .catch((e: BusinessError) => {
-                            console.error('路由跳转失败', e);
-                          });
-                        break;
-                      case 'mycollection': // 微信公众号
-                        uri = 'bilibili://space/338142387';
-                        break;
-                      case 'mylike': // 分享功能（需集成分享SDK）
+                      case 'setting': {// 1
+                        const authParam: userAuth.AuthParam = {
+                          challenge: new Uint8Array([49,49,49,49,49,49]),
+                          authType: [userAuth.UserAuthType.FACE],
+                          authTrustLevel: userAuth.AuthTrustLevel.ATL1
+                        }
+                        const widgetParam: userAuth.WidgetParam = { title: '请认证人脸' }
+                        this.startUserAuth(authParam, widgetParam)
+                        promptAction.showToast({ duration: 8000, message: '看到啦~ つ♡⊂' })
+                        break;}
+                      case 'vipownsetting': {// 2
+                        const authParam : userAuth.AuthParam = {
+                          challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+                          authType: [userAuth.UserAuthType.FINGERPRINT],
+                          authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+                        }
+                        const widgetParam :userAuth.WidgetParam = {
+                          title: '把你的小手手放在指纹感应区~~'
+                        }
+                        this.startUserAuth(authParam, widgetParam)
+                        promptAction.showToast({duration: 8000,message: '摸到啦~  ⑉･ᴗ･⑉'});
+                        break;}
+                      case 'mycollection':{ // 3
+                        const authParam : userAuth.AuthParam = {
+                          challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+                          authType: [userAuth.UserAuthType.PIN],
+                          authTrustLevel: userAuth.AuthTrustLevel.ATL2,
+                        }
+                        const widgetParam :userAuth.WidgetParam = {
+                          title: '让我来瞅瞅你的锁屏密码是多少！！'
+                        }
+                        this.startUserAuth(authParam, widgetParam)
+                        promptAction.showToast({duration: 8000,message: '猜到啦~  ⌯\'▾\'⌯'});
+                        break;}
+                      /*case 'mylike': // 分享功能（需集成分享SDK）
                         uri =
                           'https://m.douyin.com/share/user/MS4wLjABAAAAu-191qiFh5x3NLdZXeT7y8uMMhqaT9ZQCdgpe1H2ZIcEVCCoGrpDeuRb5diMrBmd';
                         break
                         // harmonyShare.share(...);
                         break;
                       case 'browsinghistory': // 第三方清单
-                        uri = 'https://blog.hnyqwq.cn';
-                        break;
+                        uri = 'https://hnyqwq.cn/hvideo/list.html';
+                        break;*/
                     }
                     if (uri) {
                       const want: Want = { uri };
@@ -116,7 +148,7 @@ export struct MinePage {
         .layoutWeight(1);
 
         Column() {
-          Text() {
+          /*Text() {
             Span('hvideo用户协议')
               .onClick(() => {
                 const want: Want = { uri: `https://hnyqwq.cn/hvideo/yhxy.html` };
@@ -143,14 +175,14 @@ export struct MinePage {
               })
               .fontColor(Color.Blue)
               .fontSize(12);
-          };
+          };*/
 
           Text('版权所有◎ 2025 保留一切权利')
             .fontSize(12);
           Text() {
-            Span('前往下载AppTest')
+            Span('前往下载MeoW')
               .onClick(() => {
-                const want: Want = { uri: `store://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.apptest` };
+                const want: Want = { uri: `store://appgallery.huawei.com/app/detail?id=com.chuckfang.meow` };
                 const context = getContext(this) as common.UIAbilityContext;
                 context.startAbility(want).then(() => { //拉起成功
                   console.info('拉起应用商店成功')
@@ -166,11 +198,31 @@ export struct MinePage {
         .height(60);
       }
       .height('100%')
-      .title('关于页')
-      //.titleMode(NavigationTitleMode.Mini)
-      .backgroundColor($r('app.color.listColor'));
+      .title('设备认证能力')
+      .titleMode(NavigationTitleMode.Mini)
+      .backgroundColor($r('app.color.listColor'))
+      .padding({ top: 50 })
     };
+  }startUserAuth (authParam: userAuth.AuthParam, widgetParam: userAuth.WidgetParam) {
+  try {
+    const userAuthInstance = userAuth.getUserAuthInstance(authParam, widgetParam);
+    userAuthInstance.on('result', {
+      onResult: (result) => {
+        // 认证成功
+        if (result.result === userAuth.UserAuthResultCode.SUCCESS) {
+          this.userAuthResult = result
+          console.log(TAG, 'userAuthInstance callback result ' + JSON.stringify(result));
+          promptAction.showToast({ duration: 10000, message: '认证成功~ ⌯>₃<⌯' });
+        }
+      }
+    })
+    userAuthInstance.start()
+  } catch (e) {
+    promptAction.showToast({
+      message: `拉起用户认证失败 ${e.code} ${e.message}`
+    })
   }
+}
 }
 
 @Component
@@ -195,7 +247,6 @@ export struct SettingItemView {
           .margin({ left: $r('app.integer.layout_size_12') })
           .layoutWeight(1)
           .lineHeight($r('app.integer.layout_size_22'));
-
         Text(this.des)
           .opacity($r('app.float.opacity'))
           .fontSize($r('app.integer.layout_size_14'))

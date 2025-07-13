@@ -1,0 +1,12 @@
+{
+  "float": [
+    {
+      "name": "stroke_width",
+      "value": "0.5"
+    },
+    {
+      "name": "opacity",
+      "value": "0.6"
+    }
+  ]
+}
