@@ -96,8 +96,7 @@ export struct HomePage {
   }
 
   //@State networkPreviewUri: string = 'https://www.hnyqwq.cn/hvideo/media.png'; // 默认网络预览图
-  @State networkPreviewUri: string =
-    'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg';
+  @State networkPreviewUri: string = 'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
   @State isControls: boolean = false; // 控制栏显示状态
   @State handlePopup: boolean = false; // 气泡提示（Popup）
