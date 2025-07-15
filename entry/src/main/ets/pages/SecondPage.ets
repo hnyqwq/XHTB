@@ -15,6 +15,7 @@ import {
   CollaborationServiceFilter
 } from '@kit.ServiceCollaborationKit';
 
+@Entry
 @Component
   // 使用@Entry装饰器标记为入口组件，@Component表示自定义组件
 export struct SecondPage{

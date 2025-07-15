@@ -35,6 +35,7 @@ let logger = Logger.getLogger('[TextScenario]');
   .borderRadius(15)           // 圆角半径
   .margin({ top: 10 })         // 顶部间距
 }*/
+
 @Entry
 @Component
   // 使用@Entry装饰器标记为入口组件，@Component表示自定义组件

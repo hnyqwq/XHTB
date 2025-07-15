@@ -18,7 +18,6 @@ class SettingMenu {
     this.des = des;
   }
 }
-
 @Entry
 @Component
 export struct MinePage {

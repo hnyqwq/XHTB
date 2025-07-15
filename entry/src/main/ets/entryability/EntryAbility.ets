@@ -7,7 +7,13 @@ import { BusinessError } from '@kit.BasicServicesKit';
 import { router } from '@kit.ArkUI';
 import { url } from '@kit.ArkTS';
 
+const TAG: string = 'EntryAbility';
+const DOMAIN_NUMBER: number = 0xFF00;
+
 export default class EntryAbility extends UIAbility {
+  private selectPage: string = '';
+  private currentWindowStage: window.WindowStage | null = null;
+
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     /**
      * This is the automatically generated code for the logic of card interactions.
@@ -55,6 +61,15 @@ export default class EntryAbility extends UIAbility {
     actionCreate(want);
     createDbInsertData(this.context);
     this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
+
+    hilog.info(DOMAIN_NUMBER, TAG, `Ability onCreate: ${JSON.stringify(want?.parameters)}`);
+    if (want?.parameters?.params) {
+      // want.parameters.params 对应 postCardAction() 中 params 内容
+      let params: Record<string, Object> = JSON.parse(want.parameters.params as string);
+      this.selectPage = params.targetPage as string;
+      hilog.info(DOMAIN_NUMBER, TAG, `onCreate selectPage: ${this.selectPage}`);
+    }
+
   }
 // 热启动场景通过onNewWant回调获取码值信息
   onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -90,6 +105,17 @@ export default class EntryAbility extends UIAbility {
       } catch (error) {
         hilog.error(0x0001, '[Scan Access]',
           `Failed to process scan result: ${error.message}`);
+      }
+
+      hilog.info(DOMAIN_NUMBER, TAG, `Ability onNewWant: ${JSON.stringify(want?.parameters)}`);
+      if (want?.parameters?.params) {
+        // want.parameters.params 对应 postCardAction() 中 params 内容
+        let params: Record<string, Object> = JSON.parse(want.parameters.params as string);
+        this.selectPage = params.targetPage as string;
+        hilog.info(DOMAIN_NUMBER, TAG, `onNewWant selectPage: ${this.selectPage}`);
+      }
+      if (this.currentWindowStage !== null) {
+        this.onWindowStageCreate(this.currentWindowStage);
       }
     }
 
@@ -135,8 +161,30 @@ export default class EntryAbility extends UIAbility {
       }).catch((err: BusinessError) => {
         console.error(`Failed to set the navigation indicator to be invisible. Code is ${err.code}, message is ${err.message}`);
       });
+    });
 
-
+    // Main window is created, set main page for this ability
+    let targetPage: string;
+    // 根据传递的targetPage不同，选择拉起不同的页面
+    switch (this.selectPage) {
+      case 'HomePage':
+        targetPage = 'pages/HomePage'; //与实际的UIAbility页面路径保持一致
+        break;
+      case 'SecondPage':
+        targetPage = 'pages/SecondPage'; //与实际的UIAbility页面路径保持一致
+        break;
+      default:
+        targetPage = 'pages/Index'; //与实际的UIAbility页面路径保持一致
+    }
+    if (this.currentWindowStage === null) {
+      this.currentWindowStage = windowStage;
+    }
+    windowStage.loadContent(targetPage, (err, data) => {
+      if (err.code) {
+        hilog.error(DOMAIN_NUMBER, TAG, 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
+        return;
+      }
+      hilog.info(DOMAIN_NUMBER, TAG, 'Succeeded in loading the content. Data: %{public}s', JSON.stringify(data) ?? '');
     });
   }
 
@@ -154,4 +202,5 @@ export default class EntryAbility extends UIAbility {
     // Ability has back to background
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onBackground');
   }
+
 }
