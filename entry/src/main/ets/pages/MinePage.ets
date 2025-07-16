@@ -41,7 +41,7 @@ export struct MinePage {
             .fontWeight(700)
             .fontSize('14fp')
             .margin({ top: 10 });
-          Text('版本 1.3.0（1000030）')
+          Text('1.3.0.2（10300002）')
             .fontWeight(600)
             .fontSize('12fp')
             .margin({ top: 10 });
