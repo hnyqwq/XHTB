@@ -42,6 +42,7 @@ export struct HomePage {
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
   @State isControls: boolean = false; // 控制栏显示状态
   @State handlePopup: boolean = false; // 气泡提示（Popup）
+  @State enableShortcutKey: boolean = true;//设置组件支持快捷键响应。
 
   private controller: VideoController = new VideoController();
 
@@ -334,6 +335,7 @@ export struct HomePage {
           .margin({ top: 10 })
           .width('100%')
           .height('100%')
+          //.backgroundColor($r('app.color.start_window_background'))
         }
       }
     }
