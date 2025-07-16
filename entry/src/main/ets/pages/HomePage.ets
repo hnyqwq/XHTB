@@ -86,7 +86,7 @@ export struct HomePage {
   MyTestMenu() {
     Menu() {
       MenuItem({
-        startIcon: $r("app.media.startIcon"),
+        startIcon: $r("app.media.CIcon"),
         content: "选取本机图片꒰⑅•ᴗ•⑅꒱ ",
         builder: (): void => {
           this.selectImage();

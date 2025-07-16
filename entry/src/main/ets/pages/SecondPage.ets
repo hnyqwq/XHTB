@@ -15,10 +15,28 @@ import {
   CollaborationServiceFilter
 } from '@kit.ServiceCollaborationKit';
 
+import { cameraPicker as picker } from '@kit.CameraKit';
+import { camera } from '@kit.CameraKit';
+
+async function xj(context: Context) {
+  try {
+    let pickerProfile: picker.PickerProfile = {
+      cameraPosition: camera.CameraPosition.CAMERA_POSITION_BACK
+    };
+    let pickerResult: picker.PickerResult = await picker.pick(context,
+      [picker.PickerMediaType.PHOTO/*, picker.PickerMediaType.VIDEO*/], pickerProfile);
+    console.log("the pick pickerResult is:" + JSON.stringify(pickerResult));
+  } catch (error) {
+    let err = error as BusinessError;
+    console.error(`the pick call failed. error code: ${err.code}`);
+  }
+}
+
+
 @Entry
 @Component
   // 使用@Entry装饰器标记为入口组件，@Component表示自定义组件
-export struct SecondPage{
+export struct SecondPage {
   context: common.Context = getContext(this);
   @State initialOrientation: window.Orientation = window.Orientation.PORTRAIT; // 记录初始方向
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
@@ -65,13 +83,20 @@ export struct SecondPage{
   MyTestMenu() {
     Menu() {
       MenuItem({
-        startIcon: $r("app.media.startIcon"),
+      startIcon: $r("app.media.CIcon"),
+      content: "使用本机拍照 ៷>ᴗ<៷ ",
+      builder: (): void => {
+        xj(this.context);
+      }
+    })
+      MenuItem({
+        startIcon: $r("app.media.CIcon"),
         content: "选取本机图片꒰⑅•ᴗ•⑅꒱ ",
         builder: (): void => {
           this.selectImage();
         }
       })
-      createCollaborationServiceMenuItems([CollaborationServiceFilter.ALL])
+      createCollaborationServiceMenuItems([CollaborationServiceFilter.ALL], 1)
     }
   }
 
