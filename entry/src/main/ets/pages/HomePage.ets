@@ -274,7 +274,7 @@ export struct HomePage {
       .margin({ top: 5, bottom: 10 })
 
       Row() {
-        Button(this.curRate === PlaybackSpeed.Speed_Forward_2_00_X ? $r('app.string.1xspeed') : $r('app.string.2xspeed'))
+        /*Button(this.curRate === PlaybackSpeed.Speed_Forward_2_00_X ? $r('app.string.1xspeed') : $r('app.string.2xspeed'))
         //.backgroundColor('#0044fc')
           .backgroundColor(0xFF66CC)
           //.width('20%')
@@ -285,33 +285,116 @@ export struct HomePage {
             promptAction.showToast({
               message: `已成功切换至${this.curRate === PlaybackSpeed.Speed_Forward_2_00_X ? '2' : '1'}倍速播放`
             });
-          })
-        Button('click for Menu')
+          })*/
+        Button($r('app.string.speedtitle'))
+          .backgroundColor(0xb87cff)
           .bindMenu([
             {
-              value: 'Menu1',
+              value: $r('app.string.1xspeed'),
               action: () => {
-                console.info('handle Menu1 select');
+                console.info('handle Menu11 select');
+                this.curRate = PlaybackSpeed.Speed_Forward_1_00_X;
+                promptAction.showToast({
+                  message: $r('app.string.1xspeedyes')
+                })
               }
             },
             {
-              value: 'Menu1',
+              value: $r('app.string.125xspeed'),
               action: () => {
-                this.curRate === PlaybackSpeed.Speed_Forward_2_00_X
+                console.info('handle Menu12 select');
+                this.curRate = PlaybackSpeed.Speed_Forward_1_25_X;
+                promptAction.showToast({
+                  message: $r('app.string.125xspeedyes')
+                })
               }
-
+            },
+            {
+              value: $r('app.string.175xspeed'),
+              action: () => {
+                console.info('handle Menu13 select');
+                this.curRate = PlaybackSpeed.Speed_Forward_1_75_X;
+                promptAction.showToast({
+                  message: $r('app.string.175xspeedyes')
+                })
+              }
+            },
+            {
+              value: $r('app.string.2xspeed'),
+              action: () => {
+                console.info('handle Menu14 select');
+                this.curRate = PlaybackSpeed.Speed_Forward_2_00_X;
+                promptAction.showToast({
+                  message: $r('app.string.2xspeedyes')
+                })
+              }
+            },
+            {
+              value: $r('app.string.075xspeed'),
+              action: () => {
+                console.info('handle Menu15 select');
+                this.curRate = PlaybackSpeed.Speed_Forward_0_75_X;
+                promptAction.showToast({
+                  message: $r('app.string.075xspeedyes')
+                })
+              }
             }
           ])
-        /*Button('全屏')
-          .backgroundColor(0xFF66CC)
+        Button($r('app.string.fullscreen'))
+          .backgroundColor(0xb87cff)
           .margin({ left: 10 })
           .onClick(() => {
             this.controller.requestFullscreen(true);
             window.getLastWindow(this.context).then((win) => {
               win.setPreferredOrientation(window.Orientation.LANDSCAPE);
             });
-          })*/
-        Button(this.currentFitMode === ImageFit.Fill ? $r('app.string.Fill') :$r('app.string.Auto'))
+          })
+        Button($r('app.string.ImageFittitle'))
+          .backgroundColor(0xb87cff)
+          .margin({ left: 10 })
+          .bindMenu([
+            {
+              value: $r('app.string.Cover'),
+              action: () => {
+                console.info('handle Menu21 select');
+                this.currentFitMode = ImageFit.Cover;
+                promptAction.showToast({
+                  message: $r('app.string.Coveryes')
+                })
+              }
+            },
+            {
+              value: $r('app.string.Auto'),
+              action: () => {
+                console.info('handle Menu22 select');
+                this.currentFitMode = ImageFit.Auto;
+                promptAction.showToast({
+                  message: $r('app.string.Autoyes')
+                })
+              }
+            },
+            {
+              value: $r('app.string.Fill'),
+              action: () => {
+                console.info('handle Menu23 select');
+                this.currentFitMode = ImageFit.Fill;
+                promptAction.showToast({
+                  message: $r('app.string.Fillyes')
+                })
+              }
+            },
+            {
+              value: $r('app.string.Contain'),
+              action: () => {
+                console.info('handle Menu24 select');
+                this.currentFitMode = ImageFit.Contain;
+                promptAction.showToast({
+                  message: $r('app.string.Containyes')
+                })
+              }
+            }
+          ])
+        /*Button(this.currentFitMode === ImageFit.Fill ? $r('app.string.Fill') :$r('app.string.Auto'))
           .backgroundColor(0xFF66CC)
           .margin({ left: 10 })
           .onClick(() => {
@@ -332,7 +415,7 @@ export struct HomePage {
             promptAction.showToast({
               message: `当前模式: ${this.currentFitMode === ImageFit.Cover ? 'Contain(保持比例)' : 'Cover(比例放大填充)'}`
             });
-          })
+          })*/
       }
 
       // 使用堆叠布局，顶部起始对齐

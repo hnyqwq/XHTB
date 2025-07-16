@@ -73,28 +73,88 @@
       "value":"\uDB80\uDC28\uDB80\uDD28QR"
     },
     {
+      "name":"speedtitle",
+      "value":"Speed"
+    },
+    {
       "name":"1xspeed",
-      "value":"1x Speed"
+      "value":"1x Speed（Normal Speed）"
+    },
+    {
+      "name":"1xspeedyes",
+      "value":"You have successfully switched to normal(1x) playback speed."
+    },
+    {
+      "name":"125xspeed",
+      "value":"1.25x Speed"
+    },
+    {
+      "name":"125xspeedyes",
+      "value":"You have successfully switched to 1.25x playback speed."
+    },
+    {
+      "name":"175xspeed",
+      "value":"1.75x Speed"
+    },
+    {
+      "name":"175xspeedyes",
+      "value":"You have successfully switched to 1.75x playback speed."
     },
     {
       "name":"2xspeed",
       "value":"2x Speed"
     },
     {
+      "name":"2xspeedyes",
+      "value":"You have successfully switched to 2x playback speed."
+    },
+    {
+      "name":"075xspeed",
+      "value":"0.75x Speed"
+    },
+    {
+      "name":"075xspeedyes",
+      "value":"You have successfully switched to 0.75x playback speed."
+    },
+    {
+      "name":"fullscreen",
+      "value":"Landscape"
+    },
+    {
+      "name":"ImageFittitle",
+      "value":"Scaling Mode"
+    },
+    {
       "name":"Fill",
-      "value":"Fill"
+      "value":"Force Full Screen / Stretch to Fit"
+    },
+    {
+      "name":"Fillyes",
+      "value":"Current scaling mode: Force Full Screen / Stretch to Fit ⌯･ᴗ･⌯ಣ"
     },
     {
       "name":"Auto",
-      "value":"Auto"
+      "value":"Adaptive / Auto Fit"
+    },
+    {
+      "name":"Autoyes",
+      "value":"Current scaling mode: Adaptive / Auto Fit ⌯ᕑᗢᓫ⌯ಣ"
     },
     {
       "name":"Contain",
-      "value":"Contain"
+      "value":"Maintain Aspect Ratio"
+    },
+    {
+      "name":"Containyes",
+      "value":"Current scaling mode: Maintain Aspect Ratio ⌯ᕑᗢᓫ⌯ಣ"
     },
     {
       "name":"Cover",
-      "value":"Cover"
+      "value":"\uDB80\uDC09 Proportional Zoom"
+    },
+    {
+      "name":"Coveryes",
+      "value":"\uDB80\uDC09 Current scaling mode: Proportional Zoom / Fit to Fill (Aspect Ratio Zoom Fill) ⌯>ᴗo⌯ಣ"
     },
     {
       "name":"nowplaying",

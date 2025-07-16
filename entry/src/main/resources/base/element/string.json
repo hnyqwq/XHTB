@@ -73,28 +73,88 @@
 			"value":"\uDB80\uDC28\uDB80\uDD28 扫码"
 		},
 		{
-			"name":"1xspeed",
-			"value":"原速"
-		},
-		{
-			"name":"2xspeed",
+			"name":"speedtitle",
 			"value":"倍速"
 		},
 		{
+			"name":"1xspeed",
+			"value":"1倍速（原速）"
+		},
+		{
+			"name":"1xspeedyes",
+			"value":"已成功切换至1倍速播放"
+		},
+		{
+			"name":"125xspeed",
+			"value":"1.25倍速"
+		},
+		{
+			"name":"125xspeedyes",
+			"value":"已成功切换至1.25倍速播放"
+		},
+		{
+			"name":"175xspeed",
+			"value":"1.75倍速"
+		},
+		{
+			"name":"175xspeedyes",
+			"value":"已成功切换至1.75倍速播放"
+		},
+		{
+			"name":"2xspeed",
+			"value":"2倍速"
+		},
+		{
+			"name":"2xspeedyes",
+			"value":"已成功切换至2倍速播放"
+		},
+		{
+			"name":"075xspeed",
+			"value":"0.75倍速"
+		},
+		{
+			"name":"fullscreen",
+			"value":"横屏播放"
+		},
+		{
+			"name":"ImageFittitle",
+			"value":"视频缩放方式"
+		},
+		{
+			"name":"075xspeedyes",
+			"value":"已成功切换至0.75倍速播放"
+		},
+		{
 			"name":"Fill",
-			"value":"强制填充屏幕"
+			"value":"强制填充屏幕（拉伸以完全填满屏幕）"
+		},
+		{
+			"name":"Fillyes",
+			"value":"当前缩放模式为：强制填充屏幕，表示内容会拉伸以完全填满屏幕，可能会导致画面变形（宽高比失真），但不会有黑边或裁剪。 ⌯･ᴗ･⌯ಣ"
 		},
 		{
 			"name":"Auto",
-			"value":"自适应"
+			"value":"自适应（根据显示区域自动调整缩放比例）"
+		},
+		{
+			"name":"Autoyes",
+			"value":"当前缩放模式为：自适应，表示内容会根据显示区域自动调整缩放比例，通常会在保持比例和填充屏幕之间取得平衡，以适配不同分辨率或屏幕尺寸。 ⌯ᕑᗢᓫ⌯ಣ"
 		},
 		{
 			"name":"Contain",
-			"value":"保持比例"
+			"value":"保持比例（按照原始宽高比进行缩放）"
+		},
+		{
+			"name":"Containyes",
+			"value":"当前缩放模式：保持比例，表示内容会按照原始宽高比进行缩放，以适应显示区域，不会拉伸或变形，但可能会有黑边或留白。 ⌯˃ ᵕ ˂⌯ಣ"
 		},
 		{
 			"name":"Cover",
-			"value":"比例放大填充"
+			"value":"\uDB80\uDC09 比例放大填充（按原始比例放大以填满显示区域）"
+		},
+		{
+			"name":"Coveryes",
+			"value":"\uDB80\uDC09 当前缩放模式为：比例放大填充，意味着画面会按原始比例放大以填满显示区域，可能会裁剪部分边缘内容，但不会变形。 ⌯>ᴗo⌯ಣ"
 		},
 		{
 			"name":"nowplaying",
