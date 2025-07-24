@@ -426,7 +426,7 @@ export struct HomePage {
                 `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
             }
           })
-        PasteButton({ icon: PasteIconStyle.LINES, text: PasteDescription.PASTE, buttonType: ButtonType.Capsule })
+        PasteButton({ icon: PasteIconStyle.LINES/*, text: PasteDescription.PASTE*/, buttonType: ButtonType.Capsule })
         //.fontSize(10)
           .width('20%')
           .height(50)
