@@ -15,6 +15,7 @@ import Logger from '../utils/Logger';
 import { pasteboard } from '@kit.BasicServicesKit';
 import { fileUri } from '@kit.CoreFileKit';
 import request from '@ohos.request';
+import router from '@ohos.router';
 
 let logger = Logger.getLogger('[KnockShare]');
 let context = getContext(this) as common.UIAbilityContext;
@@ -105,6 +106,11 @@ export struct HomePage {
     }
   }
 
+  isValidUrl(url: string): boolean {
+    const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
+    return pattern.test(url);
+  }
+
   aboutToAppear(): void {
     this.copyResourceToSandbox();
     this.whiteListening()
@@ -112,6 +118,22 @@ export struct HomePage {
     context.eventHub.on('onBackGround', () => {
       this.whiteDisablingListening()
     });
+    const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
+    if (sharedUrl && this.isValidUrl(sharedUrl)) {
+      this.networkVideoSrc = sharedUrl;
+      AppStorage.delete('sharedVideoUrl');
+    }
+
+    // 处理路由参数
+    const params = router.getParams() as Record<string, string>;
+    if (params?.['videoUrl']) {
+      this.networkVideoSrc = params['videoUrl'];
+    }
+
+    // 触发视频加载
+    if (this.networkVideoSrc) {
+      this.controller.start();
+    }
   }
 
   aboutToDisappear(): void {
@@ -124,6 +146,14 @@ export struct HomePage {
 
   // 在类成员变量区域定义箭头函数绑定回调
   private whiteCallback = (sharableTarget: harmonyShare.SharableTarget): void => {
+    // 直接处理分享数据（假设数据已通过其他方式传递）
+    const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
+    if (sharedUrl && this.isValidUrl(sharedUrl)) {
+      this.networkVideoSrc = sharedUrl;
+      this.controller.start();
+      AppStorage.delete('sharedVideoUrl');
+    }
+
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
     let filePath = this.context?.filesDir + "/pengyipeng.jpg";
     let shareData: systemShare.SharedData = new systemShare.SharedData({
@@ -134,7 +164,6 @@ export struct HomePage {
       description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
     });
     sharableTarget.share(shareData);
-    promptAction.showToast({ message: filePath });
   }
 
   // 修改事件监听与解绑逻辑

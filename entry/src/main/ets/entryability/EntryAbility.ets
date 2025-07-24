@@ -21,7 +21,6 @@ export default class EntryAbility extends UIAbility {
      */
     actionCreate(want)
 
-
     /**
      * This is the automatically generated code for the logic of card interactions.
      * Used to create a database and insert update card data.
@@ -31,30 +30,19 @@ export default class EntryAbility extends UIAbility {
 
     hilog.info(0x0001, '[Scan Access]', 'Ability onCreate');
 
-    // 处理扫码结果
+    // 处理分享链接（AppLinking/碰一碰）
+    const receivedLink = want.parameters?.['link'] || want.uri;
+    if (receivedLink) {
+      AppStorage.setOrCreate<string>('sharedVideoUrl', receivedLink.toString());
+    }
+
+    // 原有扫码逻辑保留
     let uri = want?.uri;
     if (uri) {
-      try {
-        // 解析URL
-        let urlObject = url.URL.parseURL(uri);
-        if (!urlObject) {
-          throw new Error('Invalid URL format');
-        }
-
-        // 传递扫码结果
-        router.pushUrl({
-          url: 'pages/Index',
-          params: {
-            videoUrl: uri,
-            source: 'scan'
-          }
-        });
-
-        hilog.info(0x0001, '[Scan Access]', `Processed scan result: ${uri}`);
-      } catch (error) {
-        hilog.error(0x0001, '[Scan Access]',
-          `Failed to process scan result: ${error.message}`);
-      }
+      router.pushUrl({
+        url: 'pages/HomePage', // 直接跳转到视频页面
+        params: { videoUrl: uri }
+      });
     }
 
     // 保留原有逻辑
@@ -71,7 +59,8 @@ export default class EntryAbility extends UIAbility {
     }
 
   }
-// 热启动场景通过onNewWant回调获取码值信息
+
+  // 热启动场景通过onNewWant回调获取码值信息
   onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     /**
      * This is the automatically generated code for the logic of card interactions.
@@ -79,51 +68,14 @@ export default class EntryAbility extends UIAbility {
      */
     actionNewWant(want, this);
 
-
     hilog.info(0x0001, '[Scan Access]', 'Ability onNewWant');
-
-    // 处理扫码结果
-    let uri = want?.uri;
-    if (uri) {
-      try {
-        // 解析URL
-        let urlObject = url.URL.parseURL(uri);
-        if (!urlObject) {
-          throw new Error('Invalid URL format');
-        }
-
-        // 传递扫码结果
-        router.pushUrl({
-          url: 'pages/Index',
-          params: {
-            videoUrl: uri,
-            source: 'scan'
-          }
-        });
-
-        hilog.info(0x0001, '[Scan Access]', `Processed scan result: ${uri}`);
-      } catch (error) {
-        hilog.error(0x0001, '[Scan Access]',
-          `Failed to process scan result: ${error.message}`);
-      }
-
-      hilog.info(DOMAIN_NUMBER, TAG, `Ability onNewWant: ${JSON.stringify(want?.parameters)}`);
-      if (want?.parameters?.params) {
-        // want.parameters.params 对应 postCardAction() 中 params 内容
-        let params: Record<string, Object> = JSON.parse(want.parameters.params as string);
-        this.selectPage = params.targetPage as string;
-        hilog.info(DOMAIN_NUMBER, TAG, `onNewWant selectPage: ${this.selectPage}`);
-      }
-      if (this.currentWindowStage !== null) {
-        this.onWindowStageCreate(this.currentWindowStage);
-      }
-    }
 
     // 保留原有逻辑
     actionNewWant(want, this);
     createDbInsertData(this.context);
     this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
   }
+
   onDestroy(): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onDestroy');
   }
@@ -202,5 +154,4 @@ export default class EntryAbility extends UIAbility {
     // Ability has back to background
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onBackground');
   }
-
 }
