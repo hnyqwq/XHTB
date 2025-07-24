@@ -46,10 +46,7 @@ export default class EntryAbility extends UIAbility {
 
   // 热启动场景通过onNewWant回调获取码值信息
   onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
-    /**
-     * This is the automatically generated code for the logic of card interactions.
-     * Used to card action.
-     */
+
     const receivedLink = want.parameters?.['link'] || want.uri;
     if (receivedLink) {
       AppStorage.setOrCreate<string>('sharedVideoUrl', receivedLink.toString());
