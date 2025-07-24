@@ -12,7 +12,11 @@ import { fileIo as fs } from '@kit.CoreFileKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
 import Logger from '../utils/Logger';
 
+//两个临时无需权限组件
 import { pasteboard } from '@kit.BasicServicesKit';
+import { photoAccessHelper } from '@kit.MediaLibraryKit';
+
+//分享相关
 import { fileUri } from '@kit.CoreFileKit';
 import request from '@ohos.request';
 import router from '@ohos.router';
@@ -44,6 +48,7 @@ export struct HomePage {
   //@State networkPreviewUri: string = 'https://www.hnyqwq.cn/hvideo/130.png'; // 默认网络预览图
   @State networkPreviewUri: string =
     'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg';
+  @State savefileUri:string = ' ';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
   @State isControls: boolean = false; // 控制栏显示状态
   @State handlePopup: boolean = false; // 气泡提示（Popup）
@@ -51,7 +56,11 @@ export struct HomePage {
   //碰一碰
   @State whiteStatus: boolean = false;
   private controller: VideoController = new VideoController();
-
+  saveButtonOptions: SaveButtonOptions = {
+    icon: SaveIconStyle.FULL_FILLED,
+    /*text: SaveDescription.SAVE_IMAGE,
+    buttonType: ButtonType.Capsule*/
+  }
   //华为系统分享
   private async share() {
     if (!this.networkVideoSrc) {
@@ -92,6 +101,27 @@ export struct HomePage {
       request.downloadFile(context, {
         url: 'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg',
         filePath: filesDir + '/pengyipeng.jpg'
+      }).then((downloadTask: request.DownloadTask) => {
+        //开启回调
+        downloadTask.on('complete', () => {
+          console.info('downloadTask1 complete');
+        })
+      }).catch((err: BusinessError) => {
+        console.error('Invoke downloadTask failed, code is ${err.code}, message is ${err.message}');
+      });
+    } catch (error) {
+      let err: BusinessError = error as BusinessError;
+      console.error('Invoke downloadTask downloadFile failed, code is ${err.code}, message is ${err.message}');
+    }
+  }
+
+  private async DownloadVideoToSandbox() {
+    try {
+      console.log('downloadTask filesDir' + filesDir + '/download.mp4');
+      //下载文件
+      request.downloadFile(context, {
+        url: this.networkVideoSrc,
+        filePath: filesDir + '/download.mp4'
       }).then((downloadTask: request.DownloadTask) => {
         //开启回调
         downloadTask.on('complete', () => {
@@ -385,6 +415,20 @@ export struct HomePage {
               }
             },
             {
+              value: '空空儿',
+              action: () => {
+                console.info('handle k select');
+                this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/k.mp4';
+              }
+            },
+            {
+              value: 'My Super Magic',
+              action: () => {
+                console.info('handle 55 select');
+                this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/55.mp4';
+              }
+            },
+            {
               value: 'Star Rail',
               action: () => {
                 console.info('handle sr select');
@@ -426,7 +470,37 @@ export struct HomePage {
                 `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
             }
           })
-        PasteButton({ icon: PasteIconStyle.LINES/*, text: PasteDescription.PASTE*/, buttonType: ButtonType.Capsule })
+        SaveButton(this.saveButtonOptions) // 创建安全控件按钮。
+          .width('20%')
+          .height(50)
+          .backgroundColor(0x66CCFF)//蓝色
+          .onClick(async (event, result: SaveButtonOnClickResult) => {
+            if (result == SaveButtonOnClickResult.SUCCESS) {
+                let context: Context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+                let phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
+                this.DownloadVideoToSandbox();
+                if (this.networkVideoSrc == this.savefileUri)
+                {
+                  return
+                }
+                else
+                {
+                  // 需要确保fileUri对应的资源存在。
+                  let fileUri = this.context?.filesDir + "/download.mp4";
+                  let assetChangeRequest: photoAccessHelper.MediaAssetChangeRequest = photoAccessHelper.MediaAssetChangeRequest.createVideoAssetRequest(context, fileUri);
+                  await phAccessHelper.applyChanges(assetChangeRequest);
+                  console.info('downloaded successfully');
+                  promptAction.showToast({ message: $r('app.string.downloaded') });
+                  this.savefileUri = this.networkVideoSrc;
+                  fs.unlink(fileUri).then(() => {
+                    console.info("remove file succeed");
+                  }).catch((err: BusinessError) => {
+                    console.error("remove file failed with error message: " + err.message + ", error code: " + err.code);
+                  });
+                }
+              }
+          })
+        /*PasteButton({ icon: PasteIconStyle.LINES, text: PasteDescription.PASTE, buttonType: ButtonType.Capsule })
         //.fontSize(10)
           .width('20%')
           .height(50)
@@ -442,7 +516,7 @@ export struct HomePage {
                 this.networkVideoSrc = pasteData.getPrimaryText();
               });
             }
-          })
+          })*/
       }
       .width('90%')
       .margin({ top: 5, bottom: 10 })

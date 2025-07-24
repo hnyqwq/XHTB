@@ -22,7 +22,7 @@
 
 > 可运行环境：
 
->> HUAWEI Mate X6 & HUAWEI MateBook Pro / Fold Ultimate Design & HUAWEI nova 14 / Pro & HUAWEI MatePad Pro 13.2" 2025
+>> HUAWEI Mate X6 & HUAWEI MateBook Pro / Fold Ultimate Design & HUAWEI nova 14 / Pro & HUAWEI MatePad Pro 13.2" 2025 & HUAWEI MatePad Pro 12.2" 2025
 
 >> API版本：5.0.5(17)
 
@@ -115,6 +115,10 @@
 >> ## [使用剪贴板进行复制粘贴](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/use_pasteboard_to_copy_and_paste)
 
 >>> 指南>系统>基础功能>Basic Services Kit（基础服务）>剪贴板服务>使用剪贴板进行复制粘贴
+
+>> ## [Share Kit（分享服务）](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/share-kit-guide)
+
+>>> 指南>应用服务>Share Kit（分享服务）  
 
 >> ## [走近 HarmonyOS](https://consumer.huawei.com/cn/support/harmonyos-video/)
 

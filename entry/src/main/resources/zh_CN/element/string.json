@@ -114,7 +114,11 @@
     },
     {
       "name":"scancode",
-      "value":"\uDB80\uDC28\uDB80\uDD28 扫码"
+      "value":"\uDB80\uDC28\uDB80\uDD28"
+    },
+    {
+      "name":"downloaded",
+      "value":"\uDB80\uDCD0\uDB80\uDC13 请求下载成功！下载成功后可以在相册>视频中看到，日期为视频创建日期哦~"
     },
     {
       "name":"speedtitle",
