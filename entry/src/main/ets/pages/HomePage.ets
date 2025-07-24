@@ -66,7 +66,7 @@ export struct HomePage {
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc, // 使用输入框中的视频链接
-      title: '视频链接分享（当前仅可唤醒应用）',
+      title: '视频链接分享',
       description: '当前链接：' + this.networkVideoSrc,
       thumbnail: fileData,
     });
