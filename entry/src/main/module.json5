@@ -7,7 +7,7 @@
 				"icon":"$media:layered_image",
 				"label":"$string:EntryAbility_label",
 				"exported":true,
-				"startWindowIcon":"$media:startIcon",
+				"startWindowIcon":"$media:icon_startwindow",
 				"startWindowBackground":"$color:start_window_background",
 				"skills":[
 					{
