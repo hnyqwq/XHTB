@@ -115,13 +115,13 @@ export struct SecondPage {
   @Builder
   MyTestMenu() {
     Menu() {
-      MenuItem({
+      /*MenuItem({
         startIcon: $r("app.media.CIcon"),
         content: $r('app.string.takephotos'),
         builder: (): void => {
           this.xj();
         }
-      })
+      })*/
       MenuItem({
         startIcon: $r("app.media.CIcon"),
         content: $r('app.string.pickphotos'),
@@ -129,13 +129,13 @@ export struct SecondPage {
           this.selectImage();
         }
       })
-      MenuItem({
+      /*MenuItem({
         startIcon: $r("app.media.CIcon"),
         content: $r('app.string.pickphotos'),
         builder: (): void => {
           DocScanPage()
         }
-      })
+      })*/
       /*MenuItem({
         startIcon: $r("app.media.CIcon"),
         content: $r('app.string.pickphotos'),
