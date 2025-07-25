@@ -202,7 +202,7 @@ export struct HomePage {
       content: this.networkVideoSrc,
       thumbnailUri: fileUri.getUriFromPath(filePath),
       title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
-      description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
+      description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
     });
     sharableTarget.share(shareData);
   }
@@ -237,7 +237,7 @@ export struct HomePage {
       content: this.networkVideoSrc,
       thumbnailUri: fileUri.getUriFromPath(filePath),
       title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
-      description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+      description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
     });
     sharableTarget.share(shareData);
   }
