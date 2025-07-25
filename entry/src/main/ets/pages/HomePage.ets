@@ -470,7 +470,7 @@ export struct HomePage {
                 `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
             }
           })
-        SaveButton(this.saveButtonOptions) // 创建安全控件按钮。
+        /*SaveButton(this.saveButtonOptions) // 创建安全控件按钮。
           .width('20%')
           .height(50)
           .backgroundColor(0x66CCFF)//蓝色
@@ -499,12 +499,11 @@ export struct HomePage {
                   });
                 }
               }
-          })
-        /*PasteButton({ icon: PasteIconStyle.LINES, text: PasteDescription.PASTE, buttonType: ButtonType.Capsule })
-        //.fontSize(10)
+          })*/
+        PasteButton({ icon: PasteIconStyle.LINES, buttonType:ButtonType.ROUNDED_RECTANGLE })
+          .backgroundColor(0x66CCFF)//蓝色
           .width('20%')
           .height(50)
-          .backgroundColor(0x66CCFF)//蓝色
           //.padding({top: 12, bottom: 12, left: 24, right: 24})
           .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
             if (PasteButtonOnClickResult.SUCCESS === result) {
@@ -516,7 +515,7 @@ export struct HomePage {
                 this.networkVideoSrc = pasteData.getPrimaryText();
               });
             }
-          })*/
+          })
       }
       .width('90%')
       .margin({ top: 5, bottom: 10 })

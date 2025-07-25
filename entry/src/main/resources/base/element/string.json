@@ -117,6 +117,14 @@
 			"value":"\uDB80\uDC28\uDB80\uDD28"
 		},
 		{
+			"name":"downloaded",
+			"value":"\uDB80\uDCD0\uDB80\uDC13 请求下载成功！下载成功后可以在相册>视频中看到，日期为视频创建日期哦~"
+		},
+		{
+			"name":"pastedtishi",
+			"value":"\uDB80\uDC6D 从剪贴板粘贴成功！！！"
+		},
+		{
 			"name":"speedtitle",
 			"value":"倍速"
 		},

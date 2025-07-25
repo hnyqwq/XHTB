@@ -117,6 +117,14 @@
       "value":"\uDB80\uDC28\uDB80\uDD28"
     },
     {
+      "name":"downloaded",
+      "value":"\uDB80\uDCD0\uDB80\uDC13 Download request successful! After the download is complete, you can view the video in Albums > Videos , and it will be categorized by the video’s creation date ."
+    },
+    {
+      "name":"pastedtishi",
+      "value":"\uDB80\uDC6D Paste from clipboard successfully!!!"
+    },
+    {
       "name":"speedtitle",
       "value":"Speed"
     },
