@@ -195,7 +195,7 @@ class SecondMenu {
 
 @Entry
 @Component
-export struct exPage {
+export struct infoPage {
   @StorageProp('bottomRectHeight')
   bottomRectHeight: number = 0;
   @StorageProp('topRectHeight')
@@ -222,23 +222,43 @@ export struct exPage {
     Scroll() {
       Column() {
         Navigation() {
-          Column() {
-            Image($r('app.media.CIcon'))
-              .width(60)
-              .height(60);
-            Text('hvideo')
-              .fontWeight(700)
-              .fontSize('14fp')
-              .margin({ top: 10 });
-            Text('1.3.1.0（10301000）')
-              .fontWeight(600)
-              .fontSize('12fp')
-              .margin({ top: 10 });
+          Stack() {
+            Row() {
+              Image($r('app.media.harmonyos'))
+                .width('1100px')
+                .height('1500px')
+                .margin({ bottom: '3%' }) // 图片下方留白
+            }
+            .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
+            .borderRadius(20)
+            Button('检查更新')
+            //.type(ButtonType.Capsule)
+              .width('50%')
+              .height(40)
+              .margin({ top: 220 })
+              .onClick(() => {
+                promptAction.showToast({ message: '切，让你点到爽 (ᗜ ˰ ᗜ)' });
+              })
+
+            Column() {
+              Image($r('app.media.CIcon'))
+                .width(60)
+                .height(60)
+              Text('hvideo')
+                .fontWeight(700)
+                .fontSize('14fp')
+                .margin({ top: 10 })
+              Text('1.3.1.0（10301000）')
+                .fontWeight(600)
+                .fontSize('12fp')
+                .margin({ top: 10 })
+            }
+            .alignItems(HorizontalAlign.Center)
+
+
           }
           .width('100%')
           .height(300)
-          .justifyContent(FlexAlign.Center)
-          .alignItems(HorizontalAlign.Center);
 
           Column() {
             Row() {
@@ -262,7 +282,10 @@ export struct exPage {
             .width('90%')
             .borderRadius($r('app.integer.layout_size_24'))
             .alignItems(VerticalAlign.Center)
-            .margin({ bottom: $r('app.integer.layout_size_12') })
+            .margin({
+              top: $r('app.integer.layout_size_12'), // 增加顶部间距
+              bottom: $r('app.integer.layout_size_12')
+            })
             .backgroundColor($r('app.color.font_color_FFFFFF'));
 
             /*Row() {

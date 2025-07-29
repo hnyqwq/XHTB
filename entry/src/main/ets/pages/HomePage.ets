@@ -42,7 +42,7 @@ export struct HomePage {
   @State initialOrientation: window.Orientation = window.Orientation.PORTRAIT; // 记录初始方向
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
   @State isShortcutKeyEnabled: boolean = false
-  @State networkVideoSrc: string = '';
+  @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
   @State isPlaying: boolean = true;
   @State picture: PixelMap | undefined = undefined;
   //@State networkPreviewUri: string = 'https://www.hnyqwq.cn/hvideo/130.png'; // 默认网络预览图
@@ -349,8 +349,9 @@ export struct HomePage {
           .width('55%')
           .height(50)
           .margin({ right: 10 })
-          .onChange((value: string) => {
-            this.networkVideoSrc = value;
+          .onChange((networkVideoSrc: string) => {
+            this.networkVideoSrc = networkVideoSrc;
+            AppStorage.set('networkVideoSrc', networkVideoSrc);
           })
         Button($r('app.string.share'))
         //.type(ButtonType.Capsule)
@@ -398,6 +399,7 @@ export struct HomePage {
           .margin({ right: 10 })
           .onChange((value: string) => {
             this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/' + value + '.mp4';
+            AppStorage.set('networkVideoSrc', this.networkVideoSrc);
           })
           .bindMenu([
             {
