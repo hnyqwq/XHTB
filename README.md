@@ -22,15 +22,17 @@
 
 > 可运行环境：
 
->> HUAWEI Mate X6 & HUAWEI MateBook Pro / Fold Ultimate Design & HUAWEI nova 14 / Pro & HUAWEI MatePad Pro 13.2" 2025 & HUAWEI MatePad Pro 12.2" 2025
-
-- a
-
->> API版本：5.0.5(17)
+>> - **手机**：HUAWEI nova 14 / HUAWEI nova 14 Pro / HUAWEI Pura 80 / HUAWEI Pura 80 Pro / HUAWEI Pura 80 Pro+ / HUAWEI Pura 80 Ultra
+>> - **折叠屏**：HUAWEI Mate X6
+>> - **阔折叠**：
+>> - **平板**：HUAWEI MatePad Pro 13.2" 2025 & HUAWEI MatePad Pro 12.2" 2025
+>> - **2in1**：HUAWEI MateBook Pro
+>> - **折叠2in1**：HUAWEI MateBook Fold Ultimate Design
+>> - **API版本**：5.0.5(17) / 5.1.0(18) / 5.1.1(19)
 
 ---
 
-# 快速跳转
+# 快速跳转指南
 
 > ## [开发指南 All versions](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/application-dev-guide)
 
@@ -223,8 +225,8 @@ entry/src/main/ets/
 > ##  [OpenHarmony 教程指南](https://gitee.com/explore/harmonyos-guide)
 > ##  [HarmonyOS NEXT开源组件市场](https://gitee.com/harmonyos-cases/cases)
 
-> ## [HarmonyOS 6 开发者预览版 Beta 招募](https://developer.huawei.com/consumer/cn/activity/developerbeta/harmonyos-developer-beta-6/)
-[![HarmonyOS 6 开发者预览版 Beta 招募](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/activity/0620hdcbeta/banner-2560-574.jpg)](https://developer.huawei.com/consumer/cn/activity/developerbeta/harmonyos-developer-beta-6/)
+> ## [HarmonyOS 6 开发者预览版 Beta 招募](https://developer.huawei.com/consumer/cn/features/?ha_source=sousuo&ha_sourceId=89000251)
+[![HarmonyOS 6 开发者预览版 Beta 招募](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/activity/0620hdcbeta/banner-2560-574.jpg)](https://developer.huawei.com/consumer/cn/features/?ha_source=sousuo&ha_sourceId=89000251)
 
 > ## [APPGallery Connect](https://developer.huawei.com/consumer/cn/service/josp/agc/index.html#/)
 [![APPGallery Connect](https://developer.huawei.com/consumer/cn/service/josp/agc/static/img/logo-white.b4f1c5f9.png)](https://developer.huawei.com/consumer/cn/service/josp/agc/index.html#/)
