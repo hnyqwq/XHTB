@@ -111,13 +111,12 @@ export struct HomePage {
   }
 
   //碰一碰分享
-  private async DownloadToSandbox() {
+  /*private async DownloadToSandbox() {
     try {
       console.log('downloadTask filesDir' + filesDir + '/pengyipeng.jpg');
       //下载文件
       request.downloadFile(context, {
-        //url: 'https://www.hnyqwq.cn/hvideo/share.png',
-        url: 'share.png',
+        url: 'https://www.hnyqwq.cn/hvideo/share.png',
         filePath: filesDir + '/pengyipeng.jpg'
       }).then((downloadTask: request.DownloadTask) => {
         //开启回调
@@ -131,7 +130,7 @@ export struct HomePage {
       let err: BusinessError = error as BusinessError;
       console.error('Invoke downloadTask downloadFile failed, code is ${err.code}, message is ${err.message}');
     }
-  }
+  }*/
 
   isValidUrl(url: string): boolean {
     const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
@@ -145,7 +144,7 @@ export struct HomePage {
   }
 
   aboutToAppear(): void {
-    this.DownloadToSandbox();
+    //this.DownloadToSandbox();
     this.whiteListening()
     //this.immersiveListening();
     let context = getContext(this);
@@ -183,8 +182,8 @@ export struct HomePage {
     //this.immersiveDisablingListening();
   }
   // 在类成员变量区域定义箭头函数绑定回调
-  private whiteCallback = (sharableTarget: harmonyShare.SharableTarget): void => {
-    // 直接处理分享数据（假设数据已通过其他方式传递）
+  private whiteCallback = async (sharableTarget: harmonyShare.SharableTarget): Promise<void> => {
+    // 处理分享数据
     const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
     if (sharedUrl && this.isValidUrl(sharedUrl)) {
       this.networkVideoSrc = sharedUrl;
@@ -192,16 +191,40 @@ export struct HomePage {
       AppStorage.delete('sharedVideoUrl');
     }
 
-    let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-    let filePath = this.context?.filesDir + "/pengyipeng.jpg";
-    let shareData: systemShare.SharedData = new systemShare.SharedData({
-      utd: utd.UniformDataType.HYPERLINK,
-      content: this.networkVideoSrc,
-      thumbnailUri: fileUri.getUriFromPath(filePath),
-      title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
-      description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
-    });
-    sharableTarget.share(shareData);
+    try {
+      const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+
+      // 1. 使用 rawfile 方案获取资源
+      const rawfileName = 'share.png'; // rawfile 目录下的文件名
+      const fdResult = await context.resourceManager.getRawFd(rawfileName);
+
+      // 2. 直接使用文件描述符构建 URI
+      const fdPath = `fd://${fdResult.fd}`;
+
+      // 3. 构建分享数据
+      let shareData: systemShare.SharedData = new systemShare.SharedData({
+        utd: utd.UniformDataType.HYPERLINK,
+        content: this.networkVideoSrc,
+        thumbnailUri: fdPath,
+        title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
+        description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+      });
+
+      // 4. 执行分享
+      sharableTarget.share(shareData);
+
+    } catch (error) {
+      console.error("分享缩略图处理失败:", error);
+      // 后备方案：不使用缩略图
+      const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      let shareData = new systemShare.SharedData({
+        utd: utd.UniformDataType.HYPERLINK,
+        content: this.networkVideoSrc,
+        title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
+        description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+      });
+      sharableTarget.share(shareData);
+    }
   }
 
   // 修改事件监听与解绑逻辑
