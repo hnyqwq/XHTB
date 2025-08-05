@@ -42,11 +42,11 @@
     },
     {
       "name": "shareinfo",
-      "value": "Share Video Link"
+      "value": "Share Link"
     },
     {
       "name": "pengyipeng_title",
-      "value": "Share Video Link"
+      "value": "Share Link"
     },
     {
       "name": "pengyipeng_description",
@@ -58,7 +58,7 @@
     },
     {
       "name":"nopeng",
-      "value":"It seems there’s no video to share at the moment. ⪩ ⪨"
+      "value":"It seems there’s no link to share at the moment. ⪩ ⪨"
     },
     {
       "name":"aboutpage",
@@ -110,7 +110,7 @@
     },
     {
       "name":"testinput",
-      "value":"\uDB81\uDC94 Use some test videos, just enter the name.e.g.,w/k/55/ay/bxqy/ctxn/dly/dsm/jzn/qxmst/ssy/y/ylzz/yzjt/sr/sq"
+      "value":"\uDB81\uDC94 APP official video"
     },
     {
       "name":"scancode",
@@ -246,7 +246,43 @@
     },
     {
       "name":"infopagetitle",
-      "value":"Device Info > < "
+      "value":"APP Info > < "
+    },
+    {
+      "name":"mine1",
+      "value":"APP info"
+    },
+    {
+      "name":"mine2",
+      "value":"Official website"
+    },
+    {
+      "name":"mine3",
+      "value":"Subscribe bilibili"
+    },
+    {
+      "name":"mine4",
+      "value":"Subscribe Douyin"
+    },
+    {
+      "name":"mine5",
+      "value":"Official Blog"
+    },
+    {
+      "name":"info1",
+      "value":"Model name"
+    },
+    {
+      "name":"info2",
+      "value":"Model number"
+    },
+    {
+      "name":"info3",
+      "value":"HarmonyOS version"
+    },
+    {
+      "name":"info4",
+      "value":"Serial number"
     }
   ]
 }

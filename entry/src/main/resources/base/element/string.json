@@ -42,11 +42,11 @@
 		},
 		{
 			"name": "shareinfo",
-			"value": "视频链接分享"
+			"value": "链接分享"
 		},
 		{
 			"name": "pengyipeng_title",
-			"value": "分享当前的视频链接"
+			"value": "分享当前的链接"
 		},
 		{
 			"name": "pengyipeng_description",
@@ -58,7 +58,7 @@
 		},
 		{
 			"name":"nopeng",
-			"value":"没有可以分享的视频链接 ⪩ ⪨"
+			"value":"没有可以分享的链接 ⪩ ⪨"
 		},
 		{
 			"name":"aboutpage",
@@ -110,7 +110,7 @@
 		},
 		{
 			"name":"testinput",
-			"value":"\uDB81\uDC94 使用测试视频，仅需输入名称，如w/k/55/ay/bxqy/ctxn/dly/dsm/jzn/qxmst/ssy/y/ylzz/yzjt/sr/sq"
+			"value":"\uDB81\uDC94 软件官网视频"
 		},
 		{
 			"name":"scancode",
@@ -246,7 +246,43 @@
 		},
 		{
 			"name":"infopagetitle",
-			"value":"设备信息 > < "
+			"value":"软件信息 > < "
+		},
+		{
+			"name":"mine1",
+			"value":"软件信息"
+		},
+		{
+			"name":"mine2",
+			"value":"前往官网"
+		},
+		{
+			"name":"mine3",
+			"value":"关注哔哩哔哩"
+		},
+		{
+			"name":"mine4",
+			"value":"关注抖音"
+		},
+		{
+			"name":"mine5",
+			"value":"前往个人博客"
+		},
+		{
+			"name":"info1",
+			"value":"型号名称"
+		},
+		{
+			"name":"info2",
+			"value":"型号代码"
+		},
+		{
+			"name":"info3",
+			"value":"HarmonyOS 版本"
+		},
+		{
+			"name":"info4",
+			"value":"软件版本"
 		}
 	]
 }

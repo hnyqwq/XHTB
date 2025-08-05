@@ -14,12 +14,21 @@ import Logger from '../utils/Logger';
 
 //两个临时无需权限组件
 import { pasteboard } from '@kit.BasicServicesKit';
-import { photoAccessHelper } from '@kit.MediaLibraryKit';
 
 //分享相关
 import { fileUri } from '@kit.CoreFileKit';
 import request from '@ohos.request';
 import router from '@ohos.router';
+//本地
+import { fileIo, picker } from '@kit.CoreFileKit';
+import { photoAccessHelper } from '@kit.MediaLibraryKit';
+import MediaFileUri from '../media/MediaFileUri';
+import { dataSharePredicates } from '@kit.ArkData';
+import { uri } from '@kit.ArkTS';
+
+interface myParams {
+  uri: string
+};
 
 let logger = Logger.getLogger('[KnockShare]');
 let context = getContext(this) as common.UIAbilityContext;
@@ -38,7 +47,6 @@ let filesDir = context.filesDir;
 @Component
   // 使用@Entry装饰器标记为入口组件，@Component表示自定义组件
 export struct HomePage {
-  context: common.Context = getContext(this);
   @State initialOrientation: window.Orientation = window.Orientation.PORTRAIT; // 记录初始方向
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
   @State isShortcutKeyEnabled: boolean = false
@@ -46,9 +54,8 @@ export struct HomePage {
   @State isPlaying: boolean = true;
   @State picture: PixelMap | undefined = undefined;
   //@State networkPreviewUri: string = 'https://www.hnyqwq.cn/hvideo/130.png'; // 默认网络预览图
-  @State networkPreviewUri: string =
-    'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg';
-  @State savefileUri:string = ' ';
+  @State networkPreviewUri: Resource = $r('app.media.homepageback');
+  @State savefileUri: string = ' ';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
   @State isControls: boolean = false; // 控制栏显示状态
   @State handlePopup: boolean = false; // 气泡提示（Popup）
@@ -61,6 +68,16 @@ export struct HomePage {
     /*text: SaveDescription.SAVE_IMAGE,
     buttonType: ButtonType.Capsule*/
   }
+  //本地
+  @State myContext: Context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+  @State myFileTypes: number = 0;
+  @StorageLink('myFileName') myFileName: string = '';
+  @StorageLink('myFileSize') myFileSize: number = 0;
+  @State myUris: string = (this.getUIContext().getRouter().getParams() as myParams)?.uri ?? ' ';
+  @State uri: string = 'Hello World';
+  mediaFileUri: MediaFileUri = new MediaFileUri();
+  private context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
+
   //华为系统分享
   private async share() {
     if (!this.networkVideoSrc) {
@@ -99,29 +116,8 @@ export struct HomePage {
       console.log('downloadTask filesDir' + filesDir + '/pengyipeng.jpg');
       //下载文件
       request.downloadFile(context, {
-        url: 'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg',
+        url: 'https://www.hnyqwq.cn/hvideo/share.png',
         filePath: filesDir + '/pengyipeng.jpg'
-      }).then((downloadTask: request.DownloadTask) => {
-        //开启回调
-        downloadTask.on('complete', () => {
-          console.info('downloadTask1 complete');
-        })
-      }).catch((err: BusinessError) => {
-        console.error('Invoke downloadTask failed, code is ${err.code}, message is ${err.message}');
-      });
-    } catch (error) {
-      let err: BusinessError = error as BusinessError;
-      console.error('Invoke downloadTask downloadFile failed, code is ${err.code}, message is ${err.message}');
-    }
-  }
-
-  private async DownloadVideoToSandbox() {
-    try {
-      console.log('downloadTask filesDir' + filesDir + '/download.mp4');
-      //下载文件
-      request.downloadFile(context, {
-        url: this.networkVideoSrc,
-        filePath: filesDir + '/download.mp4'
       }).then((downloadTask: request.DownloadTask) => {
         //开启回调
         downloadTask.on('complete', () => {
@@ -140,7 +136,8 @@ export struct HomePage {
     const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
     return pattern.test(url);
   }
-  onPageHide(): void {//隔空传送
+
+  onPageHide(): void { //隔空传送
     let uiContext: UIContext = this.getUIContext();
     let context: Context = uiContext.getHostContext() as Context;
     context.eventHub.emit('onBackGround');
@@ -149,7 +146,7 @@ export struct HomePage {
   aboutToAppear(): void {
     this.DownloadToSandbox();
     this.whiteListening()
-    this.immersiveListening();
+    //this.immersiveListening();
     let context = getContext(this);
 
     // 建议调整顺序确保实时参数优先
@@ -174,7 +171,7 @@ export struct HomePage {
   aboutToDisappear(): void {
     logger.info('aboutToDisappear invoked.');
     this.whiteDisablingListening()
-    this.immersiveDisablingListening();
+    //this.immersiveDisablingListening();
     let context = getContext(this);
     context.eventHub.off('onFocus');
     context.eventHub.off('onBackGround');
@@ -182,9 +179,8 @@ export struct HomePage {
 
   private onBackGround = () => {
     this.whiteDisablingListening()
-    this.immersiveDisablingListening();
+    //this.immersiveDisablingListening();
   }
-
   // 在类成员变量区域定义箭头函数绑定回调
   private whiteCallback = (sharableTarget: harmonyShare.SharableTarget): void => {
     // 直接处理分享数据（假设数据已通过其他方式传递）
@@ -242,12 +238,62 @@ export struct HomePage {
     sharableTarget.share(shareData);
   }
 
-  private immersiveListening() {
+  /*private immersiveListening() {
     harmonyShare.on('gesturesShare', this.immersiveCallback);
   }
 
   private immersiveDisablingListening() {
     harmonyShare.off('gesturesShare', this.immersiveCallback);
+  }*/
+
+  //本地
+  async getFilenameByUriForMedia(myUris: string[]) {
+    this.getUIContext().getRouter().pushUrl({
+      url: 'pages/ViewMedia',
+      params: {
+        uris: myUris
+      }
+    }, router.RouterMode.Standard);
+  }
+  // Pull up the picker to select images/videos.
+  async callFilePickerSelectImage(): Promise<void> {
+    let array: string[];
+    let PhotoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
+    PhotoSelectOptions.MIMEType = photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE;
+    PhotoSelectOptions.maxSelectNumber = 1;
+    let mediaFlag = false;
+    // Create a PhotoViewPicker object.
+    let photoPicker = new photoAccessHelper.PhotoViewPicker();
+    photoPicker.select(PhotoSelectOptions).then((PhotoSelectResult) => {
+      JSON.stringify(PhotoSelectResult);
+      if (PhotoSelectResult !== null && PhotoSelectResult !== undefined) {
+        // Declare variable array, whose value is the array in PhotoSelectResult.
+        array = PhotoSelectResult['photoUris'];
+        array.forEach((value) => {
+          this.uri = value;
+          mediaFlag = true;
+        })
+      }
+      if (mediaFlag) {
+        this.getFilenameByUriForMedia(array);
+      }
+    })
+  }
+
+  onPageShow() {
+    this.getImagesInfo();
+    AppStorage.setOrCreate('myFileName', this.myFileName);
+    AppStorage.setOrCreate('myFileSize', this.myFileSize);
+  }
+
+  async getMediaNameByUri(myUri: string) {
+    this.myFileName = (myUri.split('/').pop()) as string;
+  }
+
+  getImagesInfo() {
+    this.controller = new VideoController();
+    this.getMediaNameByUri(this.myUris);
+    this.myFileSize = this.mediaFileUri.myGetFileSize(this.myUris, fileIo.OpenMode.READ_ONLY);
   }
 
   build() {
@@ -343,7 +389,7 @@ export struct HomePage {
           }
         })
       Row() {
-        TextInput({ placeholder: $r('app.string.linkinput') })
+        /*TextInput({ placeholder: $r('app.string.linkinput') })
           .type(InputType.URL)
           //.backgroundColor('#FF9CCE')
           .width('55%')
@@ -352,7 +398,19 @@ export struct HomePage {
           .onChange((networkVideoSrc: string) => {
             this.networkVideoSrc = networkVideoSrc;
             AppStorage.set('networkVideoSrc', networkVideoSrc);
+          })*/
+        Button('选择视频')
+          .width('55%')
+          .height(50)
+          .margin({ right: 10 })
+          .backgroundColor(0xFF66CC)
+          .onClick(() => {
+            this.callFilePickerSelectImage();
+            this.networkVideoSrc = this.uri;
+            AppStorage.setOrCreate('myFileName', this.myFileName);
+            AppStorage.setOrCreate('myFileSize', this.myFileSize);
           })
+
         Button($r('app.string.share'))
         //.type(ButtonType.Capsule)
           .width('20%')
@@ -390,9 +448,10 @@ export struct HomePage {
       .margin({ top: 5, bottom: 10 })
 
       Row() {
-        TextArea({
+        TextInput({ placeholder: $r('app.string.testinput') })
+        /*TextArea({
           placeholder: $r('app.string.testinput')
-        })
+        })*/
         //.backgroundColor('#FF9CCE')
           .width('55%')
           //.height(50)
@@ -401,46 +460,9 @@ export struct HomePage {
             this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/' + value + '.mp4';
             AppStorage.set('networkVideoSrc', this.networkVideoSrc);
           })
-          .bindMenu([
-            {
-              value: '万羽惊鸿',
-              action: () => {
-                console.info('handle sq select');
-                this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/sq.mp4';
-              }
-            },
-            {
-              value: 'Immortal',
-              action: () => {
-                console.info('handle w select');
-                this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/w.mp4';
-              }
-            },
-            {
-              value: '空空儿',
-              action: () => {
-                console.info('handle k select');
-                this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/k.mp4';
-              }
-            },
-            {
-              value: 'My Super Magic',
-              action: () => {
-                console.info('handle 55 select');
-                this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/55.mp4';
-              }
-            },
-            {
-              value: 'Star Rail',
-              action: () => {
-                console.info('handle sr select');
-                this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/sr.mp4';
-              }
-            }
-          ])
         Button($r('app.string.scancode'))
         //.globalButtonStyle()
-          //.type(ButtonType.Capsule)
+        //.type(ButtonType.Capsule)
           .backgroundColor(0x66CCFF)//蓝色
           //.backgroundColor('#0044fc')
           .labelStyle({ overflow: TextOverflow.Ellipsis, maxLines: 3, minFontSize: 0 })
@@ -472,37 +494,7 @@ export struct HomePage {
                 `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
             }
           })
-        /*SaveButton(this.saveButtonOptions) // 创建安全控件按钮。
-          .width('20%')
-          .height(50)
-          .backgroundColor(0x66CCFF)//蓝色
-          .onClick(async (event, result: SaveButtonOnClickResult) => {
-            if (result == SaveButtonOnClickResult.SUCCESS) {
-                let context: Context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-                let phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
-                this.DownloadVideoToSandbox();
-                if (this.networkVideoSrc == this.savefileUri)
-                {
-                  return
-                }
-                else
-                {
-                  // 需要确保fileUri对应的资源存在。
-                  let fileUri = this.context?.filesDir + "/download.mp4";
-                  let assetChangeRequest: photoAccessHelper.MediaAssetChangeRequest = photoAccessHelper.MediaAssetChangeRequest.createVideoAssetRequest(context, fileUri);
-                  await phAccessHelper.applyChanges(assetChangeRequest);
-                  console.info('downloaded successfully');
-                  promptAction.showToast({ message: $r('app.string.downloaded') });
-                  this.savefileUri = this.networkVideoSrc;
-                  fs.unlink(fileUri).then(() => {
-                    console.info("remove file succeed");
-                  }).catch((err: BusinessError) => {
-                    console.error("remove file failed with error message: " + err.message + ", error code: " + err.code);
-                  });
-                }
-              }
-          })*/
-        PasteButton({ icon: PasteIconStyle.LINES, buttonType:ButtonType.ROUNDED_RECTANGLE })
+        PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
           .backgroundColor(0x66CCFF)//蓝色
           .width('20%')
           .height(50)
@@ -523,18 +515,6 @@ export struct HomePage {
       .margin({ top: 5, bottom: 10 })
 
       Row() {
-        /*Button(this.curRate === PlaybackSpeed.Speed_Forward_2_00_X ? $r('app.string.1xspeed') : $r('app.string.2xspeed'))
-        //.backgroundColor('#0044fc')
-          .backgroundColor(0xFF66CC)
-          //.width('20%')
-          .onClick(() => {
-            this.curRate = this.curRate === PlaybackSpeed.Speed_Forward_2_00_X
-              ? PlaybackSpeed.Speed_Forward_1_00_X
-              : PlaybackSpeed.Speed_Forward_2_00_X;
-            promptAction.showToast({
-              message: `已成功切换至${this.curRate === PlaybackSpeed.Speed_Forward_2_00_X ? '2' : '1'}倍速播放`
-            });
-          })*/
         Button($r('app.string.speedtitle'))
           .backgroundColor(0xb87cff)
           .bindMenu([
@@ -643,28 +623,6 @@ export struct HomePage {
               }
             }
           ])
-        /*Button(this.currentFitMode === ImageFit.Fill ? $r('app.string.Fill') :$r('app.string.Auto'))
-          .backgroundColor(0xFF66CC)
-          .margin({ left: 10 })
-          .onClick(() => {
-            this.currentFitMode = this.currentFitMode === ImageFit.Fill
-              ? ImageFit.Auto
-              : ImageFit.Fill;
-            promptAction.showToast({
-              message: `当前模式: ${this.currentFitMode === ImageFit.Fill ? 'Fill(强制填充屏幕)' : 'Auto(自适应)'}`
-            });
-          })
-        Button(this.currentFitMode === ImageFit.Cover ? $r('app.string.Contain') : $r('app.string.Cover'))
-          .backgroundColor(0xFF66CC)
-          .margin({ left: 10 })
-          .onClick(() => {
-            this.currentFitMode = this.currentFitMode === ImageFit.Cover
-              ? ImageFit.Contain
-              : ImageFit.Cover;
-            promptAction.showToast({
-              message: `当前模式: ${this.currentFitMode === ImageFit.Cover ? 'Contain(保持比例)' : 'Cover(比例放大填充)'}`
-            });
-          })*/
       }
 
       // 使用堆叠布局，顶部起始对齐
@@ -677,10 +635,23 @@ export struct HomePage {
               .copyOption(CopyOptions.LocalDevice)
               .textAlign(TextAlign.Center)
               .width('100%')
+            Text(this.myFileName)
+              .focusable(true)
+              .focusOnTouch(true)
+              .fontFamily('HarmonyHeiTi-Bold')
+              .textAlign(TextAlign.Start)
+              .maxLines(1)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+            Text('size: ' + JSON.stringify(this.myFileSize) + 'B')
+              .focusable(true)
+              .focusOnTouch(true)
+              .fontFamily('HarmonyHeiTi')
+              .textAlign(TextAlign.Start)
           }
           .margin({ top: 10 })
           .width('100%')
           .height('100%')
+
           //.backgroundColor($r('app.color.start_window_background'))
         }
       }

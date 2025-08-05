@@ -4,15 +4,14 @@ import router from '@ohos.router';
 import { promptAction } from '@kit.ArkUI';
 
 @Observed
-  //设置条目信息构造
 class SettingMenu {
   public uri?: string;
-  public id: string; // 唯一id
-  public image: Resource; // 菜单图标
-  public text: string; // 菜单文本
-  public des: Resource; //后缀文本
+  public id: string;
+  public image: Resource;
+  public text: Resource;
+  public des: Resource;
 
-  constructor(id: string, image: Resource, text: string, des: Resource) {
+  constructor(id: string, image: Resource, text: Resource, des: Resource) {
     this.id = id;
     this.image = image;
     this.text = text;
@@ -23,18 +22,24 @@ class SettingMenu {
 @Entry
 @Component
 export struct MinePage {
-  //设置条目信息数组
   @State menuGroup: SettingMenu[] = [
-    new SettingMenu('setting', $r('app.media.mine_settings'), '设备信息', $r('app.string.void')),
-    new SettingMenu('vipownsetting', $r('app.media.mine_vipsettings'), '神秘功能', $r('app.string.void')),
-    new SettingMenu('mycollection', $r('app.media.ic_collect'), '关注哔哩哔哩', $r('app.string.void')),
-    new SettingMenu('mylike', $r('app.media.mine_like'), '关注抖音', $r('app.string.void')),
-    new SettingMenu('browsinghistory', $r('app.media.mine_time'), '前往个人博客', $r('app.string.void'))
+    new SettingMenu('setting', $r('app.media.mine_settings'), $r('app.string.mine1'), $r('app.string.void')),
+    new SettingMenu('vipownsetting', $r('app.media.mine_vipsettings'), $r('app.string.mine2'), $r('app.string.void')),
+    new SettingMenu('mycollection', $r('app.media.ic_collect'), $r('app.string.mine3'), $r('app.string.void')),
+    new SettingMenu('mylike', $r('app.media.mine_like'), $r('app.string.mine4'), $r('app.string.void')),
+    new SettingMenu('browsinghistory', $r('app.media.mine_time'), $r('app.string.mine5'), $r('app.string.void'))
   ];
 
   build() {
     Stack() {
-      Navigation() {
+      Column() {
+        Column() {
+          Text($r('app.string.aboutpage'))
+            .fontSize(20)
+            .fontColor($r('app.color.font_color_info'))
+            .fontWeight(FontWeight.Bold)
+        }
+        // 顶部用户信息区域 - 保持不变
         Column() {
           Image($r('app.media.CIcon'))
             .width(60)
@@ -51,8 +56,10 @@ export struct MinePage {
         .width('100%')
         .height(300)
         .justifyContent(FlexAlign.Center)
-        .alignItems(HorizontalAlign.Center);
+        .alignItems(HorizontalAlign.Center)
+        .backgroundColor($r('app.color.start_window_background'))
 
+        // 设置项列表区域 - 保持不变
         Column() {
           Row() {
             List() {
@@ -62,35 +69,27 @@ export struct MinePage {
                     SettingItemView({ image: item.image, text: item.text, des: item.des });
                   }
                   .width('100%')
-                  .onClick(() => { // 添加点击事件
+                  .onClick(() => {
                     const context = getContext(this) as common.UIAbilityContext;
                     let uri = '';
                     switch (item.id) {
-                      case 'setting': // 官网
-                        /*uri = 'https://hnyqwq.cn';
-                        break;*/
+                      case 'setting':
                         router.pushUrl({ url: 'pages/infoPage' })
                           .catch((e: BusinessError) => {
                             console.error('路由跳转失败', e);
                           });
                         break;
                       case 'vipownsetting':
-                        // 应用内页面跳转
-                        router.pushUrl({ url: 'pages/exPage' })
-                          .catch((e: BusinessError) => {
-                            console.error('路由跳转失败', e);
-                          });
+                        uri = 'https://www.hnyqwq.cn';
                         break;
-                      case 'mycollection': // 微信公众号
+                      case 'mycollection':
                         uri = 'bilibili://space/338142387';
                         break;
-                      case 'mylike': // 分享功能（需集成分享SDK）
+                      case 'mylike':
                         uri =
                           'snssdk1128://user/profile/2118115953227692?refer=web';
-                        break
-                        // harmonyShare.share(...);
                         break;
-                      case 'browsinghistory': // 第三方清单
+                      case 'browsinghistory':
                         uri = 'https://blog.hnyqwq.cn';
                         break;
                     }
@@ -118,19 +117,17 @@ export struct MinePage {
           .margin({ bottom: $r('app.integer.layout_size_12') })
           .backgroundColor($r('app.color.font_color_FFFFFF'));
         }
-        .width('100%')
-        .layoutWeight(1);
+        .layoutWeight(1)
+        .width('100%');
 
+        // 底部协议信息区域 - 保持不变
         Column() {
           Text() {
             Span('hvideo用户协议')
               .onClick(() => {
                 try {
                   let want: Want = {
-                    // uncomment line below if wish to implicitly query only in the specific bundle.
-                    // bundleName: "com.example.myapplication",
                     "action": "ohos.want.action.viewData",
-                    // entities can be omitted.
                     "entities": ["entity.system.browsable"],
                     uri: 'https://hnyqwq.cn/hvideo/yhxy.html',
                     "type": "text/plain"
@@ -150,10 +147,7 @@ export struct MinePage {
               .onClick(() => {
                 try {
                   let want: Want = {
-                    // uncomment line below if wish to implicitly query only in the specific bundle.
-                    // bundleName: "com.example.myapplication",
                     "action": "ohos.want.action.viewData",
-                    // entities can be omitted.
                     "entities": ["entity.system.browsable"],
                     uri: 'https://hnyqwq.cn/hvideo/hvideo.html',
                     "type": "text/plain"
@@ -171,37 +165,27 @@ export struct MinePage {
 
           Text($r('app.string.copyright'))
             .fontSize(12);
-          Text() {
-            Span($r('app.string.mineunder'))
-              .onClick(() => {
-                const want: Want = { uri: `store://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.apptest` };
-                const context = getContext(this) as common.UIAbilityContext;
-                context.startAbility(want).then(() => { //拉起成功
-                  console.info('拉起应用商店成功')
-                }).catch((e: BusinessError) => { // 拉起失败
-                  console.info('拉起应用商店失败')
-                });
-              })
-              .fontColor(Color.Blue)
-              .fontSize(12);
-          };
         }
         .width('100%')
-        .height(60);
+        .height(60)
+        .alignItems(HorizontalAlign.Center)
+        .padding(10);
       }
+      .width('100%')
       .height('100%')
-      .title($r('app.string.aboutpage'))
-      //.titleMode(NavigationTitleMode.Mini)
-    };
+      .padding({ top: 60 }) // 为标题栏留出空间
+    }
+    .width('100%')
+    .height('100%')
+    .backgroundColor($r('app.color.start_window_background'))
   }
 }
 
 @Component
-  //设置条目布局
 export struct SettingItemView {
-  private image: string | Resource = ''; // 图标
-  private text: string | Resource = ''; // 设置名称
-  private des: string | Resource = ''; //后面的文本
+  private image: string | Resource = '';
+  private text: string | Resource = '';
+  private des: string | Resource = '';
 
   build() {
     Row() {

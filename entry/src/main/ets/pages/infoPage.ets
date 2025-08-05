@@ -175,11 +175,11 @@ let versionSegsr = versionSegs.replaceAll('(',' ')//6.0.0.35 SP
 class FirstMenu {
   public uri?: string;
   public id: string; // 唯一id
-  public title: string; // 标题文本
+  public title: Resource; // 标题文本
   public text: string; // 菜单文本
   public des: Resource; //后缀文本
 
-  constructor(id: string, title: string, text: string, des: Resource) {
+  constructor(id: string, title: Resource, text: string, des: Resource) {
     this.id = id;
     this.title = title;
     this.text = text;
@@ -213,10 +213,10 @@ export struct infoPage {
   topRectHeight: number = 0;
   //设置条目信息数组
   @State FirstMenuGroup: FirstMenu[] = [
-    new FirstMenu('one', '型号名称', marketNameInfo, $r('app.string.void')),
-    new FirstMenu('two', '型号代码', productModelInfo, $r('app.string.void')),
-    new FirstMenu('three', 'HarmonyOS 版本',distributionOSVersion, $r('app.string.void')),
-    new FirstMenu('four', '软件版本',fullVersionsr, $r('app.string.void')),
+    new FirstMenu('one', $r('app.string.info1'), marketNameInfo, $r('app.string.void')),
+    new FirstMenu('two', $r('app.string.info2'), productModelInfo, $r('app.string.void')),
+    new FirstMenu('three',$r('app.string.info3'),distributionOSVersion, $r('app.string.void')),
+    new FirstMenu('four',$r('app.string.info4'),fullVersionsr, $r('app.string.void')),
   //new FirstMenu('five', '序列号', '前往个人博客', $r('app.string.void'))
   ];
   @State SecondMenuGroup: SecondMenu[] = [
@@ -232,7 +232,13 @@ export struct infoPage {
   build() {
     Scroll() {
       Column() {
-        Navigation() {
+        Column() {
+          Text($r('app.string.infopagetitle'))
+            .fontSize(20)
+            .fontColor($r('app.color.font_color_info'))
+            .fontWeight(FontWeight.Bold)
+        }
+        .padding({ bottom: 20 })
           Stack() {
             Row() {
               Image($r('app.media.harmonyos'))
@@ -243,14 +249,14 @@ export struct infoPage {
             .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
             .borderRadius(20)
 
-            Button('检查更新')
+            /*Button('检查更新')
             //.type(ButtonType.Capsule)
               .width('50%')
               .height(40)
               .margin({ top: 220 })
               .onClick(() => {
                 promptAction.showToast({ message: '切，让你点到爽 (ᗜ ˰ ᗜ)' });
-              })
+              })*/
 
             Column() {
               Image($r('app.media.CIcon'))
@@ -260,7 +266,7 @@ export struct infoPage {
                 .fontWeight(700)
                 .fontSize('16fp')
                 .margin({ top: 10 })*/
-              Text(versionSegsr)
+              Text('1.3.2（10302000）')
                 .fontWeight(600)
                 .fontSize('20fp')
                 .margin({ top: 10 })
@@ -333,18 +339,16 @@ export struct infoPage {
               .fontSize(12);
           }
           .width('100%')
-          .height(60);
-        }
-        .height('100%')
-        .title($r('app.string.infopagetitle'))
-        .titleMode(NavigationTitleMode.Mini)
-        //.backgroundColor($r('app.color.listColor'))
-        .backgroundColor($r('app.color.start_window_background'))
-        .padding({ top: 50 })
+          .height(60)
+          .alignItems(HorizontalAlign.Center)
       }
+      .width('100%')
+      .height('100%')
+      .backgroundColor($r('app.color.start_window_background'))
+      .padding({ top: 60 }) // 为标题栏留出空间
     }
-    .scrollable(ScrollDirection.Vertical) // 设置垂直滚动方向
-    .height('100%') // 必须设置高度为100%以撑满父容器
+    .scrollable(ScrollDirection.Vertical)
+    .height('100%')
   }
 }
 
