@@ -6,12 +6,12 @@
         "type": "HarmonyOS",
         "material": {
           "storeFile": "D:/Huawei/xh/xh.p12",
-          "storePassword": "000000185BDE55323D3D4EB8527F99FD9350CC5ED920B15A206617EB6CDECD25C884143F43056957",
+          "storePassword": "0000001805CEB58C57363F90FD7B4439632D6335629F1CA20F1C102AC6C3B42CD51013768914B1A5",
           "keyAlias": "hvideo",
-          "keyPassword": "00000018C9AE9C18A3CA35AE44228AD96A2AF28EB27616759A38BA2161B475F7E7F400C1EAD7C632",
+          "keyPassword": "000000186190185881EACB5546E872F279EB1B3EBCB568DD8DD00CF33A95FF18D11D97DF6F0713DD",
           "signAlg": "SHA256withECDSA",
-          "profile": "D:/Huawei/xh/xhRelease.p7b",
-          "certpath": "D:/Huawei/xh/xh.cer"
+          "profile": "D:/Huawei/xh/xhdebugDebug.p7b",
+          "certpath": "D:/Huawei/xh/xhdebug.cer"
         }
       }
     ],

@@ -53,8 +53,8 @@ export struct HomePage {
   @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
   @State isPlaying: boolean = true;
   @State picture: PixelMap | undefined = undefined;
-  //@State networkPreviewUri: string = 'https://www.hnyqwq.cn/hvideo/130.png'; // 默认网络预览图
-  @State networkPreviewUri: Resource = $r('app.media.homepageback');
+  @State networkPreviewUri: string = 'https://alliance-communityfile-drcn.dbankcdn.com/FileServer/getFile/cmtyPub/011/111/111/0000000000011111111.20250619214006.97034879442358031240038108231386:50001231000000:2800:9DF5FBE3CAEA23BDF03EE24586AD0EDF3CF2612B430E0E139F3EF06053B313DF.png'; // 默认网络预览图
+  //@State networkPreviewUri: Resource = $r('app.media.homepageback');
   @State savefileUri: string = ' ';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
   @State isControls: boolean = false; // 控制栏显示状态
