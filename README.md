@@ -10,9 +10,9 @@
 
 >> HUAWEI Mate 60 BRA-AL00
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.35 (SP51DEVC00E36R4P2logpatch01) Developer Beta
+>>> HarmonyOS版本：HarmonyOS 5.1.0.128 (SP5C00E128R4P1)
 
->>> API版本：6.0.0(20) Beta1
+>>> API版本：5.0.5(17)
 
 >> HUAWEI MatePad Pro 12.2" MRO-W00
 
@@ -28,7 +28,7 @@
 >> - **平板**：HUAWEI MatePad Pro 13.2" 2025 & HUAWEI MatePad Pro 12.2" 2025
 >> - **2in1**：HUAWEI MateBook Pro
 >> - **折叠2in1**：HUAWEI MateBook Fold Ultimate Design
->> - **API版本**：5.0.5(17) / 5.1.0(18) / 5.1.1(19)
+>> - **API版本**：5.0.5(17) / 5.1.0(18) / 5.1.1(19) 及以上
 
 ---
 
@@ -215,6 +215,7 @@ entry/src/main/ets/
 |   |---SecondPage.ets
 |   |---MinePage.ets
 |   |---exPage.ets
+|   |---infoPage.ets
 ```
 
 ---

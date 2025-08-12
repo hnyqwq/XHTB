@@ -167,6 +167,26 @@ export struct MinePage {
 
           Text($r('app.string.copyright'))
             .fontSize(12);
+          Text() {
+            Span('蜀ICP备2025142744号-2A')
+              .onClick(() => {
+                try {
+                  let want: Want = {
+                    "action": "ohos.want.action.viewData",
+                    "entities": ["entity.system.browsable"],
+                    uri: 'https://beian.miit.gov.cn',
+                    "type": "text/plain"
+                  }
+                  let context = getContext(this) as common.UIAbilityContext;
+                  context.startAbility(want)
+                  console.info(`explicit start ability succeed`)
+                } catch (error) {
+                  console.info(`explicit start ability failed with ${error.code}`)
+                }
+              })
+              .fontColor(Color.Blue)
+              .fontSize(12);
+          }
         }
         .width('100%')
         .height(60)

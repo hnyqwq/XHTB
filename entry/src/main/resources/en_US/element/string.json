@@ -289,6 +289,10 @@
       "value":"Serial number"
     },
     {
+      "name":"info5",
+      "value":"HarmonyOS NEXT"
+    },
+    {
       "name":"choose",
       "value":"Choose video"
     },

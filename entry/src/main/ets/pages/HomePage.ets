@@ -112,7 +112,7 @@ export struct HomePage {
   }
 
   //碰一碰分享
-  /*private async DownloadToSandbox() {
+  private async DownloadToSandbox() {
     try {
       console.log('downloadTask filesDir' + filesDir + '/pengyipeng.jpg');
       //下载文件
@@ -131,7 +131,7 @@ export struct HomePage {
       let err: BusinessError = error as BusinessError;
       console.error('Invoke downloadTask downloadFile failed, code is ${err.code}, message is ${err.message}');
     }
-  }*/
+  }
 
   isValidUrl(url: string): boolean {
     const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
@@ -145,7 +145,7 @@ export struct HomePage {
   }
 
   aboutToAppear(): void {
-    //this.DownloadToSandbox();
+    this.DownloadToSandbox();
     this.whiteListening()
     //this.immersiveListening();
     let context = getContext(this);
@@ -191,7 +191,17 @@ export struct HomePage {
       this.controller.start();
       AppStorage.delete('sharedVideoUrl');
     }
-
+    const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+    let filePath = this.context?.filesDir + "/pengyipeng.jpg";
+    let shareData: systemShare.SharedData = new systemShare.SharedData({
+      utd: utd.UniformDataType.HYPERLINK,
+      content: this.networkVideoSrc,
+      thumbnailUri: fileUri.getUriFromPath(filePath),
+      title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
+      description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+    });
+    sharableTarget.share(shareData);
+/*
     try {
       const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
 
@@ -225,7 +235,7 @@ export struct HomePage {
         description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
       });
       sharableTarget.share(shareData);
-    }
+    }*/
   }
 
   // 修改事件监听与解绑逻辑
@@ -509,10 +519,11 @@ export struct HomePage {
               }).catch((error: BusinessError) => {
                 hilog.error(0x0001, '[Scan]',
                   `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
-                promptAction.showToast({ message: '扫码失败: ' + error.message });
+                promptAction.showToast({ message: '扫码失败: 读取二维码信息错误' });
               });
             } catch (error) {
-              promptAction.showToast({ message: '扫码失败: ' + error.message });
+              //promptAction.showToast({ message: '扫码失败: ' + error.message });
+              promptAction.showToast({ message: '扫码失败: PC/2in1设备暂不支持扫描二维码' });
               hilog.error(0x0001, '[Scan]',
                 `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
             }
@@ -610,7 +621,7 @@ export struct HomePage {
               action: () => {
                 console.info('handle Menu21 select');
                 this.currentFitMode = ImageFit.Cover;
-                promptAction.showToast({
+                promptAction.showToast({ duration: 10000,
                   message: $r('app.string.Coveryes')
                 })
               }
@@ -620,7 +631,7 @@ export struct HomePage {
               action: () => {
                 console.info('handle Menu22 select');
                 this.currentFitMode = ImageFit.Auto;
-                promptAction.showToast({
+                promptAction.showToast({ duration: 10000,
                   message: $r('app.string.Autoyes')
                 })
               }
@@ -630,7 +641,7 @@ export struct HomePage {
               action: () => {
                 console.info('handle Menu23 select');
                 this.currentFitMode = ImageFit.Fill;
-                promptAction.showToast({
+                promptAction.showToast({ duration: 10000,
                   message: $r('app.string.Fillyes')
                 })
               }
@@ -640,7 +651,7 @@ export struct HomePage {
               action: () => {
                 console.info('handle Menu24 select');
                 this.currentFitMode = ImageFit.Contain;
-                promptAction.showToast({
+                promptAction.showToast({ duration: 10000,
                   message: $r('app.string.Containyes')
                 })
               }

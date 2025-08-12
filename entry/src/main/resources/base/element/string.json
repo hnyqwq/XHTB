@@ -289,6 +289,10 @@
 			"value":"软件版本"
 		},
 		{
+			"name":"info5",
+			"value":"HarmonyOS NEXT"
+		},
+		{
 			"name":"choose",
 			"value":"选择视频"
 		},

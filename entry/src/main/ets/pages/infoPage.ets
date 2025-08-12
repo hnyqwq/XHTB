@@ -123,9 +123,9 @@ let buildRootHashInfo: string = deviceInfo.buildRootHash;
 // 输出结果：the value of the buildRootHash is :default
 console.info('the value of the deviceInfo buildRootHash is :' + buildRootHashInfo);
 
-let udid: string = deviceInfo.udid;
+//let udid: string = deviceInfo.udid;
 // 输出结果：the value of the udid is :9D6AABD147XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXE5536412
-console.info('the value of the deviceInfo udid is :' + udid);
+//console.info('the value of the deviceInfo udid is :' + udid);
 
 let distributionOSName: string = deviceInfo.distributionOSName
 // 输出结果：the value of the distributionOSName is :OpenHarmony
@@ -150,9 +150,9 @@ let odid: string = deviceInfo.ODID;
 // 输出结果：the value of the ODID is :1234a567-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 console.info('the value of the deviceInfo odid is :' + odid);
 
-let diskSN: string = deviceInfo.diskSN;
+//let diskSN: string = deviceInfo.diskSN;
 // 输出结果：the value of the deviceInfo diskSN is :2502EM400567
-console.info('the value of the deviceInfo diskSN is :' + diskSN);
+//console.info('the value of the deviceInfo diskSN is :' + diskSN);
 
 let performanceClass = deviceInfo.performanceClass;
 // 输出结果：the value of the deviceInfo performanceClass is :0
@@ -216,7 +216,7 @@ export struct infoPage {
     new FirstMenu('two', $r('app.string.info2'), productModelInfo, $r('app.string.void')),
     new FirstMenu('three',$r('app.string.info3'),distributionOSVersion, $r('app.string.void')),
     new FirstMenu('four',$r('app.string.info4'),fullVersionsr, $r('app.string.void')),
-  //new FirstMenu('five', '序列号', '前往个人博客', $r('app.string.void'))
+    new FirstMenu('five',$r('app.string.info5') ,versionSegsr, $r('app.string.void'))
   ];
   @State SecondMenuGroup: SecondMenu[] = [
     new SecondMenu('one', '型号名称', marketNameInfo, $r('app.string.void')),
@@ -283,11 +283,11 @@ export struct infoPage {
               Image($r('app.media.CIcon'))
                 .width(60)
                 .height(60)
-              Text(versionSegsr)
+              /*Text(versionSegsr)
                 .fontWeight(700)
                 .fontSize('16fp')
-                .margin({ top: 10 })
-              Text('1.3.3.1（10303001）')
+                .margin({ top: 10 })*/
+              Text('1.3.3.2（10303002）')
                 .fontWeight(600)
                 .fontSize('20fp')
                 .margin({ top: 10 })
