@@ -53,7 +53,7 @@ export struct HomePage {
   @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
   @State isPlaying: boolean = true;
   @State picture: PixelMap | undefined = undefined;
-  @State networkPreviewUri: string = 'https://alliance-communityfile-drcn.dbankcdn.com/FileServer/getFile/cmtyPub/011/111/111/0000000000011111111.20250619214006.97034879442358031240038108231386:50001231000000:2800:9DF5FBE3CAEA23BDF03EE24586AD0EDF3CF2612B430E0E139F3EF06053B313DF.png'; // 默认网络预览图
+  @State networkPreviewUri: string = 'https://alliance-communityfile-drcn.dbankcdn.com/FileServer/getFile/cmtyPub/011/111/111/0000000000011111111.20250814201313.54764824779401317176433540350951:50001231000000:2800:0987A5ACC48494286FD28FDE9DDACFBCA0C24FD30400A3FE0AD75E2BC2A9EB2D.png'; // 默认网络预览图
   //@State networkPreviewUri: Resource = $r('app.media.homepageback');
   @State savefileUri: string = ' ';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
@@ -282,38 +282,27 @@ export struct HomePage {
   }*/
 
   //本地
-  async getFilenameByUriForMedia(myUris: string[]) {
-    this.getUIContext().getRouter().pushUrl({
-      url: 'pages/ViewMedia',
-      params: {
-        uris: myUris
-      }
-    }, router.RouterMode.Standard);
+  private async callFilePickerSelectImage() {
+    let uri = await this.openPhoto();
+    if (uri === undefined) {
+      hilog.error(0x0000, 'local', "Failed to get uri.");
+      return;
+    }
+    this.networkVideoSrc=uri;
   }
-  // Pull up the picker to select images/videos.
-  async callFilePickerSelectImage(): Promise<void> {
-    let array: string[];
-    let PhotoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
-    PhotoSelectOptions.MIMEType = photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE;
-    PhotoSelectOptions.maxSelectNumber = 1;
-    let mediaFlag = false;
-    // Create a PhotoViewPicker object.
-    let photoPicker = new photoAccessHelper.PhotoViewPicker();
-    photoPicker.select(PhotoSelectOptions).then((PhotoSelectResult) => {
-      JSON.stringify(PhotoSelectResult);
-      if (PhotoSelectResult !== null && PhotoSelectResult !== undefined) {
-        // Declare variable array, whose value is the array in PhotoSelectResult.
-        array = PhotoSelectResult['photoUris'];
-        array.forEach((value) => {
-          this.uri = value;
-          mediaFlag = true;
-        })
-        this.networkVideoSrc = '';
-        this.networkVideoSrc = this.uri; // 明确取第一个元素
-      }
-      if (mediaFlag) {
-        this.getFilenameByUriForMedia(array);
-      }
+
+  private openPhoto(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      let photoPicker: photoAccessHelper.PhotoViewPicker = new photoAccessHelper.PhotoViewPicker();
+      photoPicker.select({
+        MIMEType: photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE,
+        maxSelectNumber: 1
+      }).then((res: photoAccessHelper.PhotoSelectResult) => {
+        resolve(res.photoUris[0]);
+      }).catch((err: BusinessError) => {
+        hilog.error(0x0000, 'local', `Failed to get photo image uri. code：${err.code}，message：${err.message}`);
+        reject('');
+      })
     })
   }
 

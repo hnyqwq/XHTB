@@ -1,7 +1,7 @@
 import { common, Want } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import router from '@ohos.router';
-import { promptAction } from '@kit.ArkUI';
+import { PromptAction } from '@kit.ArkUI';
 
 @Observed
 class SettingMenu {
@@ -22,6 +22,8 @@ class SettingMenu {
 @Entry
 @Component
 export struct MinePage {
+  promptAction: PromptAction = this.getUIContext().getPromptAction();
+  private iconStr: ResourceStr = $r("app.media.CIcon");
   @State menuGroup: SettingMenu[] = [
     new SettingMenu('setting', $r('app.media.mine_settings'), $r('app.string.mine1'), $r('app.string.void')),
     new SettingMenu('vipownsetting', $r('app.media.mine_vipsettings'), $r('app.string.mine2'), $r('app.string.void')),
@@ -29,6 +31,64 @@ export struct MinePage {
     new SettingMenu('mylike', $r('app.media.mine_like'), $r('app.string.mine4'), $r('app.string.void')),
     new SettingMenu('browsinghistory', $r('app.media.mine_time'), $r('app.string.mine5'), $r('app.string.void'))
   ];
+  //设置一镜到底动效
+  @Builder
+  MyMenu() {
+    Menu() {
+      MenuItem({ startIcon: this.iconStr, content: "", })
+        .onClick(() => {
+            let want: Want = {
+              "action": "ohos.want.action.viewData",
+              "entities": ["entity.system.browsable"],
+              uri: 'https://hnyqwq.cn/hvideo/xh.html',
+            }
+            let context = getContext(this) as common.UIAbilityContext;
+            context.startAbility(want)
+            console.info(`explicit start ability succeed`)
+        })
+      MenuItem({ startIcon: this.iconStr, content: "前往MeoW，订阅频道后点击联系博主以反馈问题" })
+        .onClick(() => {
+          let want: Want = {
+            "action": "ohos.want.action.viewData",
+            "entities": ["entity.system.browsable"],
+            uri: 'https://www.chuckfang.com/MeoW/appLinking?channelId=9687404a1b84433184ba27f16a57da3e',
+          }
+          let context = getContext(this) as common.UIAbilityContext;
+          context.startAbility(want)
+          console.info(`explicit start ability succeed`)
+        })
+      MenuItem({ startIcon: this.iconStr, content: "前往MeoW，订阅频道后点击联系博主以反馈问题" })
+        .onClick(() => {
+          this.promptAction.showActionMenu({
+            title: 'showActionMenu Title Info',
+            buttons: [
+              {
+                text: 'item1',
+                color: '#666666'
+              },
+              {
+                text: 'item2',
+                color: '#000000'
+              },
+            ]
+          })
+            .then(data => {
+              console.info('showActionMenu success, click button: ' + data.index);
+            })
+            .catch((err: Error) => {
+              console.error('showActionMenu error: ' + err);
+            })
+        })
+    }
+  }
+  @Builder
+  MyPreview() {
+    Column() {
+      Image($r('app.media.CIcon'))
+        .width(200)
+        .height(200)
+    }
+  }
 
   build() {
     Stack() {
@@ -43,7 +103,14 @@ export struct MinePage {
         Column() {
           Image($r('app.media.CIcon'))
             .width(60)
-            .height(60);
+            .height(60)
+            .bindContextMenu(this.MyMenu, ResponseType.LongPress,
+              {
+                preview: this.MyPreview,
+                previewAnimationOptions: {
+                  hoverScale: [1.0, 0.95]
+                }
+              })
           Text($r('app.string.appname'))
             .fontWeight(700)
             .fontSize('14fp')

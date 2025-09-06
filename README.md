@@ -4,19 +4,19 @@
 
 >> nova 14 Ultra MRT-AL10
 
->>> HarmonyOS版本：HarmonyOS 5.1.0.128 (SP10C00E128R5P1patch01)
+>>> HarmonyOS版本：HarmonyOS 5.1.0.150 (C00E140R5P1patch04)
 
 >>> API版本：5.0.5(17)
 
 >> HUAWEI Mate 60 BRA-AL00
 
->>> HarmonyOS版本：HarmonyOS 5.1.0.128 (SP5C00E128R4P1)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.45 (SP35DEVC00E45R4P4logpatch03) Developer Beta
 
->>> API版本：5.0.5(17)
+>>> API版本：6.0.0(20) Beta3
 
 >> HUAWEI MatePad Pro 12.2" MRO-W00
 
->>> HarmonyOS版本：HarmonyOS 5.1.0.128 (SP5C00E128R1P1patch03)
+>>> HarmonyOS版本：HarmonyOS 5.1.0.150 (SP7C00E128R1P1patch06)
 
 >>> API版本：5.0.5(17)
 
@@ -25,9 +25,11 @@
 >> - **手机**：HUAWEI nova 14 / HUAWEI nova 14 Pro / HUAWEI Pura 80 / HUAWEI Pura 80 Pro / HUAWEI Pura 80 Pro+ / HUAWEI Pura 80 Ultra
 >> - **折叠屏**：HUAWEI Mate X6
 >> - **阔折叠**：
->> - **平板**：HUAWEI MatePad Pro 13.2" 2025 & HUAWEI MatePad Pro 12.2" 2025
+>> - **三折叠**：HUAWEI Mate XTs | Ultimate Design
+>> - **平板**：HUAWEI MatePad Pro 13.2" 2025 / HUAWEI MatePad Pro 12.2" 2025 / HUAWEI MatePad mini
 >> - **2in1**：HUAWEI MateBook Pro
 >> - **折叠2in1**：HUAWEI MateBook Fold Ultimate Design
+>> - **穿戴设备**：
 >> - **API版本**：5.0.5(17) / 5.1.0(18) / 5.1.1(19) 及以上
 
 ---
@@ -122,7 +124,7 @@
 
 >> ## [Share Kit（分享服务）](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/share-kit-guide)
 
->>> 指南>应用服务>Share Kit（分享服务）  
+>>> 指南>应用服务>Share Kit（分享服务）
 
 >> ## [走近 HarmonyOS](https://consumer.huawei.com/cn/support/harmonyos-video/)
 
