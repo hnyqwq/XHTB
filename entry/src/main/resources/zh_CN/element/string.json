@@ -214,11 +214,11 @@
     },
     {
       "name":"nowplayingon",
-      "value":"可直接使用碰一碰传送"
+      "value":"可碰一碰分享至 HarmonyOS 5 及以上版本手机"
     },
     {
       "name":"nowplaying",
-      "value":"可直接使用碰一碰传送\n当前扫描的结果/待分享/待处理的文本"
+      "value":"当前扫描的结果/待分享/待处理的文本"
     },
     {
       "name":"pick",

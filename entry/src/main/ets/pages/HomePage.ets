@@ -25,6 +25,7 @@ import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import MediaFileUri from '../media/MediaFileUri';
 import { dataSharePredicates } from '@kit.ArkData';
 import { uri } from '@kit.ArkTS';
+import KnockShareGuideCard, { CardRes } from '../model/KnockShareGuideCard';
 
 interface myParams {
   uri: string
@@ -113,6 +114,22 @@ export struct HomePage {
   }
 
   //碰一碰分享
+  private readonly cardSwiperResources: CardRes[] = [
+    {
+      text: '对方手机需 HarmonyOS 5 及以上版本。',
+      rawfilePrefix: 'knock_share_guide/knock_share_guide_phone_',
+      framesCount: 128,
+      startDelay: 50,
+      stopDelay: 500,
+    },
+    {
+      text: '对方电脑需 HarmonyOS 6 及以上版本。',
+      rawfilePrefix: 'knock_share_guide/knock_share_guide_pc_',
+      framesCount: 104,
+      startDelay: 50,
+      stopDelay: 50,
+    },
+  ];
   private debounceTimer: number = 0
   // 修改 handleImageUpdate 方法
   private handleImageUpdate() {
@@ -330,14 +347,16 @@ export struct HomePage {
 
   build() {
     Column() {
-      Row()
+      Column()
       {
-        TextInput({ placeholder: $r('app.string.linkinput'), text: this.sharepng })
+        Text($r('app.string.sharepngon'))
+          .textAlign(TextAlign.Center)
+        TextInput({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
           .type(InputType.URL)
           //.backgroundColor('#FF9CCE')
           .width('90%')
           .height(50)
-          .margin({ bottom: 10 })
+          .margin({ top: 10, bottom: 10 })
           .onChange((sharepng: string) => {
             this.sharepng = sharepng;
             if (this.isValidUrl(sharepng)) {
@@ -345,6 +364,9 @@ export struct HomePage {
             }
           })
       }
+      Text($r('app.string.texton'))
+        .textAlign(TextAlign.Center)
+        .margin({ top: 5, bottom: 10 })
       Row() {
         Button($r('app.string.scancode'))
         //.globalButtonStyle()
@@ -559,14 +581,26 @@ export struct HomePage {
       Stack({ alignContent: Alignment.TopStart }) {
         // 滚动区域
           Column() {
-            Text($r('app.string.nowplayingon'+'\n'))
-              .textAlign(TextAlign.Center)
             Text($r('app.string.nowplaying'))
               .textAlign(TextAlign.Center)
             Text(this.networkVideoSrc)
+              .padding({ top: 10 })
               .copyOption(CopyOptions.LocalDevice)
               .textAlign(TextAlign.Center)
               .width('100%')
+            Text($r('app.string.nowplayingon'))
+              .padding({ top: 10 , left: 24, right: 24 })
+              .maxLines(2)
+              .fontSize(11)
+              .maxFontScale(1.75)
+              .width('100%')
+              .constraintSize({ minHeight: 16 })
+              .fontColor($r('sys.color.font_secondary'))
+              .fontFamily('HarmonyHeiTi')
+              .textAlign(TextAlign.Center)
+            KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
+              .padding({ top: 2 })
+
             /*Text(this.myFileName)
               .focusable(true)
               .focusOnTouch(true)

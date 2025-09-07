@@ -214,7 +214,7 @@
 		},
 		{
 			"name":"nowplayingon",
-			"value":"可直接使用碰一碰传送"
+			"value":"可碰一碰分享至 HarmonyOS 5 及以上版本手机"
 		},
 		{
 			"name":"nowplaying",
@@ -319,6 +319,18 @@
 		{
 			"name":"qrcode",
 			"value":"输入需要生成二维码的文本"
+		},
+		{
+			"name":"sharepngon",
+			"value":"输入分享的背景图片直链"
+		},
+		{
+			"name":"sharepng",
+			"value":"\uDB81\uDC94 输入分享的背景图片直链"
+		},
+		{
+			"name":"texton",
+			"value":"输入或处理需要分享的链接"
 		}
 	]
 }
