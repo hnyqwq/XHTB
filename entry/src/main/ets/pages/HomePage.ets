@@ -440,7 +440,7 @@ export struct HomePage {
               }).catch((error: BusinessError) => {
                 hilog.error(0x0001, '[Scan]',
                   `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
-                promptAction.showToast({ message: 'PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备' });
+                promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
               });
             } catch (error) {
               //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
