@@ -1,7 +1,7 @@
 import { common, Want } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import router from '@ohos.router';
-import { PromptAction } from '@kit.ArkUI';
+import { PromptActionClass } from '../DocScan//PromptActionClass';
 
 @Observed
 class SettingMenu {
@@ -22,7 +22,31 @@ class SettingMenu {
 @Entry
 @Component
 export struct MinePage {
-  promptAction: PromptAction = this.getUIContext().getPromptAction();
+  @State inputText: string = ''
+  private customDialogComponentId: number = 0
+  @Builder
+  customDialogComponent() {
+    Column()
+    {
+    TextArea({text: this.inputText})
+      .height(200)
+    Row({ space: 50 }) {
+      Button('确认')
+        .onClick(() => {
+          PromptActionClass.closeDialog();
+          // 后台请求链接
+          let want: Want = {
+            "entities": ["entity.system.browsable"],
+            uri: 'https://api.chuckfang.com/hnyqwq/星河工具盒-反馈/' + this.inputText,
+          }
+          let context = getContext(this) as common.UIAbilityContext;
+          context.startAbility(want)
+          console.info(`MenuItem3 ability succeed`)
+        })
+    }.height(200).padding(5)
+    }
+  }
+
   private iconStr: ResourceStr = $r("app.media.CIcon");
   @State menuGroup: SettingMenu[] = [
     new SettingMenu('setting', $r('app.media.mine_settings'), $r('app.string.mine1'), $r('app.string.void')),
@@ -35,16 +59,16 @@ export struct MinePage {
   @Builder
   MyMenu() {
     Menu() {
-      MenuItem({ startIcon: this.iconStr, content: "", })
+      MenuItem({ startIcon: this.iconStr, content: "前往云影工具屋APP", })
         .onClick(() => {
             let want: Want = {
               "action": "ohos.want.action.viewData",
               "entities": ["entity.system.browsable"],
-              uri: 'https://hnyqwq.cn/hvideo/xh.html',
+              uri: 'https://hnyqwq.cn/hvideo',
             }
             let context = getContext(this) as common.UIAbilityContext;
             context.startAbility(want)
-            console.info(`explicit start ability succeed`)
+            console.info(`MenuItem1 ability succeed`)
         })
       MenuItem({ startIcon: this.iconStr, content: "前往MeoW，订阅频道后点击联系博主以反馈问题" })
         .onClick(() => {
@@ -55,28 +79,32 @@ export struct MinePage {
           }
           let context = getContext(this) as common.UIAbilityContext;
           context.startAbility(want)
-          console.info(`explicit start ability succeed`)
+          console.info(`MenuItem2 ability succeed`)
         })
-      MenuItem({ startIcon: this.iconStr, content: "前往MeoW，订阅频道后点击联系博主以反馈问题" })
+      MenuItem({ startIcon: this.iconStr, content: "直接发送问题" })
         .onClick(() => {
-          this.promptAction.showActionMenu({
-            title: 'showActionMenu Title Info',
-            buttons: [
-              {
-                text: 'item1',
-                color: '#666666'
-              },
-              {
-                text: 'item2',
-                color: '#000000'
-              },
-            ]
+          this.getUIContext().getPromptAction().openCustomDialog({
+            builder: () => {
+              this.customDialogComponent()
+            },
+            /*isModal:true,
+            showInSubWindow:false,
+            maskColor: Color.Pink,
+            maskRect:{ x: 20, y: 20, width: '90%', height: '90%' },
+
+            dialogTransition: // 设置弹窗内容显示的过渡效果
+            TransitionEffect.translate({ x: 0, y: 290, z: 0 })
+              .animation({ duration: 4000, curve: Curve.Smooth }),// 四秒钟的偏移渐变动画
+
+            maskTransition: // 设置蒙层显示的过渡效果
+            TransitionEffect.opacity(0)
+              .animation({ duration: 4000, curve: Curve.Smooth }) // 四秒钟的透明渐变动画
+*/
+          }).then((dialogId: number) => {
+            this.customDialogComponentId = dialogId
           })
-            .then(data => {
-              console.info('showActionMenu success, click button: ' + data.index);
-            })
-            .catch((err: Error) => {
-              console.error('showActionMenu error: ' + err);
+            .catch((error: BusinessError) => {
+              console.error(`openCustomDialog error code is ${error.code}, message is ${error.message}`)
             })
         })
     }
