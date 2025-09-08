@@ -84,31 +84,41 @@ export struct HomePage {
   private context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
 
   //背景图片本地
-  // 替代方案：使用PhotoViewPicker
-  private async selectLocalImage() {
+  private async selectImage() {
+    let uri = await this.openPhoto();
+    if (uri === undefined) {
+      hilog.error(0x0000, 'OCRDemo', "Failed to get uri.");
+      return;
+    }
+
+    let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+    let targetPath = context.filesDir + '/pengyipeng.jpg';
+    let originFile: fileIo.File | undefined;
     try {
-      let photoPicker: photoAccessHelper.PhotoViewPicker = new photoAccessHelper.PhotoViewPicker();
-
-      // 定义选择选项
-      let options: photoAccessHelper.PhotoSelectOptions = {
-        MIMEType: photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE,
-        maxSelectNumber: 1
-      };
-
-      const result: photoAccessHelper.PhotoSelectResult = await photoPicker.select(options);
-
-      if (result && result.photoUris && result.photoUris.length > 0) {
-        this.localShareImageUri = result.photoUris[0];
-        this.isLocalImageSelected = true;
-        promptAction.showToast({ message: $r('app.string.local_image_selected') });
-      }
+      originFile = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY); // 打开源URI文件
+      fileIo.copyFileSync(originFile.fd, targetPath); // 复制到目标路径
+      hilog.info(0x0000, 'localsharepng' , 'Copy completed: ' + targetPath);
     } catch (error) {
-      let businessError = error as BusinessError;
-      hilog.error(0x0000, 'localImage', `Failed to select image. code: ${businessError.code}, message: ${businessError.message}`);
-      promptAction.showToast({ message: $r('app.string.select_image_failed') });
+      hilog.error(0x0000, 'localsharepng' , 'Copy failed: ' + JSON.stringify(error));
+    } finally {
+      fileIo.closeSync(originFile); // 关闭文件句柄
     }
   }
 
+  private openPhoto(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      let photoPicker: photoAccessHelper.PhotoViewPicker = new photoAccessHelper.PhotoViewPicker();
+      photoPicker.select({
+        MIMEType: photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE,
+        maxSelectNumber: 1
+      }).then((res: photoAccessHelper.PhotoSelectResult) => {
+        resolve(res.photoUris[0]);
+      }).catch((err: BusinessError) => {
+        hilog.error(0x0000, 'OCRDemo', `Failed to get photo image uri. code：${err.code}，message：${err.message}`);
+        reject('');
+      })
+    })
+  }
 
 
   //华为系统分享
@@ -347,14 +357,14 @@ export struct HomePage {
           .textAlign(TextAlign.Center)
           .width('55%')
         Button($r('app.string.choose'))
-          .width('27.1%')
           .height(50)
           .width('40%')
           .backgroundColor(0xFF66CC)
           .onClick(() => {
-            this.selectLocalImage();
+            this.selectImage();
           })
       }
+      .width('100%')
       TextInput({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
         .type(InputType.URL)
         //.backgroundColor('#FF9CCE')
