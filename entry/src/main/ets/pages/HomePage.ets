@@ -410,7 +410,7 @@ export struct HomePage {
         .type(InputType.URL)
         //.backgroundColor('#FF9CCE')
         .width('90%')
-        .height(50)
+        //.height(50)
         .margin({ top: 10, bottom: 10 })
         .onChange((sharepng: string) => {
           this.sharepng = sharepng;
@@ -500,7 +500,6 @@ export struct HomePage {
         TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
         //.backgroundColor('#FF9CCE')
           .width('55%')
-          .height(50)
           .onChange((pengtitle: string) => {
             this.pengtitle = pengtitle;
             AppStorage.set('pengtitle', pengtitle);
