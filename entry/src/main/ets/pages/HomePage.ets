@@ -75,6 +75,14 @@ export struct HomePage {
     /*text: SaveDescription.SAVE_IMAGE,
     buttonType: ButtonType.Capsule*/
   }
+  //隔空投送
+  /*private immersiveListening() {
+    harmonyShare.on('gesturesShare', this.immersiveCallback);
+  }
+
+  private immersiveDisablingListening() {
+    harmonyShare.off('gesturesShare', this.immersiveCallback);
+  }*/
   //本地
   @State myContext: Context = this.getUIContext().getHostContext() as common.UIAbilityContext;
   @State myFileTypes: number = 0;
