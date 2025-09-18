@@ -4,21 +4,21 @@
 
 >> nova 14 Ultra MRT-AL10
 
->>> HarmonyOS版本：HarmonyOS 5.1.0.150 (SP5C00E140R5P1patch03)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.100 (C00E47R4P4logpatch02) Developer
 
->>> API版本：5.0.5(17)
+>>> API版本：6.0.0(20) Beta5
 
 >> HUAWEI Mate 60 BRA-AL00
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.45 (SP35DEVC00E45R4P4logpatch03) Developer Beta
+>>> HarmonyOS版本：HarmonyOS 6.0.0.100 (C00E47R5P2patch02) Developer
 
->>> API版本：6.0.0(20) Beta3
+>>> API版本：6.0.0(20) Beta5
 
 >> HUAWEI MatePad Pro 12.2" MRO-W00
 
->>> HarmonyOS版本：HarmonyOS 5.1.0.150 (SP7C00E128R1P1patch06)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.100 (C00E47R1P2patch02) Developer
 
->>> API版本：5.0.5(17)
+>>> API版本：6.0.0(20) Beta5
 
 > 可运行环境：
 
@@ -30,6 +30,7 @@
 >> - **2in1**：HUAWEI MateBook Pro
 >> - **折叠2in1**：HUAWEI MateBook Fold Ultimate Design
 >> - **穿戴设备**：
+>> - **TV**：
 >> - **API版本**：5.0.5(17) / 5.1.0(18) / 5.1.1(19) 及以上
 
 ---
