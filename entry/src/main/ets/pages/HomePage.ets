@@ -106,6 +106,9 @@ export struct HomePage {
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
     // 根据当前图片扩展名设置目标路径
     let targetPath = context.filesDir + '/pengyipeng' + this.imageExtension;
+
+    this.sharepng = targetPath;
+
     let originFile: fileIo.File | undefined;
     try {
       originFile = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY); // 打开源URI文件
@@ -418,8 +421,8 @@ export struct HomePage {
           })
       }
       .width('100%')
-      TextInput({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
-        .type(InputType.URL)
+      TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
+        //.type(InputType.URL)
         //.backgroundColor('#FF9CCE')
         .width('90%')
         //.height(50)
