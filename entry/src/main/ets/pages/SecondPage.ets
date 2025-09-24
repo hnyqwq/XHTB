@@ -5,6 +5,8 @@ import { scanCore, generateBarcode } from '@kit.ScanKit';
 import { buffer } from '@kit.ArkTS';
 
 import { textToSpeech } from '@kit.CoreSpeechKit';//语音
+//点光源效果
+import { hdsEffect } from '@kit.UIDesignKit';
 let ttsEngine: textToSpeech.TextToSpeechEngine;
 
 @Entry
@@ -21,6 +23,9 @@ export struct SecondPage {
   @State utteranceId: string = '123456';
   @State illegalText: string = '';
   @StorageLink('isPlaying') isPlaying: boolean = false;
+
+  //点光源效果
+  @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;
 
   aboutToDisappear() {
     try {
@@ -47,6 +52,31 @@ export struct SecondPage {
           this.networkVideoSrc = networkVideoSrc;
           AppStorage.set('networkVideoSrc', networkVideoSrc);
         })
+        .visualEffect(new hdsEffect.HdsEffectBuilder()
+          .shaderEffect({
+            effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+            animation: {
+              duration: 4000,
+              iterations: -1,
+              autoPlay: true,
+              onFinish: () => {
+                console.info('Succeeded in finishing');
+              }
+            },
+            params: {
+              firstEdgeFlowLight: {
+                startPos: 0,
+                endPos: 1.0,
+                color: '#0A59F7',
+              },
+              secondEdgeFlowLight: {
+                startPos: 0.5,
+                endPos: 1.5,
+                color: '#ffed6f21',
+              }
+            }
+          })
+          .buildEffect())
 
       Row({ space: 40 }) {
         Button('', { type: ButtonType.Circle, stateEffect: true })
@@ -95,6 +125,32 @@ export struct SecondPage {
           this.networkVideoSrc = networkVideoSrc;
           AppStorage.set('networkVideoSrc', networkVideoSrc);
         })
+
+        .visualEffect(new hdsEffect.HdsEffectBuilder()
+          .shaderEffect({
+            effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+            animation: {
+              duration: 4000,
+              iterations: -1,
+              autoPlay: true,
+              onFinish: () => {
+                console.info('Succeeded in finishing');
+              }
+            },
+            params: {
+              firstEdgeFlowLight: {
+                startPos: 0,
+                endPos: 1.0,
+                color: '#1AD0F1',
+              },
+              secondEdgeFlowLight: {
+                startPos: 0.5,
+                endPos: 1.5,
+                color: '#FFA4E5',
+              }
+            }
+          })
+          .buildEffect())
       Button($r('app.string.pick'))
         .margin({ top: 10 })
         .onClick(() => {

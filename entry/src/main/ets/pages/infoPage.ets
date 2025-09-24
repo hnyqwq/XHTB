@@ -280,7 +280,7 @@ export struct infoPage {
                 .fontWeight(700)
                 .fontSize('16fp')
                 .margin({ top: 10 })*/
-              Text('1.3.6.1（10306001）')
+              Text('1.3.6.2（10306002）')
                 .fontWeight(600)
                 .fontSize('20fp')
                 .margin({ top: 10 })

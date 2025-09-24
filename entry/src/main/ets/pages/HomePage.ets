@@ -1,12 +1,10 @@
-import { unifiedDataChannel, uniformTypeDescriptor } from '@kit.ArkData';
 import { promptAction } from '@kit.ArkUI';
 import window from '@ohos.window';
 import { common } from '@kit.AbilityKit';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
-// 导入默认界面需要的日志模块和错误码模块
+// 导入日志模块和错误码模块
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { resourceManager } from '@kit.LocalizationKit';
 import { systemShare, harmonyShare } from '@kit.ShareKit';
 import { fileIo as fs } from '@kit.CoreFileKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
@@ -27,6 +25,15 @@ import MediaFileUri from '../media/MediaFileUri';
 import { dataSharePredicates } from '@kit.ArkData';
 import { uri } from '@kit.ArkTS';
 import KnockShareGuideCard, { CardRes } from '../model/KnockShareGuideCard';
+//点光源效果
+import { hdsEffect } from '@kit.UIDesignKit';
+//自带背景的双边流光
+import {
+  HdsVisualComponent,
+  HdsSceneController,
+  HdsSceneType,
+  HdsVisualComponentAttribute,
+} from '@kit.UIDesignKit';
 
 interface myParams {
   uri: string
@@ -75,6 +82,24 @@ export struct HomePage {
     /*text: SaveDescription.SAVE_IMAGE,
     buttonType: ButtonType.Capsule*/
   }
+  //点光源效果
+  @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;
+  //自带背景的双边流光
+  @State sceneController: HdsSceneController = new HdsSceneController()
+    .setSceneParams({
+      backgroundMaskColors: [Color.Green, Color.Red],
+      firstEdgeFlowLight: {
+        startPos: 0,
+        endPos: 0.5,
+        color: Color.Red
+      },
+      secondEdgeFlowLight: {
+        startPos: 0,
+        endPos: -0.5,
+        color: Color.Green
+      }
+    })
+
   //隔空投送
   private immersiveListening() {
     harmonyShare.on('gesturesShare', this.immersiveCallback);
@@ -433,6 +458,31 @@ export struct HomePage {
             this.handleImageUpdate(); // 触发图片更新逻辑
           }
         })
+        .visualEffect(new hdsEffect.HdsEffectBuilder()
+          .shaderEffect({
+            effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+            animation: {
+              duration: 4000,
+              iterations: -1,
+              autoPlay: true,
+              onFinish: () => {
+                console.info('Succeeded in finishing');
+              }
+            },
+            params: {
+              firstEdgeFlowLight: {
+                startPos: 0,
+                endPos: 1.0,
+                color: '#FF66CC',
+              },
+              secondEdgeFlowLight: {
+                startPos: 0.5,
+                endPos: 1.5,
+                color: '#b87cff',
+              }
+            }
+          })
+          .buildEffect())
       Text($r('app.string.texton'))
         .textAlign(TextAlign.Center)
         .margin({ top: 5, bottom: 10 })
@@ -504,7 +554,31 @@ export struct HomePage {
           this.networkVideoSrc = networkVideoSrc;
           AppStorage.set('networkVideoSrc', networkVideoSrc);
         })
-      .width('90%')
+        .visualEffect(new hdsEffect.HdsEffectBuilder()
+          .shaderEffect({
+            effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+            animation: {
+              duration: 4000,
+              iterations: -1,
+              autoPlay: true,
+              onFinish: () => {
+                console.info('Succeeded in finishing');
+              }
+            },
+            params: {
+              firstEdgeFlowLight: {
+                startPos: 0,
+                endPos: 1.0,
+                color: '#FF66CC',
+              },
+              secondEdgeFlowLight: {
+                startPos: 0.5,
+                endPos: 1.5,
+                color: '#FFA4E5',
+              }
+            }
+          })
+          .buildEffect())
       .margin({ top: 5, bottom: 10 })
       Row()
       {
@@ -519,6 +593,31 @@ export struct HomePage {
             this.pengtitle = pengtitle;
             AppStorage.set('pengtitle', pengtitle);
           })
+          .visualEffect(new hdsEffect.HdsEffectBuilder()
+            .shaderEffect({
+              effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+              animation: {
+                duration: 4000,
+                iterations: -1,
+                autoPlay: true,
+                onFinish: () => {
+                  console.info('Succeeded in finishing');
+                }
+              },
+              params: {
+                firstEdgeFlowLight: {
+                  startPos: 0,
+                  endPos: 1.0,
+                  color: '#1AD0F1',
+                },
+                secondEdgeFlowLight: {
+                  startPos: 0.5,
+                  endPos: 1.5,
+                  color: '#FFA4E5',
+                }
+              }
+            })
+            .buildEffect())
       }
       .margin({ top: 10 })
       .width('90%')  // 控制内容区域宽度
@@ -534,6 +633,19 @@ export struct HomePage {
                 .width('40%')
                 .height(50)
                 .backgroundColor(0x66CCFF)//蓝色
+                .visualEffect(new hdsEffect.HdsEffectBuilder()
+                  .pointLight({
+                    sourceType: this.lightSourceType,
+                    illuminatedType: hdsEffect.PointLightIlluminatedType.DEFAULT_FEATHERING_BORDER
+                  })
+                  .buildEffect())
+                .onTouch((event: TouchEvent) => {
+                  if (event.type === TouchType.Down) {
+                    this.lightSourceType = hdsEffect.PointLightSourceType.BRIGHT;
+                  } else if (event.type === TouchType.Up || event.type === TouchType.Cancel) {
+                    this.lightSourceType = hdsEffect.PointLightSourceType.NONE;
+                  }
+                })
                 .onClick(() => {
                   logger.info('分享按钮被点击');
                   try {
@@ -543,12 +655,41 @@ export struct HomePage {
                     promptAction.showToast({ message: '分享功能异常: ' + error.message });
                   }
                 })
-            }.width('100%')
+            }
+            .width('100%')
+            .padding({ bottom: 10 })
+
+
             Text(this.networkVideoSrc)
-              .padding({ top: 10 })
-              .copyOption(CopyOptions.LocalDevice)
-              .textAlign(TextAlign.Center).margin({ right: 10 })
-              .width('100%')
+              .padding({ top: 10 , bottom : 10 , left : 10 , right : 10 })
+               .copyOption(CopyOptions.LocalDevice)
+               .textAlign(TextAlign.Center)//.margin({ right: 10 })
+               .width('100%')
+               .visualEffect(new hdsEffect.HdsEffectBuilder()
+                .shaderEffect({
+                  effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+                  animation: {
+                    duration: 4000,
+                    iterations: -1,
+                    autoPlay: true,
+                    onFinish: () => {
+                      console.info('Succeeded in finishing');
+                    }
+                  },
+                  params: {
+                    firstEdgeFlowLight: {
+                      startPos: 0,
+                      endPos: 1.0,
+                      color: '#ff8a00',
+                    },
+                    secondEdgeFlowLight: {
+                      startPos: 0.5,
+                      endPos: 1.5,
+                      color: '#f3c52a',
+                    }
+                  }
+                })
+                .buildEffect())
 
 
             //碰一碰提示
