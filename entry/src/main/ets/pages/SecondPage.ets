@@ -2,7 +2,6 @@ import { image } from '@kit.ImageKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { scanCore, generateBarcode } from '@kit.ScanKit';
-import { buffer } from '@kit.ArkTS';
 
 import { textToSpeech } from '@kit.CoreSpeechKit';//语音
 //点光源效果
@@ -20,12 +19,13 @@ export struct SecondPage {
   @State voiceInfo: string = '';
   @State text: string = '';
   @State textContent: string = '';
-  @State utteranceId: string = '123456';
+  @State utteranceId: string = '123456'
   @State illegalText: string = '';
   @StorageLink('isPlaying') isPlaying: boolean = false;
 
   //点光源效果
   @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;
+  @State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();
 
   aboutToDisappear() {
     try {
@@ -63,6 +63,7 @@ export struct SecondPage {
                 console.info('Succeeded in finishing');
               }
             },
+            controller: this.controller,
             params: {
               firstEdgeFlowLight: {
                 startPos: 0,
@@ -137,6 +138,7 @@ export struct SecondPage {
                 console.info('Succeeded in finishing');
               }
             },
+            controller: this.controller,
             params: {
               firstEdgeFlowLight: {
                 startPos: 0,

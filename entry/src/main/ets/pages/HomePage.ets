@@ -63,8 +63,8 @@ export struct HomePage {
   @State isLocalImageSelected: boolean = false; // 是否已选择本地图片
   //碰一碰
   @State whiteStatus: boolean = false;
-  private controller: VideoController = new VideoController();
   //点光源效果
+  @State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();
   @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;
 
   //隔空投送
@@ -279,7 +279,7 @@ export struct HomePage {
     // 触发视频加载
     this.context.eventHub.on('urlUpdate', (url: string) => {
       this.networkVideoSrc = url
-      this.controller.start()
+      //this.controller.start()
     })
 
     context.eventHub.on('onBackGround', this.onBackGround);
@@ -304,7 +304,7 @@ export struct HomePage {
     const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
     if (sharedUrl && this.isValidUrl(sharedUrl)) {
       this.networkVideoSrc = sharedUrl;
-      this.controller.start();
+      //this.controller.start();
       AppStorage.delete('sharedVideoUrl');
     }
     const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
@@ -375,7 +375,7 @@ export struct HomePage {
     const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
     if (sharedUrl && this.isValidUrl(sharedUrl)) {
       this.networkVideoSrc = sharedUrl;
-      this.controller.start();
+      //this.controller.start();
       AppStorage.delete('sharedVideoUrl');
     }
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
@@ -430,6 +430,7 @@ export struct HomePage {
                 console.info('Succeeded in finishing');
               }
             },
+            controller: this.controller,
             params: {
               firstEdgeFlowLight: {
                 startPos: 0,
@@ -526,6 +527,7 @@ export struct HomePage {
                 console.info('Succeeded in finishing');
               }
             },
+            controller: this.controller,
             params: {
               firstEdgeFlowLight: {
                 startPos: 0,
@@ -565,6 +567,7 @@ export struct HomePage {
                   console.info('Succeeded in finishing');
                 }
               },
+              controller: this.controller,
               params: {
                 firstEdgeFlowLight: {
                   startPos: 0,
@@ -637,6 +640,7 @@ export struct HomePage {
                       console.info('Succeeded in finishing');
                     }
                   },
+                  controller: this.controller,
                   params: {
                     firstEdgeFlowLight: {
                       startPos: 0,
