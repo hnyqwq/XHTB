@@ -1,6 +1,8 @@
 import { common, Want } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import router from '@ohos.router';
+import { commentManager } from '@kit.AppGalleryKit';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 
 @Observed
 class SettingMenu {
@@ -56,7 +58,7 @@ export struct MinePage {
             context.startAbility(want)
             console.info(`MenuItem1 ability succeed`)
         })
-      /*MenuItem({ startIcon: this.iconStr, content: "【提出反馈与建议】前往MeoW，订阅频道后点击联系博主以反馈问题。此方法可以收到问题回复" })
+      MenuItem({ startIcon: this.iconStr, content: "前往MeoW，订阅官方频道" })
         .onClick(() => {
           let want: Want = {
             "action": "ohos.want.action.viewData",
@@ -67,19 +69,19 @@ export struct MinePage {
           context.startAbility(want)
           console.info(`MenuItem2 ability succeed`)
         })
-      MenuItem({ startIcon: this.iconStr, content: "【提出反馈与建议】填写完反馈后跳转链接，通过MeoW直链直接发送问题，提示发送成功后请关闭窗口。此方法无法收到问题回复" })
+      MenuItem({ startIcon: this.iconStr, content: "给个五星好评叭 ๑>ᴗO๑" })
         .onClick(() => {
-          // 注入当前上下文
-          PromptActionClass.setContext(this.getUIContext());
-          this.getUIContext().getPromptAction().openCustomDialog({
-            builder: () => this.customDialogComponent()
-          }).then((dialogId: number) => {
-            this.customDialogComponentId = dialogId;
-          })
-            .catch((error: BusinessError) => {
-              console.error(`打开对话框失败: ${error.code}`, error.message);
+          try {
+            const uiContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
+            commentManager.showCommentDialog(uiContext).then(()=>{
+              hilog.info(0, 'TAG', "succeeded in showing commentDialog.");
+            }).catch((error: BusinessError<Object>) => {
+              hilog.error(0, 'TAG', `showCommentDialog failed, Code: ${error.code}, message: ${error.message}`);
             });
-        })*/
+          } catch (error) {
+            hilog.error(0, 'TAG', `showCommentDialog failed, Code: ${error.code}, message: ${error.message}`);
+          }
+        })
     }
   }
   @Builder
