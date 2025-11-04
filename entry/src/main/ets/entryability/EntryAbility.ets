@@ -115,20 +115,18 @@ export default class EntryAbility extends UIAbility {
         console.info('Succeeded in setting the status bar to be invisible.');
       }).catch((err: BusinessError) => {
         console.error(`Failed to set the status bar to be invisible. Code is ${err.code}, message is ${err.message}`);
-      });*/
+      });
       //3
       windowClass.setSpecificSystemBarEnabled('navigationIndicator', false).then(() => {
         console.info('Succeeded in setting the navigation indicator to be invisible.');
       }).catch((err: BusinessError) => {
         console.error(`Failed to set the navigation indicator to be invisible. Code is ${err.code}, message is ${err.message}`);
-      });
+      });*/
       //接续
       if (!this.storage.get('networkVideoSrc')) {
         Logger.warn(TAG, 'networkVideoSrc is empty!');
       }
     });
-    //接续
-
   }
 
   //接续
