@@ -392,169 +392,34 @@ export struct HomePage {
   }
 
   build() {
-    Column() {
-      Row()
-      {
-        Text($r('app.string.sharepngon'))
-          .textAlign(TextAlign.Center)
-          .width('55%')
-        Button($r('app.string.choose'))
-          .height(50)
-          .width('40%')
-          .backgroundColor(0xb87cff)//紫色
-          .onClick(() => {
-            this.selectImage();
-          })
-      }
-      .width('100%')
-      TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
+    Scroll()
+    {
+      Column() {
+        Row()
+        {
+          Text($r('app.string.sharepngon'))
+            .textAlign(TextAlign.Center)
+            .width('55%')
+          Button($r('app.string.choose'))
+            .height(50)
+            .width('40%')
+            .backgroundColor(0xb87cff)//紫色
+            .onClick(() => {
+              this.selectImage();
+            })
+        }
+        .width('100%')
+        TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
         //.type(InputType.URL)
         //.backgroundColor('#FF9CCE')
-        .width('90%')
-        //.height(50)
-        .margin({ top: 10, bottom: 10 })
-        .onChange((sharepng: string) => {
-          this.sharepng = sharepng;
-          if (this.isValidUrl(sharepng)) {
-            this.handleImageUpdate(); // 触发图片更新逻辑
-          }
-        })
-        .visualEffect(new hdsEffect.HdsEffectBuilder()
-          .shaderEffect({
-            effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-            animation: {
-              duration: 4000,
-              iterations: -1,
-              autoPlay: true,
-              onFinish: () => {
-                console.info('Succeeded in finishing');
-              }
-            },
-            controller: this.controller,
-            params: {
-              firstEdgeFlowLight: {
-                startPos: 0,
-                endPos: 1.0,
-                color: '#FF66CC',
-              },
-              secondEdgeFlowLight: {
-                startPos: 0.5,
-                endPos: 1.5,
-                color: '#b87cff',
-              }
+          .width('90%')
+          //.height(50)
+          .margin({ top: 10, bottom: 10 })
+          .onChange((sharepng: string) => {
+            this.sharepng = sharepng;
+            if (this.isValidUrl(sharepng)) {
+              this.handleImageUpdate(); // 触发图片更新逻辑
             }
-          })
-          .buildEffect())
-      Text($r('app.string.texton'))
-        .textAlign(TextAlign.Center)
-        .margin({ top: 5, bottom: 10 })
-      Row() {
-        Button($r('app.string.scancode'))
-        //.globalButtonStyle()
-        //.type(ButtonType.Capsule)
-          //.backgroundColor(0x66CCFF)//蓝色
-          //.backgroundColor('#0044fc')
-          .labelStyle({ overflow: TextOverflow.Ellipsis, maxLines: 3, minFontSize: 0 })
-          .width('55%')
-          .height(50)
-          .margin({ right: 10 })
-          .backgroundColor(0xFF66CC)
-          .onClick(async () => {
-            try {
-              // 定义扫码参数options
-              let options: scanBarcode.ScanOptions = {
-                scanTypes: [scanCore.ScanType.ALL],
-                enableMultiMode: true,
-                enableAlbum: true
-              };
-              // 调用扫码功能
-              scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
-                // 正确获取扫描结果的字符串值
-                const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
-                this.networkVideoSrc = originalValue;
-                promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
-              }).catch((error: BusinessError) => {
-                hilog.error(0x0001, '[Scan]',
-                  `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
-                promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
-              });
-            } catch (error) {
-              //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
-              promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
-              hilog.error(0x0001, '[Scan]',
-                `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
-            }
-          })
-        PasteButton({ icon: PasteIconStyle.LINES, text: PasteDescription.PASTE, buttonType: ButtonType.ROUNDED_RECTANGLE })
-          .backgroundColor(0xFF66CC)
-          //.backgroundColor(0x66CCFF)//浅蓝色
-          .width('40%')
-          .height(50)
-          //.padding({top: 12, bottom: 12, left: 24, right: 24})
-          .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
-            if (PasteButtonOnClickResult.SUCCESS === result) {
-              pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
-                if (err) {
-                  console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
-                  return;
-                }
-                this.networkVideoSrc = pasteData.getPrimaryText();
-              });
-            }
-          })
-      }
-      .width('90%')
-      .margin({ top: 5, bottom: 10 })
-
-      TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
-      //.type(InputType.URL)
-      //.backgroundColor('#FF9CCE')
-        .width('90%')
-        //.height(50)
-        .margin({ right: 10 })
-        .onChange((networkVideoSrc: string) => {
-          this.networkVideoSrc = networkVideoSrc;
-          AppStorage.set('networkVideoSrc', networkVideoSrc);
-        })
-        .visualEffect(new hdsEffect.HdsEffectBuilder()
-          .shaderEffect({
-            effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-            animation: {
-              duration: 4000,
-              iterations: -1,
-              autoPlay: true,
-              onFinish: () => {
-                console.info('Succeeded in finishing');
-              }
-            },
-            controller: this.controller,
-            params: {
-              firstEdgeFlowLight: {
-                startPos: 0,
-                endPos: 1.0,
-                color: '#FF66CC',
-              },
-              secondEdgeFlowLight: {
-                startPos: 0.5,
-                endPos: 1.5,
-                color: '#FFA4E5',
-              }
-            }
-          })
-          .buildEffect())
-      .margin({ top: 5, bottom: 10 })
-      Row()
-      {
-        Text($r('app.string.pengtitleset'))
-          .width('40%')
-          .textAlign(TextAlign.Center)
-          .margin({ right: 10 })
-        TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
-        //.backgroundColor('#FF9CCE')
-          .width('55%')
-          .onChange((pengtitle: string) => {
-            this.pengtitle = pengtitle;
-            AppStorage.set('pengtitle', pengtitle);
           })
           .visualEffect(new hdsEffect.HdsEffectBuilder()
             .shaderEffect({
@@ -572,7 +437,104 @@ export struct HomePage {
                 firstEdgeFlowLight: {
                   startPos: 0,
                   endPos: 1.0,
-                  color: '#1AD0F1',
+                  color: '#FF66CC',
+                },
+                secondEdgeFlowLight: {
+                  startPos: 0.5,
+                  endPos: 1.5,
+                  color: '#b87cff',
+                }
+              }
+            })
+            .buildEffect())
+        Text($r('app.string.texton'))
+          .textAlign(TextAlign.Center)
+          .margin({ top: 5, bottom: 10 })
+        Row() {
+          Button($r('app.string.scancode'))
+          //.globalButtonStyle()
+          //.type(ButtonType.Capsule)
+          //.backgroundColor(0x66CCFF)//蓝色
+          //.backgroundColor('#0044fc')
+            .labelStyle({ overflow: TextOverflow.Ellipsis, maxLines: 3, minFontSize: 0 })
+            .width('55%')
+            .height(50)
+            .margin({ right: 10 })
+            .backgroundColor(0xFF66CC)
+            .onClick(async () => {
+              try {
+                // 定义扫码参数options
+                let options: scanBarcode.ScanOptions = {
+                  scanTypes: [scanCore.ScanType.ALL],
+                  enableMultiMode: true,
+                  enableAlbum: true
+                };
+                // 调用扫码功能
+                scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
+                  // 正确获取扫描结果的字符串值
+                  const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
+                  this.networkVideoSrc = originalValue;
+                  promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
+                }).catch((error: BusinessError) => {
+                  hilog.error(0x0001, '[Scan]',
+                    `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
+                  promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
+                });
+              } catch (error) {
+                //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
+                promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
+                hilog.error(0x0001, '[Scan]',
+                  `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
+              }
+            })
+          PasteButton({ icon: PasteIconStyle.LINES, text: PasteDescription.PASTE, buttonType: ButtonType.ROUNDED_RECTANGLE })
+            .backgroundColor(0xFF66CC)
+            //.backgroundColor(0x66CCFF)//浅蓝色
+            .width('40%')
+            .height(50)
+            //.padding({top: 12, bottom: 12, left: 24, right: 24})
+            .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+              if (PasteButtonOnClickResult.SUCCESS === result) {
+                pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                  if (err) {
+                    console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                    return;
+                  }
+                  this.networkVideoSrc = pasteData.getPrimaryText();
+                });
+              }
+            })
+        }
+        .width('90%')
+        .margin({ top: 5, bottom: 10 })
+
+        TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
+        //.type(InputType.URL)
+        //.backgroundColor('#FF9CCE')
+          .width('90%')
+          //.height(50)
+          .margin({ right: 10 })
+          .onChange((networkVideoSrc: string) => {
+            this.networkVideoSrc = networkVideoSrc;
+            AppStorage.set('networkVideoSrc', networkVideoSrc);
+          })
+          .visualEffect(new hdsEffect.HdsEffectBuilder()
+            .shaderEffect({
+              effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+              animation: {
+                duration: 4000,
+                iterations: -1,
+                autoPlay: true,
+                onFinish: () => {
+                  console.info('Succeeded in finishing');
+                }
+              },
+              controller: this.controller,
+              params: {
+                firstEdgeFlowLight: {
+                  startPos: 0,
+                  endPos: 1.0,
+                  color: '#FF66CC',
                 },
                 secondEdgeFlowLight: {
                   startPos: 0.5,
@@ -582,113 +544,155 @@ export struct HomePage {
               }
             })
             .buildEffect())
-      }
-      .margin({ top: 10 })
-      .width('90%')  // 控制内容区域宽度
-          Column() {
-            Row()
-            {
-              Text($r('app.string.nowplaying'))
-                .width('55%')
-                .textAlign(TextAlign.Center)
-                .margin({ right: 10 })
-              Button($r('app.string.share'))
-              //.type(ButtonType.Capsule)
-                .width('40%')
-                .height(50)
-                .backgroundColor(0x66CCFF)//蓝色
-                .visualEffect(new hdsEffect.HdsEffectBuilder()
-                  .pointLight({
-                    sourceType:  hdsEffect.PointLightSourceType.NONE,
-                    illuminatedType: hdsEffect.PointLightIlluminatedType.DEFAULT_FEATHERING_BORDER
-                  })
-                  .buildEffect())
-                .onTouch((event: TouchEvent) => {
-                  if (event.type === TouchType.Down) {
-                    this.lightSourceType = hdsEffect.PointLightSourceType.BRIGHT;
-                  } else if (event.type === TouchType.Up || event.type === TouchType.Cancel) {
-                    this.lightSourceType = hdsEffect.PointLightSourceType.NONE;
+          .margin({ top: 5, bottom: 10 })
+        Row()
+        {
+          Text($r('app.string.pengtitleset'))
+            .width('40%')
+            .textAlign(TextAlign.Center)
+            .margin({ right: 10 })
+          TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
+          //.backgroundColor('#FF9CCE')
+            .width('55%')
+            .onChange((pengtitle: string) => {
+              this.pengtitle = pengtitle;
+              AppStorage.set('pengtitle', pengtitle);
+            })
+            .visualEffect(new hdsEffect.HdsEffectBuilder()
+              .shaderEffect({
+                effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+                animation: {
+                  duration: 4000,
+                  iterations: -1,
+                  autoPlay: true,
+                  onFinish: () => {
+                    console.info('Succeeded in finishing');
                   }
-                })
-                .onClick(() => {
-                  logger.info('分享按钮被点击');
-                  try {
-                    this.share();
-                  } catch (error) {
-                    logger.error(`分享按钮点击异常: ${error.message}`);
-                    promptAction.showToast({ message: '分享功能异常: ' + error.message });
-                  }
-                })
-            }
-            .width('100%')
-            .padding({ bottom: 10 })
-
-
-            Text(this.networkVideoSrc)
-              .padding({ top: 10 , bottom : 10 , left : 10 , right : 10 })
-               .copyOption(CopyOptions.LocalDevice)
-               .textAlign(TextAlign.Center)//.margin({ right: 10 })
-               .width('100%')
-               .visualEffect(new hdsEffect.HdsEffectBuilder()
-                .shaderEffect({
-                  effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-                  animation: {
-                    duration: 4000,
-                    iterations: -1,
-                    autoPlay: true,
-                    onFinish: () => {
-                      console.info('Succeeded in finishing');
-                    }
+                },
+                controller: this.controller,
+                params: {
+                  firstEdgeFlowLight: {
+                    startPos: 0,
+                    endPos: 1.0,
+                    color: '#1AD0F1',
                   },
-                  controller: this.controller,
-                  params: {
-                    firstEdgeFlowLight: {
-                      startPos: 0,
-                      endPos: 1.0,
-                      color: '#ff8a00',
-                    },
-                    secondEdgeFlowLight: {
-                      startPos: 0.5,
-                      endPos: 1.5,
-                      color: '#f3c52a',
-                    }
+                  secondEdgeFlowLight: {
+                    startPos: 0.5,
+                    endPos: 1.5,
+                    color: '#FFA4E5',
                   }
+                }
+              })
+              .buildEffect())
+        }
+        .margin({ top: 10 })
+        .width('90%')  // 控制内容区域宽度
+        Column() {
+          Row()
+          {
+            Text($r('app.string.nowplaying'))
+              .width('55%')
+              .textAlign(TextAlign.Center)
+              .margin({ right: 10 })
+            Button($r('app.string.share'))
+            //.type(ButtonType.Capsule)
+              .width('40%')
+              .height(50)
+              .backgroundColor(0x66CCFF)//蓝色
+              .visualEffect(new hdsEffect.HdsEffectBuilder()
+                .pointLight({
+                  sourceType:  hdsEffect.PointLightSourceType.NONE,
+                  illuminatedType: hdsEffect.PointLightIlluminatedType.DEFAULT_FEATHERING_BORDER
                 })
                 .buildEffect())
-
-
-            //碰一碰提示
-            Text($r('app.string.nowplayingon'))
-              .padding({ top: 20 , left: 24, right: 24 })
-              .maxLines(2)
-              .fontSize(11)
-              .maxFontScale(1.75)
-              .width('100%')
-              .constraintSize({ minHeight: 16 })
-              .fontColor($r('sys.color.font_secondary'))
-              .fontFamily('HarmonyHeiTi')
-              .textAlign(TextAlign.Center)
-            KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
-              .padding({ top: 2 })
-
-            /*Text(this.myFileName)
-              .focusable(true)
-              .focusOnTouch(true)
-              .fontFamily('HarmonyHeiTi-Bold')
-              .textAlign(TextAlign.Start)
-              .maxLines(1)
-              .textOverflow({ overflow: TextOverflow.Ellipsis })
-            Text('Size: ' + JSON.stringify(this.myFileSize) + 'B')
-              .focusable(true)
-              .focusOnTouch(true)
-              .fontFamily('HarmonyHeiTi')
-              .textAlign(TextAlign.Start)*/
+              .onTouch((event: TouchEvent) => {
+                if (event.type === TouchType.Down) {
+                  this.lightSourceType = hdsEffect.PointLightSourceType.BRIGHT;
+                } else if (event.type === TouchType.Up || event.type === TouchType.Cancel) {
+                  this.lightSourceType = hdsEffect.PointLightSourceType.NONE;
+                }
+              })
+              .onClick(() => {
+                logger.info('分享按钮被点击');
+                try {
+                  this.share();
+                } catch (error) {
+                  logger.error(`分享按钮点击异常: ${error.message}`);
+                  promptAction.showToast({ message: '分享功能异常: ' + error.message });
+                }
+              })
           }
-          .width('90%')  // 控制内容区域宽度
-          .alignItems(HorizontalAlign.Center) // 内容水平居中
-          .margin({ top: 10 })
-          //.height('100%')
+          .width('100%')
+          .padding({ bottom: 10 })
+
+
+          Text(this.networkVideoSrc)
+            .padding({ top: 10 , bottom : 10 , left : 10 , right : 10 })
+            .copyOption(CopyOptions.LocalDevice)
+            .textAlign(TextAlign.Center)//.margin({ right: 10 })
+            .width('100%')
+            .visualEffect(new hdsEffect.HdsEffectBuilder()
+              .shaderEffect({
+                effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+                animation: {
+                  duration: 4000,
+                  iterations: -1,
+                  autoPlay: true,
+                  onFinish: () => {
+                    console.info('Succeeded in finishing');
+                  }
+                },
+                controller: this.controller,
+                params: {
+                  firstEdgeFlowLight: {
+                    startPos: 0,
+                    endPos: 1.0,
+                    color: '#ff8a00',
+                  },
+                  secondEdgeFlowLight: {
+                    startPos: 0.5,
+                    endPos: 1.5,
+                    color: '#f3c52a',
+                  }
+                }
+              })
+              .buildEffect())
+
+
+          //碰一碰提示
+          Text($r('app.string.nowplayingon'))
+            .padding({ top: 20 , left: 24, right: 24 })
+            .maxLines(2)
+            .fontSize(11)
+            .maxFontScale(1.75)
+            .width('100%')
+            .constraintSize({ minHeight: 16 })
+            .fontColor($r('sys.color.font_secondary'))
+            .fontFamily('HarmonyHeiTi')
+            .textAlign(TextAlign.Center)
+          KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
+            .padding({ top: 2 })
+
+          /*Text(this.myFileName)
+            .focusable(true)
+            .focusOnTouch(true)
+            .fontFamily('HarmonyHeiTi-Bold')
+            .textAlign(TextAlign.Start)
+            .maxLines(1)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+          Text('Size: ' + JSON.stringify(this.myFileSize) + 'B')
+            .focusable(true)
+            .focusOnTouch(true)
+            .fontFamily('HarmonyHeiTi')
+            .textAlign(TextAlign.Start)*/
+        }
+        .width('90%')  // 控制内容区域宽度
+        .alignItems(HorizontalAlign.Center) // 内容水平居中
+        .margin({ top: 10 })
+        //.height('100%')
       }
+    }
+
   }
 
   private isNoListening() {
