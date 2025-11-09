@@ -140,25 +140,25 @@ struct SystemShare {
         Row()
         {
           Button($r('app.string.back'))
-          .type(ButtonType.Capsule)
-          .backgroundColor('#0D9FFB')
-          .onClick(() => {
-            const uiContext: UIContext = this.getUIContext();
-            const context: common.UIAbilityContext = uiContext.getHostContext() as common.UIAbilityContext;
-            context.terminateSelf().catch((error: BusinessError) => {
-              logger.error(`context.terminateSelf error. Code: ${error?.code}, message: ${error?.message}`);
+            .type(ButtonType.Capsule)
+            .backgroundColor('#0D9FFB')
+            .onClick(() => {
+              const uiContext: UIContext = this.getUIContext();
+              const context: common.UIAbilityContext = uiContext.getHostContext() as common.UIAbilityContext;
+              context.terminateSelf().catch((error: BusinessError) => {
+                logger.error(`context.terminateSelf error. Code: ${error?.code}, message: ${error?.message}`);
+              })
             })
-          })
           Button($r('app.string.toshare'))
-          .backgroundColor(0xFF66CC)
-          .margin({ left: 10 })
-          .onClick(() => {
-            this.networkVideoSrc = this.htmlLink;
-            router.pushUrl({ url: 'pages/Index' })
-              .catch((e: BusinessError) => {
-                console.error('路由跳转失败', e);
-              });
-          })
+            .backgroundColor(0xFF66CC)
+            .margin({ left: 10 })
+            .onClick(() => {
+              this.networkVideoSrc = this.htmlLink;
+              router.pushUrl({ url: 'pages/Index' })
+                .catch((e: BusinessError) => {
+                  console.error('路由跳转失败', e);
+                });
+            })
             .visualEffect(new hdsEffect.HdsEffectBuilder()
               .shaderEffect({
                 effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,

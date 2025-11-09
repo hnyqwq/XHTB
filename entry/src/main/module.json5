@@ -124,8 +124,8 @@
 						"uris": [
 							{
 							"scheme": "file",
-							"utd": "general.image",
-							"maxFileSupported": 3
+							"utd": "general.text",
+							"maxFileSupported": 1
 							}
 						]
 					}
