@@ -22,9 +22,9 @@ export struct SecondPage {
         Text($r('app.string.page_title'))
           .fontSize($r('app.float.page_title_font_size'))
           .fontWeight(FontWeight.Bold)
-          .margin({ left: $r('app.float.page_title_left_margin') })
       }
-      .padding({ left: $r('app.float.title_padding') })
+      .margin({ top: 10 })
+      .justifyContent(FlexAlign.Center)
       .width(CommonConstants.FULL_PERCENT)
       .height($r('app.float.page_title_height'))
 

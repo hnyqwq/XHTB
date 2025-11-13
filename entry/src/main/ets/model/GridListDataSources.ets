@@ -20,11 +20,11 @@ export class GridData {
 
 export const featureGridData: GridData = new GridData($r('app.string.sub_title1'),
   [
-    new GridItemInfo($r('app.string.sub_title1_value1'), 'pages/DetailPage'),
+    new GridItemInfo($r('app.string.sub_title1_value1'), 'XHTB/DetailPage'),
     new GridItemInfo($r('app.string.sub_title1_value2'), 'pages/HomePage'),
     new GridItemInfo($r('app.string.sub_title1_value3'), 'pages/MinePage'),
     new GridItemInfo($r('app.string.sub_title1_value4'), 'pages/infoPage'),
-    new GridItemInfo($r('app.string.sub_title1_value5'), 'pages/ReadQR'),
+    new GridItemInfo($r('app.string.sub_title1_value5'), 'XHTB/ReadQR'),
     new GridItemInfo($r('app.string.sub_title1_value6')),
     new GridItemInfo($r('app.string.sub_title1_value7'))
   ]);
@@ -33,11 +33,11 @@ export const
   otherGridDataList: GridData[] = [
     new GridData($r('app.string.sub_title2'),
       [
-        new GridItemInfo($r('app.string.sub_title2_value1'), 'pages/DetailPage'),
+        new GridItemInfo($r('app.string.sub_title2_value1'), 'XHTB/DetailPage'),
         new GridItemInfo($r('app.string.sub_title2_value2'), 'pages/HomePage'),
         new GridItemInfo($r('app.string.sub_title2_value3'), 'pages/MinePage'),
         new GridItemInfo($r('app.string.sub_title2_value4'), 'pages/infoPage'),
-        new GridItemInfo($r('app.string.sub_title2_value5'), 'pages/ReadQR'),
+        new GridItemInfo($r('app.string.sub_title2_value5'), 'XHTB/ReadQR'),
         new GridItemInfo($r('app.string.sub_title2_value6')),
         new GridItemInfo($r('app.string.sub_title2_value7')),
         new GridItemInfo($r('app.string.sub_title2_value8')),
@@ -50,10 +50,10 @@ export const
       ]),
     new GridData($r('app.string.sub_title3'),
       [
-        new GridItemInfo($r('app.string.sub_title3_value1'), 'pages/DetailPage'),
+        new GridItemInfo($r('app.string.sub_title3_value1'), 'XHTB/DetailPage'),
         new GridItemInfo($r('app.string.sub_title3_value2'), 'pages/HomePage'),
         new GridItemInfo($r('app.string.sub_title3_value3'), 'pages/MinePage')
-      ]),
+      ]),/*
     new GridData($r('app.string.sub_title4'),
       [
         new GridItemInfo($r('app.string.sub_title4_value1'), 'pages/infoPage'),
@@ -79,5 +79,5 @@ export const
       new GridItemInfo($r('app.string.sub_title6_value5')),
       new GridItemInfo($r('app.string.sub_title6_value6')),
       new GridItemInfo($r('app.string.sub_title6_value7')),
-      new GridItemInfo($r('app.string.sub_title6_value8'))]),
+      new GridItemInfo($r('app.string.sub_title6_value8'))]),*/
   ];

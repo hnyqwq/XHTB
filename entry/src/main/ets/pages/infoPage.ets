@@ -6,158 +6,30 @@ import router from '@ohos.router';
 
 import { deviceInfo } from '@kit.BasicServicesKit';
 
-import userAuth from '@ohos.userIAM.userAuth';
+import { AppUtil } from '@pura/harmony-utils';
 import { promptAction } from '@kit.ArkUI';
 
-let deviceTypeInfo: string = deviceInfo.deviceType;
-// 输出结果：the value of the deviceType is :wearable
-console.info('the value of the deviceType is :' + deviceTypeInfo);
-
-let manufactureInfo: string = deviceInfo.manufacture;
-// 输出结果：the value of the manufacture is :HUAWEI
-console.info('the value of the manufactureInfo is :' + manufactureInfo);
-
-let brandInfo: string = deviceInfo.brand;
-// 输出结果：the value of the brand is :HUAWEI
-console.info('the value of the device brand is :' + brandInfo);
+let bundleName = AppUtil.getBundleName();
+let versionCode = AppUtil.getVersionCode();
+let versionName = AppUtil.getVersionName();
+let baoming = `${bundleName}`
+let banbenhao = `${versionName}（${versionCode}）`
 
 let marketNameInfo: string = deviceInfo.marketName;
 // 输出结果：the value of the marketName is :Mate XX
 console.info('the value of the deviceInfo marketName is :' + marketNameInfo);
 
-let productSeriesInfo: string = deviceInfo.productSeries;
-// 输出结果：the value of the productSeries is :TAS
-console.info('the value of the deviceInfo productSeries is :' + productSeriesInfo);
-
 let productModelInfo: string = deviceInfo.productModel;
 // 输出结果：the value of the productModel is :TAS-AL00
 console.info('the value of the deviceInfo productModel is :' + productModelInfo);
-
-let productModelAliasInfo: string = deviceInfo.productModelAlias;
-console.info('the value of the deviceInfo productModelAlias is :' + productModelAliasInfo);
-
-let softwareModelInfo: string = deviceInfo.softwareModel;
-// 输出结果：the value of the softwareModel is :TAS-AL00
-console.info('the value of the deviceInfo softwareModel is :' + softwareModelInfo);
-
-let hardwareModelInfo: string = deviceInfo.hardwareModel;
-// 输出结果：the value of the hardwareModel is :TASA00CVN1
-console.info('the value of the deviceInfo hardwareModel is :' + hardwareModelInfo);
-
-//let serialInfo: string = deviceInfo.serial;
-// 输出结果：the value of the serial is :序列号随设备差异
-//console.info('the value of the deviceInfo serial is :' + serialInfo);
-
-let bootloaderVersionInfo: string = deviceInfo.bootloaderVersion;
-// 输出结果：the value of the bootloaderVersion is :bootloader
-console.info('the value of the deviceInfo bootloaderVersion is :' + bootloaderVersionInfo);
-
-let abiListInfo: string = deviceInfo.abiList;
-// 输出结果：the value of the abiList is :arm64-v8a
-console.info('the value of the deviceInfo abiList is :' + abiListInfo);
-
-let securityPatchTagInfo: string = deviceInfo.securityPatchTag;
-// 输出结果：the value of the securityPatchTag is :2021/01/01
-console.info('the value of the deviceInfo securityPatchTag is :' + securityPatchTagInfo);
 
 let displayVersionInfo: string = deviceInfo.displayVersion;
 // 输出结果：the value of the displayVersion is :XXX X.X.X.X
 console.info('the value of the deviceInfo displayVersion is :' + displayVersionInfo);
 
-let incrementalVersionInfo: string = deviceInfo.incrementalVersion;
-// 输出结果：the value of the incrementalVersion is :default
-console.info('the value of the deviceInfo incrementalVersion is :' + incrementalVersionInfo);
-
-let osReleaseTypeInfo: string = deviceInfo.osReleaseType;
-// 输出结果：the value of the osReleaseType is :Release
-console.info('the value of the deviceInfo osReleaseType is :' + osReleaseTypeInfo);
-
-let osFullNameInfo: string = deviceInfo.osFullName;
-// 输出结果：the value of the osFullName is :OpenHarmony-5.0.0.1
-console.info('the value of the deviceInfo osFullName is :' + osFullNameInfo);
-
-let majorVersionInfo: number = deviceInfo.majorVersion;
-// 输出结果：the value of the majorVersion is :5
-console.info('the value of the deviceInfo majorVersion is :' + majorVersionInfo);
-
-let seniorVersionInfo: number = deviceInfo.seniorVersion;
-// 输出结果：the value of the seniorVersion is :0
-console.info('the value of the deviceInfo seniorVersion is :' + seniorVersionInfo);
-
-let featureVersionInfo: number = deviceInfo.featureVersion;
-// 输出结果：the value of the featureVersion is :0
-console.info('the value of the deviceInfo featureVersion is :' + featureVersionInfo);
-
-let buildVersionInfo: number = deviceInfo.buildVersion;
-// 输出结果：the value of the buildVersion is :1
-console.info('the value of the deviceInfo buildVersion is :' + buildVersionInfo);
-
-let sdkApiVersionInfo: number = deviceInfo.sdkApiVersion;
-// 输出结果：the value of the sdkApiVersion is :12
-console.info('the value of the deviceInfo sdkApiVersion is :' + sdkApiVersionInfo);
-
-let firstApiVersionInfo: number = deviceInfo.firstApiVersion;
-// 输出结果：the value of the firstApiVersion is :3
-console.info('the value of the deviceInfo firstApiVersion is :' + firstApiVersionInfo);
-
-let versionIdInfo: string = deviceInfo.versionId;
-// 输出结果：the value of the versionId is :wearable/HUAWEI/HUAWEI/TAS/OpenHarmony-5.0.0.1/TAS-AL00/TAS-AL00/12/default/release:nolog
-console.info('the value of the deviceInfo versionId is :' + versionIdInfo);
-
-let buildTypeInfo: string = deviceInfo.buildType;
-// 输出结果：the value of the buildType is :default
-console.info('the value of the deviceInfo buildType is :' + buildTypeInfo);
-
-let buildUserInfo: string = deviceInfo.buildUser;
-// 输出结果：the value of the buildUser is :default
-console.info('the value of the deviceInfo buildUser is :' + buildUserInfo);
-
-let buildHostInfo: string = deviceInfo.buildHost;
-// 输出结果：the value of the buildHost is :default
-console.info('the value of the deviceInfo buildHost is :' + buildHostInfo);
-
-let buildTimeInfo: string = deviceInfo.buildTime;
-// 输出结果：the value of the buildTime is :default
-console.info('the value of the deviceInfo buildTime is :' + buildTimeInfo);
-
-let buildRootHashInfo: string = deviceInfo.buildRootHash;
-// 输出结果：the value of the buildRootHash is :default
-console.info('the value of the deviceInfo buildRootHash is :' + buildRootHashInfo);
-
-//let udid: string = deviceInfo.udid;
-// 输出结果：the value of the udid is :9D6AABD147XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXE5536412
-//console.info('the value of the deviceInfo udid is :' + udid);
-
-let distributionOSName: string = deviceInfo.distributionOSName
-// 输出结果：the value of the distributionOSName is :OpenHarmony
-console.info('the value of the deviceInfo distributionOSName is :' + distributionOSName);
-
 let distributionOSVersion: string = deviceInfo.distributionOSVersion
 // 输出结果：the value of the distributionOSVersion is :5.0.0
 console.info('the value of the deviceInfo distributionOSVersion is :' + distributionOSVersion);
-
-let distributionOSApiVersion: number = deviceInfo.distributionOSApiVersion
-// 输出结果：the value of the distributionOSApiVersion is :500001
-console.info('the value of the deviceInfo distributionOSApiVersion is :' + distributionOSApiVersion);
-
-let distributionOSApiName: string = deviceInfo.distributionOSApiName
-console.info('the value of the deviceInfo distributionOSApiName is :' + distributionOSApiName);
-
-let distributionOSReleaseType: string = deviceInfo.distributionOSReleaseType
-// 输出结果：the value of the distributionOSReleaseType is :Release
-console.info('the value of the deviceInfo distributionOSReleaseType is :' + distributionOSReleaseType);
-
-let odid: string = deviceInfo.ODID;
-// 输出结果：the value of the ODID is :1234a567-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-console.info('the value of the deviceInfo odid is :' + odid);
-
-//let diskSN: string = deviceInfo.diskSN;
-// 输出结果：the value of the deviceInfo diskSN is :2502EM400567
-//console.info('the value of the deviceInfo diskSN is :' + diskSN);
-
-let performanceClass = deviceInfo.performanceClass;
-// 输出结果：the value of the deviceInfo performanceClass is :0
-console.info('the value of the deviceInfo performanceClass is :' + performanceClass);
 
 let bbh = displayVersionInfo.match(/0\s([\d.]+)/);
 let bbhsr = (bbh && bbh[1]) || '';//6.0.0.35
@@ -202,8 +74,6 @@ export struct infoPage {
     new FirstMenu('four',$r('app.string.info4'),fullVersionsr, $r('app.string.void')),
     new FirstMenu('five',$r('app.string.info5') ,versionSegsr, $r('app.string.void'))
   ];
-  @State message: string = '用户认证'
-  @State userAuthResult?: userAuth.UserAuthResult = undefined
 
   build() {
     Scroll() {
@@ -280,7 +150,7 @@ export struct infoPage {
                 .fontWeight(700)
                 .fontSize('16fp')
                 .margin({ top: 10 })*/
-              Text('1.5.0.000（10500000）')
+              Text(banbenhao)
                 .fontWeight(600)
                 .fontSize('20fp')
                 .margin({ top: 10 })
@@ -351,7 +221,7 @@ export struct infoPage {
           Column() {
             Text($r('app.string.appname'))
               .fontSize(12);
-            Text('yylx.hny.qwq')
+            Text(baoming)
               .fontSize(12);
             /*Text($r('app.string.copyright'))
               .fontSize(12);*/
