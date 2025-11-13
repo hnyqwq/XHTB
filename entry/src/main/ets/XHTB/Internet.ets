@@ -158,7 +158,7 @@ struct BackgroundLightTab {
                     .objectFit(this.currentFitMode)
                     .width('100%')
                     .aspectRatio(16 / 9) // 根据视频长宽比自动计算高度
-                    .constraintSize({ maxWidth: 750, minWidth: 500 })
+                    .constraintSize({ maxWidth: 1000, minWidth: 500 })
                     .onClick(() => {
                       this.isControls = !this.isControls;
                       if (this.isControls) { // 显示状态的分支
