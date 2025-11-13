@@ -19,12 +19,6 @@ export struct SecondPage {
   build() {
     Column() {
       Row() {
-        Image($r('app.media.icon_back'))
-          .height($r('app.float.image_height'))
-          .onClick(() => {
-            this.getUIContext().getRouter().back();
-          })
-
         Text($r('app.string.page_title'))
           .fontSize($r('app.float.page_title_font_size'))
           .fontWeight(FontWeight.Bold)
@@ -113,7 +107,7 @@ export struct SecondPage {
       .width(CommonConstants.FULL_PERCENT)
       .height(CommonConstants.FULL_PERCENT)
     }
-    .backgroundColor($r('app.color.main_page_color'))
+    .backgroundColor($r('app.color.color_info'))
   }
 
   @Builder
