@@ -36,8 +36,6 @@ struct BackgroundLightTab {
   @State networkVideoSrc: string = 'https://www.hnyqwq.cn/hvideo/dly.mp4';
   @State isPlaying: boolean = true;
   @State picture: PixelMap | undefined = undefined;
-  //@State networkPreviewUri: string = 'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg';
-  @State networkPreviewUri: string = 'https://alliance-communityfile-drcn.dbankcdn.com/FileServer/getFile/cmtyPub/011/111/111/0000000000011111111.20250814201313.54764824779401317176433540350951:50001231000000:2800:0987A5ACC48494286FD28FDE9DDACFBCA0C24FD30400A3FE0AD75E2BC2A9EB2D.png'; // 默认网络预览图
   @State savefileUri:string = ' ';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
   @State isControls: boolean = false; // 控制栏显示状态
@@ -149,7 +147,6 @@ struct BackgroundLightTab {
                   Text($r('app.string.Internetselfsuccess'))
                     .text()
                   Video({
-                    previewUri: this.networkPreviewUri,
                     currentProgressRate: this.curRate,
                     src: this.networkVideoSrc,
                     controller: this.controllerr
