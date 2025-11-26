@@ -5,7 +5,8 @@ import router from '@ohos.router';
 
 @Component
 struct MetroIcon {
-  @Prop number: string;
+  @Prop lineNumber: string;
+  @Prop stationNumber: string;
   @Prop color: string = '#182431';
 
   build() {
@@ -20,12 +21,20 @@ struct MetroIcon {
             .height(60)
             .objectFit(ImageFit.Contain)
             .fillColor(this.color)  // 更改SVG颜色
-            
+            .margin( { left : 2 } )
+
           // 数字编号
-          Text(this.number)
-            .fontSize(16)
-            .fontColor(this.color)
-            .textAlign(TextAlign.Center)
+          Row() {
+            Text(`${this.lineNumber.padStart(2, '0')}`)
+              .fontSize(12)
+              .fontColor(this.color)
+              .textAlign(TextAlign.Center)
+              .margin( { left : 1 , right : 12 } )
+            Text(`${this.stationNumber.padStart(2, '0')}`)
+              .fontSize(12)
+              .fontColor(this.color)
+              .textAlign(TextAlign.Center)
+          }
         }
         .width(60)
         .height(60)
@@ -176,7 +185,8 @@ struct SideTab {
                   Blank()
                   // 添加地铁图标
                   MetroIcon({
-                    number: (index + 1).toString(),
+                    lineNumber: (this.currentClassify + 1).toString(),
+                    stationNumber: (index + 1).toString(),
                     color: this.currentClassify === 0 ? '#E30613' : 
                            this.currentClassify === 1 ? '#00629B' : 
                            this.currentClassify === 2 ? '#ABC233' : 
