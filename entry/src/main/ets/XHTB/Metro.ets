@@ -142,6 +142,30 @@ struct SideTab {
     }
   }
 
+  // 获取线路名称的方法
+  getClassifyName(index: number): string {
+    // 根据索引直接获取线路名
+    switch(index) {
+      case 0: return "1";
+      case 1: return "2";
+      case 2: return "3";
+      case 3: return "4";
+      case 4: return "5";
+      case 5: return "6";
+      case 6: return "7";
+      case 7: return "8";
+      case 8: return "9";
+      case 9: return "10";
+      case 10: return "13";
+      case 11: return "17";
+      case 12: return "18";
+      case 13: return "19";
+      case 14: return "27";
+      case 15: return "30";
+      default: return (index + 1).toString();
+    }
+  }
+
   build() {
     Stack() {
       Row() {
@@ -185,23 +209,25 @@ struct SideTab {
                   Blank()
                   // 添加地铁图标
                   MetroIcon({
-                    lineNumber: (this.currentClassify + 1).toString(),
+                    lineNumber: this.getClassifyName(this.currentClassify),
                     stationNumber: (index + 1).toString(),
-                    color: this.currentClassify === 0 ? '#E30613' : 
-                           this.currentClassify === 1 ? '#00629B' : 
-                           this.currentClassify === 2 ? '#ABC233' : 
-                           this.currentClassify === 3 ? '#97D700' : 
-                           this.currentClassify === 4 ? '#663399' : 
-                           this.currentClassify === 5 ? '#D3A13B' : 
-                           this.currentClassify === 6 ? '#808080' :
-                           this.currentClassify === 7 ? '#33A3DC' :
-                           this.currentClassify === 8 ? '#A1A3A6' :
-                           this.currentClassify === 9 ? '#F7941D' :
-                           this.currentClassify === 10 ? '#009944' :
-                           this.currentClassify === 11 ? '#D71345' :
-                           this.currentClassify === 12 ? '#00A0E9' :
-                           this.currentClassify === 13 ? '#8FC31F' :
-                           '#182431'
+                    color: this.currentClassify === 0 ? '#380096' :
+                           this.currentClassify === 1 ? '#FA633B' :
+                           this.currentClassify === 2 ? '#D6026B' :
+                           this.currentClassify === 3 ? '#00AF60' :
+                           this.currentClassify === 4 ? '#8E3981' :
+                           this.currentClassify === 5 ? '#8A7530' :
+                           this.currentClassify === 6 ? '#72D1DD' :
+                           this.currentClassify === 7 ? '#9AC316' :
+                           this.currentClassify === 8 ? '#E9AD00' :
+                           this.currentClassify === 9 ? '#0750A3' :
+                           this.currentClassify === 10 ? '#B2A222' :
+                           this.currentClassify === 11 ? '#8CCA9E' :
+                           this.currentClassify === 12 ? '#0B6267' :
+                           this.currentClassify === 13 ? '#9C9ECE' :
+                           this.currentClassify === 14 ? '#8FC31F' :
+                           this.currentClassify === 15 ? '#E3718E' :
+                           '#838382'
                   })
                   .margin({ right: 20 })
                 }
