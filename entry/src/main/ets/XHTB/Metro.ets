@@ -675,11 +675,13 @@ struct SideTab {
                       .fontColor('#182431')
                       .margin({ left: 20 })
                       .draggable(true)
+                      .copyOption(CopyOptions.LocalDevice)
                     Text(StationTranslations.get(stationName) || '')
                       .fontSize(12)
                       .fontColor('#999999')
                       .margin({ left: 20, top: 2 })
                       .draggable(true)
+                      .copyOption(CopyOptions.LocalDevice)
                   }
                   .layoutWeight(1)
                   .justifyContent(FlexAlign.Center)
