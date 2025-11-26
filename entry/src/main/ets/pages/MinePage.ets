@@ -277,9 +277,9 @@ export struct MinePage {
 
 @Component
 export struct SettingItemView {
-  private image: string | Resource = '';
-  private text: string | Resource = '';
-  private des: string | Resource = '';
+  @Prop image: string | Resource;
+  @Prop text: string | Resource;
+  @Prop des: string | Resource;
 
   build() {
     Row() {
