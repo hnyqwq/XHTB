@@ -24,8 +24,8 @@ struct MetroIcon {
         Stack({ alignContent: Alignment.Center }) {
           // SVG图标
           Image($r('app.media.cdmetro'))
-            .width(60)
-            .height(60)
+            .width(50)
+            .height(50)
             .objectFit(ImageFit.Contain)
             .fillColor(this.color)  // 更改SVG颜色
             .margin( { left : 2 } )
@@ -33,18 +33,18 @@ struct MetroIcon {
           // 数字编号
           Row() {
             Text(`${this.lineNumber.padStart(2, '0')}`)
-              .fontSize(12)
+              .fontSize(10)
               .fontColor(this.color)
               .textAlign(TextAlign.Center)
-              .margin( { left : 1 , right : 12 } )
+              .margin( { left : 1 , right : 10 } )
             Text(`${this.stationNumber.padStart(2, '0')}`)
-              .fontSize(12)
+              .fontSize(10)
               .fontColor(this.color)
               .textAlign(TextAlign.Center)
           }
         }
-        .width(60)
-        .height(60)
+        .width(50)
+        .height(50)
       }
     }
   }
@@ -60,26 +60,26 @@ struct MultiLineMetroIcon {
       ForEach(this.lineInfos, (info: LineInfo, index: number) => {
         Stack({ alignContent: Alignment.Center }) {
           Image($r('app.media.cdmetro'))
-            .width(40)
-            .height(40)
+            .width(30)
+            .height(30)
             .objectFit(ImageFit.Contain)
             .fillColor(info.color)
             .margin({ left: 2 })
 
           Row() {
             Text(`${info.lineNumber.padStart(2, '0')}`)
-              .fontSize(8)
+              .fontSize(6)
               .fontColor(info.color)
               .textAlign(TextAlign.Center)
-              .margin({ left: 1, right: 6 })
+              .margin({ left: 1, right: 4 })
             Text(`${info.stationNumber.padStart(2, '0')}`)
-              .fontSize(8)
+              .fontSize(6)
               .fontColor(info.color)
               .textAlign(TextAlign.Center)
           }
         }
-        .width(40)
-        .height(40)
+        .width(30)
+        .height(30)
       }, (info: LineInfo) => JSON.stringify(info))
     }
   }
@@ -286,13 +286,13 @@ struct SideTab {
             }
           }, (item: ClassifyModel, index: number) => JSON.stringify(item) + index.toString())
         }
-        .height('110%')
+        .height('100%')
         .width('27.8%')
         .backgroundColor('#F1F3F5')
         .scrollBar(BarState.Off)
         .margin({ top: 94 })
 
-        List() {
+        List({ scroller: this.scroller }) {
           // 添加安全检查，确保stationData[currentClassify]存在
           ForEach(
             (this.stationData && this.stationData[this.currentClassify]) ? 
@@ -303,7 +303,7 @@ struct SideTab {
               Column() {
                 Row() {
                   Text(stationName)
-                    .fontSize(18)
+                    .fontSize(16)
                     .fontColor('#182431')
                     .margin({ left: 20 })
                   Blank()
@@ -326,6 +326,7 @@ struct SideTab {
                 .height(60)
                 .alignItems(VerticalAlign.Center)
                 .backgroundColor('#FFFFFF')
+                .width('100%')
                 // 点击行可以修改内容（示例）
                 .onClick(() => {
                   // 这里可以添加修改逻辑，例如弹出输入框
@@ -346,7 +347,9 @@ struct SideTab {
           }, (stationName: string, index: number) => stationName + index.toString())
         }
         .width('72.2%')
+        .height('100%')
         .scrollBar(BarState.Off)
+        .margin({ top: 94 })
         // [End Side_tab_list]
       }
       .backgroundColor('#FFFFFF')
