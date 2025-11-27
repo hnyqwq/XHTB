@@ -423,8 +423,37 @@ export struct HomePage {
               .margin({ bottom: '3%' }) // 图片下方留白
               .objectFit(ImageFit.ScaleDown)
           }
+          .margin({ top: 20 })
           .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
           .borderRadius(20)
+          .justifyContent(FlexAlign.Center) // 垂直方向上居中
+          .visualEffect(new hdsEffect.HdsEffectBuilder()
+            .shaderEffect({
+              effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+              animation: {
+                duration: 4000,
+                iterations: -1,
+                autoPlay: true,
+                onFinish: () => {
+                  console.info('Succeeded in finishing');
+                }
+              },
+              controller: this.controller,
+              params: {
+                firstEdgeFlowLight: {
+                  startPos: 0,
+                  endPos: 1.0,
+                  color: '#ff8a00',
+                },
+                secondEdgeFlowLight: {
+                  startPos: 0.5,
+                  endPos: 1.5,
+                  color: '#f3c52a',
+                }
+              }
+            })
+            .buildEffect())
+
 
           Text($r('app.string.pengyipeng_title'))
             .fontWeight(600)
@@ -688,33 +717,6 @@ export struct HomePage {
             .copyOption(CopyOptions.LocalDevice)
             .textAlign(TextAlign.Center)//.margin({ right: 10 })
             .width('100%')
-            .visualEffect(new hdsEffect.HdsEffectBuilder()
-              .shaderEffect({
-                effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-                animation: {
-                  duration: 4000,
-                  iterations: -1,
-                  autoPlay: true,
-                  onFinish: () => {
-                    console.info('Succeeded in finishing');
-                  }
-                },
-                controller: this.controller,
-                params: {
-                  firstEdgeFlowLight: {
-                    startPos: 0,
-                    endPos: 1.0,
-                    color: '#ff8a00',
-                  },
-                  secondEdgeFlowLight: {
-                    startPos: 0.5,
-                    endPos: 1.5,
-                    color: '#f3c52a',
-                  }
-                }
-              })
-              .buildEffect())
-
 
           //碰一碰提示
           Text($r('app.string.nowplayingon'))
