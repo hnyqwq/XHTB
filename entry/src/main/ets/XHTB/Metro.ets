@@ -125,7 +125,7 @@ const StationTranslations = new Map<string, string>([
   ['双流西站', 'Shuangliu West Railway Station'],
   // 4号线
   ['西河', 'Xihe'],
-  ['明蜀王陵', 'MingShuwangling'],
+  ['明蜀王陵', 'Mingshuwangling'],
   ['成都大学', 'Chengdu University'],
   ['十陵', 'Shiling'],
   ['来龙', 'Lailong'],
