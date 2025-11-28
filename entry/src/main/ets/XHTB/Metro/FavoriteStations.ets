@@ -210,7 +210,9 @@ struct FavoriteStationItem {
       ['白果林', 'http://www.hnyqwq.cn/hvideo/audios/Baiguolin.mp3'],
       ['一品天下', 'http://www.hnyqwq.cn/hvideo/audios/Yipingtianxia.mp3'],
       ['文明乘车', 'http://www.hnyqwq.cn/hvideo/audios/wmcc.mp3'],
-      ['文明乘车日', 'http://www.hnyqwq.cn/hvideo/audios/11.mp3']
+      ['文明乘车日', 'http://www.hnyqwq.cn/hvideo/audios/11.mp3'],
+      ['18号线语音播报', 'http://www.hnyqwq.cn/hvideo/audios/18.mp3'],
+      ['19号线语音播报', 'http://www.hnyqwq.cn/hvideo/audios/19.mp3']
     ]);
     
     this.audioUrl = audioUrls.get(this.stationName) || '';
@@ -444,6 +446,22 @@ struct FavoriteStations {
       stationNumber: '',
       lineColor: getLineColor(0),
       description: '“每月11日是成都地铁文明乘车日，敬老爱幼，礼让和谐，传递温暖，共享平安，让我们一同文明出行。”'
+    },
+    {
+      name: '18号线语音播报',
+      englishName: '',
+      lineNumber: '',
+      stationNumber: '',
+      lineColor: getLineColor(0),
+      description: '列车到站前，车站广播会不间断播放线路线别、列车编组及终点站提示信息，其中18号线采用女声播报，19号线采用男声播报，乘客可通过男女声音区分18、19号线列车。'
+    },
+    {
+      name: '19号线语音播报',
+      englishName: '',
+      lineNumber: '',
+      stationNumber: '',
+      lineColor: getLineColor(0),
+      description: '列车到站前，车站广播会不间断播放线路线别、列车编组及终点站提示信息，其中18号线采用女声播报，19号线采用男声播报，乘客可通过男女声音区分18、19号线列车。'
     }
   ];
 
