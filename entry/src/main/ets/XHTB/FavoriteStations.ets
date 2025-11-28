@@ -267,32 +267,44 @@ struct FavoriteStationItem {
         
         // 确保播放器已创建且可以使用
         if (this.avPlayer) {
+          // 设置初始 isPlaying 状态为 true，提供即时反馈
+          this.isPlaying = true;
+          
           // 使用 Promise 确保 prepare 完成后再播放
           await new Promise<void>((resolve, reject) => {
             const player = this.avPlayer as media.AVPlayer;
             if (!player) {
+              this.isPlaying = false;
               reject(new Error("Player is null"));
               return;
             }
             
             // 监听 prepared 状态
-            const stateChangeHandler = (state: string) => {
+            const stateChangeHandler = (state: media.AVPlayerState) => {
               if (state === 'prepared') {
                 player.off('stateChange', stateChangeHandler);
-                resolve();
+                // 准备就绪后开始播放
+                player.play().then(() => {
+                  resolve();
+                }).catch((err: Error) => {
+                  this.isPlaying = false;
+                  reject(err);
+                });
+              } else if (state === 'error') {
+                this.isPlaying = false;
+                player.off('stateChange', stateChangeHandler);
+                reject(new Error("Player entered error state during preparation"));
               }
             };
             
             player.on('stateChange', stateChangeHandler);
             
             // 准备播放器
-            player.prepare().catch(reject);
+            player.prepare().catch((err: Error) => {
+              this.isPlaying = false;
+              reject(err);
+            });
           });
-          
-          // 开始播放
-          const player = this.avPlayer as media.AVPlayer;
-          await player.play();
-          this.isPlaying = true;
         }
       } else {
         const player = this.avPlayer as media.AVPlayer;
@@ -301,13 +313,25 @@ struct FavoriteStationItem {
           this.isPlaying = false;
         } else {
           // 如果处于完成状态，需要重新准备
-          await player.prepare();
-          await player.play();
-          this.isPlaying = true;
+          this.isPlaying = true; // 提供即时反馈
+          await player.prepare().catch((err: Error) => {
+            console.error(`${this.tag}: prepare failed, error: ${JSON.stringify(err)}`);
+            this.isPlaying = false;
+            throw err;
+          });
+          await player.play().catch((err: Error) => {
+            console.error(`${this.tag}: play failed, error: ${JSON.stringify(err)}`);
+            this.isPlaying = false;
+            throw err;
+          });
         }
       }
     } catch (error) {
-      console.error(`${this.tag}: toggle play failed, error: ${JSON.stringify(error)}`);
+      if (error instanceof Error) {
+        console.error(`${this.tag}: toggle play failed, error: ${JSON.stringify(error)}`);
+      } else {
+        console.error(`${this.tag}: toggle play failed, error: ${JSON.stringify(error)}`);
+      }
       this.isPlaying = false;
     }
   }
