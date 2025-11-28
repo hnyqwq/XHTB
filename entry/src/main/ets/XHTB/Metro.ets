@@ -856,50 +856,53 @@ struct SideTab {
           .margin({ top: 0 })
 
           List({ scroller: this.scroller }) {
-            // 添加tab选项卡
-            ListItem() {
-              Row() {
-                // 正常显示tab
+            // 只有在非搜索状态下才显示tab选项卡
+            if (!this.isSearching) {
+              // 添加tab选项卡
+              ListItem() {
                 Row() {
-                  Text(`${this.stationData[this.currentClassify][0]} - ${this.stationData[this.currentClassify][this.stationData[this.currentClassify].length - 1]}`)
-                    .fontSize(14)
-                    .fontColor(this.currentTab === 0 ? '#FFFFFF' : '#182431')
-                    .fontWeight(FontWeight.Medium)
-                    .layoutWeight(1)
-                    .textAlign(TextAlign.Center)
-                }
-                .width('50%')
-                .height(40)
-                .backgroundColor(this.currentTab === 0 ? '#182431' : '#F1F3F5')
-                .borderRadius(8)
-                .margin({ left: 5, right: 2.5 })
-                .alignItems(VerticalAlign.Center)
-                .onClick(() => {
-                  this.currentTab = 0;
-                })
+                  // 正常显示tab
+                  Row() {
+                    Text(`${this.stationData[this.currentClassify][0]} - ${this.stationData[this.currentClassify][this.stationData[this.currentClassify].length - 1]}`)
+                      .fontSize(14)
+                      .fontColor(this.currentTab === 0 ? '#FFFFFF' : '#182431')
+                      .fontWeight(FontWeight.Medium)
+                      .layoutWeight(1)
+                      .textAlign(TextAlign.Center)
+                  }
+                  .width('50%')
+                  .height(40)
+                  .backgroundColor(this.currentTab === 0 ? '#182431' : '#F1F3F5')
+                  .borderRadius(8)
+                  .margin({ left: 5, right: 2.5 })
+                  .alignItems(VerticalAlign.Center)
+                  .onClick(() => {
+                    this.currentTab = 0;
+                  })
 
-                // 倒序显示tab
-                Row() {
-                  Text(`${this.stationData[this.currentClassify][this.stationData[this.currentClassify].length - 1]} - ${this.stationData[this.currentClassify][0]}`)
-                    .fontSize(14)
-                    .fontColor(this.currentTab === 1 ? '#FFFFFF' : '#182431')
-                    .fontWeight(FontWeight.Medium)
-                    .layoutWeight(1)
-                    .textAlign(TextAlign.Center)
+                  // 倒序显示tab
+                  Row() {
+                    Text(`${this.stationData[this.currentClassify][this.stationData[this.currentClassify].length - 1]} - ${this.stationData[this.currentClassify][0]}`)
+                      .fontSize(14)
+                      .fontColor(this.currentTab === 1 ? '#FFFFFF' : '#182431')
+                      .fontWeight(FontWeight.Medium)
+                      .layoutWeight(1)
+                      .textAlign(TextAlign.Center)
+                  }
+                  .width('50%')
+                  .height(40)
+                  .backgroundColor(this.currentTab === 1 ? '#182431' : '#F1F3F5')
+                  .borderRadius(8)
+                  .margin({ left: 2.5, right: 5 })
+                  .alignItems(VerticalAlign.Center)
+                  .onClick(() => {
+                    this.currentTab = 1;
+                  })
                 }
-                .width('50%')
-                .height(40)
-                .backgroundColor(this.currentTab === 1 ? '#182431' : '#F1F3F5')
-                .borderRadius(8)
-                .margin({ left: 2.5, right: 5 })
-                .alignItems(VerticalAlign.Center)
-                .onClick(() => {
-                  this.currentTab = 1;
-                })
+                .width('100%')
+                .height(50)
+                .margin({ left: 10, right: 10, top: 5, bottom: 5 })
               }
-              .width('100%')
-              .height(50)
-              .margin({ left: 10, right: 10, top: 5, bottom: 5 })
             }
             
             // 根据是否在搜索状态决定显示什么内容
