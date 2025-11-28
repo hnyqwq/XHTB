@@ -820,7 +820,7 @@ struct SideTab {
           Text('󰙲')
             .fontSize(35)
             .onClick(() => {
-              router.pushUrl({ url: 'XHTB/FavoriteStations' }).catch((error: BusinessError) => {
+              router.pushUrl({ url: 'XHTB/Metro/FavoriteStations' }).catch((error: BusinessError) => {
                 console.error('Failed to navigate to FavoriteStations page. Cause: ' + error.message);
               });
             })

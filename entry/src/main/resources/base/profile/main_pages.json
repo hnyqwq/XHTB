@@ -10,6 +10,7 @@
     "XHTB/ReadQR",
     "XHTB/DetailPage",
     "XHTB/Internet",
-    "XHTB/Metro"
+    "XHTB/Metro",
+    "XHTB/Metro/FavoriteStations"
   ]
 }

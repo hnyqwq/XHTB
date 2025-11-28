@@ -206,7 +206,7 @@ struct FavoriteStationItem {
       ['龙平路', 'http://www.hnyqwq.cn/hvideo/audios/LongpingRoad.mp3'],
       ['界牌', 'http://www.hnyqwq.cn/hvideo/audios/Jiepai.mp3'],
       ['成都行政学院', 'http://www.hnyqwq.cn/hvideo/audios/ChengduAcademyofGovernance.mp3'],
-      ['塔子山公园', 'vhttp://www.hnyqwq.cn/hvideo/audios/TazishanPark.mp3'],
+      ['塔子山公园', 'http://www.hnyqwq.cn/hvideo/audios/TazishanPark.mp3'],
       ['白果林', 'http://www.hnyqwq.cn/hvideo/audios/Baiguolin.mp3'],
       ['一品天下', 'http://www.hnyqwq.cn/hvideo/audios/Yipingtianxia.mp3'],
       ['文明乘车', 'http://www.hnyqwq.cn/hvideo/audios/wmcc.mp3'],
