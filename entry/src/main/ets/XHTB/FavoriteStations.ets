@@ -192,57 +192,104 @@ struct FavoriteStationItem {
   @Prop lineNumber: string;
   @Prop stationNumber: string;
   @Prop lineColor: string;
-  @State isPaused: boolean = true; // 暂停播放
+  @State isPlaying: boolean = false; // 播放状态
   private avPlayer: media.AVPlayer | null = null;
-  tag: string = 'AVPlayManager';
+  private audioUrl: string = '';
+  tag: string = 'FavoriteStationItem';
 
   aboutToAppear() {
-    this.isPaused = true;
+    // 初始化音频URL
+    const audioUrls: Map<string, string> = new Map([
+      ['天府广场', 'http://www.hnyqwq.cn/hvideo/audios/LongpingRoad.mp3'],
+      ['火车北站', 'https://example.com/audio/north_railway_station.mp3'],
+      ['火车南站', 'https://example.com/audio/south_railway_station.mp3'],
+      ['春熙路', 'https://example.com/audio/chunxi_road.mp3'],
+      ['人民公园', 'https://example.com/audio/peoples_park.mp3'],
+      ['市二医院', 'https://example.com/audio/second_peoples_hospital.mp3']
+    ]);
+    
+    this.audioUrl = audioUrls.get(this.stationName) || '';
+    this.isPlaying = false;
   }
 
-  onPageHide() {
-    this.avPause();
-    this.isPaused = false;
-  }
-
-  avPlay(): void {
+  aboutToDisappear() {
+    // 页面销毁时释放播放器资源
     if (this.avPlayer) {
-      try {
-        this.avPlayer.play();
-      } catch (e) {
-        console.error(`${this.tag}: avPlay = ${JSON.stringify(e)}`);
-      }
+      this.avPlayer.release().then(() => {
+        this.avPlayer = null;
+      }).catch((error: BusinessError) => {
+        console.error(`${this.tag}: release player failed, error: ${JSON.stringify(error)}`);
+      });
     }
   }
 
-  avPause(): void {
-    if (this.avPlayer) {
-      try {
-        this.avPlayer.pause();
-        console.info(`${this.tag}: avPause==`);
-      } catch (e) {
-        console.error(`${this.tag}: avPause== ${JSON.stringify(e)}`);
-      }
+  // 初始化播放器
+  private async initPlayer() {
+    if (!this.audioUrl) {
+      console.error(`${this.tag}: audio url is empty for station ${this.stationName}`);
+      return;
+    }
+
+    try {
+      const player: media.AVPlayer = await media.createAVPlayer();
+      player.url = this.audioUrl;
+      this.avPlayer = player;
+      
+      // 监听播放完成事件
+      this.avPlayer.on('stateChange', (state: string) => {
+        if (state === 'completed') {
+          this.isPlaying = false;
+        }
+      });
+      
+      // 监听错误事件
+      this.avPlayer.on('error', (error: BusinessError) => {
+        console.error(`${this.tag}: player error, error: ${JSON.stringify(error)}`);
+        this.isPlaying = false;
+      });
+    } catch (error) {
+      console.error(`${this.tag}: init player failed, error: ${JSON.stringify(error)}`);
     }
   }
 
-  avReset(): void {
-    if (this.avPlayer) {
-      try {
-        this.avPlayer.reset();
-      } catch (e) {
-        console.error(`${this.tag}: avPlay = ${JSON.stringify(e)}`);
+  // 播放/暂停音频
+  private async togglePlay() {
+    if (!this.audioUrl) {
+      console.error(`${this.tag}: no audio url for station ${this.stationName}`);
+      return;
+    }
+
+    try {
+      if (!this.avPlayer) {
+        await this.initPlayer();
+        // 确保播放器已创建
+        if (this.avPlayer) {
+          const player = this.avPlayer as media.AVPlayer;
+          await player.prepare();
+          await player.play();
+          this.isPlaying = true;
+        }
+      } else {
+        const player = this.avPlayer as media.AVPlayer;
+        if (this.isPlaying) {
+          await player.pause();
+          this.isPlaying = false;
+        } else {
+          // 检查播放器状态，如果是已完成状态，则重新准备
+          await player.prepare();
+          await player.play();
+          this.isPlaying = true;
+        }
       }
+    } catch (error) {
+      console.error(`${this.tag}: toggle play failed, error: ${JSON.stringify(error)}`);
     }
   }
 
-  build()
-  {
-    Row()
-    {
+  build() {
+    Row() {
       // 地铁图标
-      if (isTransferStation(this.stationName))
-      {
+      if (isTransferStation(this.stationName)) {
         // 如果是换乘站，显示所有涉及的线路图标
         MultiLineMetroIcon({
           lineInfos: getTransferStationLines(this.stationName)
@@ -250,8 +297,7 @@ struct FavoriteStationItem {
         .margin({ left: 10 })
       } else {
         // 如果不是换乘站，显示单个线路图标
-        Stack({ alignContent: Alignment.Center })
-        {
+        Stack({ alignContent: Alignment.Center }) {
           Image($r('app.media.cdmetro'))
             .width(40)
             .height(40)
@@ -291,14 +337,12 @@ struct FavoriteStationItem {
       .alignItems(HorizontalAlign.Start)
 
       // 语音播放按钮
-      Image(this.isPaused ? $r("app.media.play_circle_fill") : $r("app.media.pause"))// 暂停/播放
-        .id(this.isPaused ? 'pause' : 'play')
+      Image(this.isPlaying ? $r("app.media.pause") : $r("app.media.play_circle_fill"))
         .width(30)
         .height(30)
         .margin({ right: 20 })
         .onClick(() => {
-          this.avPlay();
-          this.isPaused = true;
+          this.togglePlay();
         })
     }
     .height(60)
@@ -359,56 +403,6 @@ struct FavoriteStations {
       lineColor: getLineColor(2)
     }
   ];
-  
-  // 为每个站点配置网络音频URL
-  private stationAudioUrls: Map<string, string> = new Map([
-    ['天府广场', 'http://www.hnyqwq.cn/hvideo/audios/LongpingRoad.mp3'],
-    ['火车北站', 'https://example.com/audio/north_railway_station.mp3'],
-    ['火车南站', 'https://example.com/audio/south_railway_station.mp3'],
-    ['春熙路', 'https://example.com/audio/chunxi_road.mp3'],
-    ['人民公园', 'https://example.com/audio/peoples_park.mp3'],
-    ['市二医院', 'https://example.com/audio/second_peoples_hospital.mp3']
-  ]);
-  
-  // 音频播放器实例
-  private audioPlayer: media.AVPlayer | null = null;
-
-  async playVoice(stationName: string) {
-    try {
-      // 如果已有播放器实例，先停止并释放
-      if (this.audioPlayer) {
-        try {
-          await this.audioPlayer.release();
-        } catch (error) {
-          console.log('释放音频播放器失败:', error);
-        }
-      }
-      
-      // 创建新的音频播放器
-      const player = await media.createAVPlayer();
-      this.audioPlayer = player;
-      
-      // 根据站点名称获取对应的音频URL
-      const audioUrl = this.stationAudioUrls.get(stationName);
-      if (!audioUrl) {
-        console.error(`未找到站点 ${stationName} 对应的音频文件`);
-        return;
-      }
-      
-      // 设置音频源
-      this.audioPlayer.url = audioUrl;
-      
-      // 准备播放
-      await this.audioPlayer.prepare();
-      
-      // 开始播放
-      await this.audioPlayer.play();
-      
-      console.log(`开始播放站点 ${stationName} 的语音: ${audioUrl}`);
-    } catch (error) {
-      console.error(`播放站点 ${stationName} 的语音失败:`, error);
-    }
-  }
 
   build() {
     Column() {
