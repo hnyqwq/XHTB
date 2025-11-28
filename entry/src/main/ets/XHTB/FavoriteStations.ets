@@ -1,6 +1,5 @@
-import { initSideData } from './Metro/TabViewModel';
-import { ClassifyModel } from './Metro/TabItem';
 import { media } from '@kit.MediaKit';
+import { BusinessError } from '@kit.BasicServicesKit';
 
 // 定义站点信息接口
 interface StationInfo {
@@ -193,11 +192,57 @@ struct FavoriteStationItem {
   @Prop lineNumber: string;
   @Prop stationNumber: string;
   @Prop lineColor: string;
+  @State isPaused: boolean = true; // 暂停播放
+  private avPlayer: media.AVPlayer | null = null;
+  tag: string = 'AVPlayManager';
 
-  build() {
-    Row() {
+  aboutToAppear() {
+    this.isPaused = true;
+  }
+
+  onPageHide() {
+    this.avPause();
+    this.isPaused = false;
+  }
+
+  avPlay(): void {
+    if (this.avPlayer) {
+      try {
+        this.avPlayer.play();
+      } catch (e) {
+        console.error(`${this.tag}: avPlay = ${JSON.stringify(e)}`);
+      }
+    }
+  }
+
+  avPause(): void {
+    if (this.avPlayer) {
+      try {
+        this.avPlayer.pause();
+        console.info(`${this.tag}: avPause==`);
+      } catch (e) {
+        console.error(`${this.tag}: avPause== ${JSON.stringify(e)}`);
+      }
+    }
+  }
+
+  avReset(): void {
+    if (this.avPlayer) {
+      try {
+        this.avPlayer.reset();
+      } catch (e) {
+        console.error(`${this.tag}: avPlay = ${JSON.stringify(e)}`);
+      }
+    }
+  }
+
+  build()
+  {
+    Row()
+    {
       // 地铁图标
-      if (isTransferStation(this.stationName)) {
+      if (isTransferStation(this.stationName))
+      {
         // 如果是换乘站，显示所有涉及的线路图标
         MultiLineMetroIcon({
           lineInfos: getTransferStationLines(this.stationName)
@@ -205,7 +250,8 @@ struct FavoriteStationItem {
         .margin({ left: 10 })
       } else {
         // 如果不是换乘站，显示单个线路图标
-        Stack({ alignContent: Alignment.Center }) {
+        Stack({ alignContent: Alignment.Center })
+        {
           Image($r('app.media.cdmetro'))
             .width(40)
             .height(40)
@@ -245,11 +291,14 @@ struct FavoriteStationItem {
       .alignItems(HorizontalAlign.Start)
 
       // 语音播放按钮
-      Image($r('app.media.play_circle_fill'))
+      Image(this.isPaused ? $r("app.media.play_circle_fill") : $r("app.media.pause"))// 暂停/播放
+        .id(this.isPaused ? 'pause' : 'play')
         .width(30)
         .height(30)
         .margin({ right: 20 })
         .onClick(() => {
+          this.avPlay();
+          this.isPaused = true;
         })
     }
     .height(60)
