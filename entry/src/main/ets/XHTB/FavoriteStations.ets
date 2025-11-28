@@ -311,10 +311,19 @@ struct FavoriteStations {
     }
   ];
   
+  // 为每个站点配置网络音频URL
+  private stationAudioUrls: Map<string, string> = new Map([
+    ['天府广场', 'http://www.hnyqwq.cn/hvideo/audios/LongpingRoad.mp3'],
+    ['火车北站', 'https://example.com/audio/north_railway_station.mp3'],
+    ['火车南站', 'https://example.com/audio/south_railway_station.mp3'],
+    ['春熙路', 'https://example.com/audio/chunxi_road.mp3'],
+    ['人民公园', 'https://example.com/audio/peoples_park.mp3'],
+    ['市二医院', 'https://example.com/audio/second_peoples_hospital.mp3']
+  ]);
+  
   // 音频播放器实例
   private audioPlayer: media.AVPlayer | null = null;
 
-  // 语音播放功能
   async playVoice(stationName: string) {
     try {
       // 如果已有播放器实例，先停止并释放
@@ -330,9 +339,15 @@ struct FavoriteStations {
       const player = await media.createAVPlayer();
       this.audioPlayer = player;
       
-      // 设置音频源 - 示例使用系统提示音
-      // 实际项目中应该根据不同站点使用不同的音频文件
-      this.audioPlayer.url = 'common/audio/station_announcement.mp3';
+      // 根据站点名称获取对应的音频URL
+      const audioUrl = this.stationAudioUrls.get(stationName);
+      if (!audioUrl) {
+        console.error(`未找到站点 ${stationName} 对应的音频文件`);
+        return;
+      }
+      
+      // 设置音频源
+      this.audioPlayer.url = audioUrl;
       
       // 准备播放
       await this.audioPlayer.prepare();
@@ -340,7 +355,7 @@ struct FavoriteStations {
       // 开始播放
       await this.audioPlayer.play();
       
-      console.log(`开始播放站点 ${stationName} 的语音`);
+      console.log(`开始播放站点 ${stationName} 的语音: ${audioUrl}`);
     } catch (error) {
       console.error(`播放站点 ${stationName} 的语音失败:`, error);
     }
