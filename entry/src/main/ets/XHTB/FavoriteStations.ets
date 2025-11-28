@@ -208,7 +208,9 @@ struct FavoriteStationItem {
       ['成都行政学院', 'http://www.hnyqwq.cn/hvideo/audios/ChengduAcademyofGovernance.mp3'],
       ['塔子山公园', 'vhttp://www.hnyqwq.cn/hvideo/audios/TazishanPark.mp3'],
       ['白果林', 'http://www.hnyqwq.cn/hvideo/audios/Baiguolin.mp3'],
-      ['一品天下', 'http://www.hnyqwq.cn/hvideo/audios/Yipingtianxia.mp3']
+      ['一品天下', 'http://www.hnyqwq.cn/hvideo/audios/Yipingtianxia.mp3'],
+      ['文明乘车', 'http://www.hnyqwq.cn/hvideo/audios/wmcc.mp3'],
+      ['文明乘车日', 'http://www.hnyqwq.cn/hvideo/audios/11.mp3']
     ]);
     
     this.audioUrl = audioUrls.get(this.stationName) || '';
@@ -426,6 +428,22 @@ struct FavoriteStations {
       stationNumber: '24',
       lineColor: getLineColor(1),
       description: '李信提醒您：“吾持剑锋，以筑长城，一品天下站到了。”'
+    },
+    {
+      name: '文明乘车',
+      englishName: '',
+      lineNumber: '',
+      stationNumber: '',
+      lineColor: getLineColor(0),
+      description: '“文明乘车，关爱他人。和谐共处，共建平安。乘客您好，请爱护公共卫生及设备设施，成都地铁邀您一路文明出行。”'
+    },
+    {
+      name: '文明乘车日',
+      englishName: '',
+      lineNumber: '',
+      stationNumber: '',
+      lineColor: getLineColor(0),
+      description: '“每月11日是成都地铁文明乘车日，敬老爱幼，礼让和谐，传递温暖，共享平安，让我们一同文明出行。”'
     }
   ];
 
