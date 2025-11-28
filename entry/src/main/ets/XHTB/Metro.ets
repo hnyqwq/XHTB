@@ -871,14 +871,15 @@ struct SideTab {
                       .textAlign(TextAlign.Center)
                   }
                   .width('50%')
-                  .height(40)
                   .backgroundColor(this.currentTab === 0 ? '#182431' : '#F1F3F5')
                   .borderRadius(8)
-                  .margin({ left: 5, right: 2.5 })
                   .alignItems(VerticalAlign.Center)
+                  .justifyContent(FlexAlign.Center)
                   .onClick(() => {
                     this.currentTab = 0;
                   })
+                  .margin({ left: 5, right: 2.5 })
+                  .padding({ top: 8, bottom: 8 })
 
                   // 倒序显示tab
                   Row() {
@@ -890,17 +891,18 @@ struct SideTab {
                       .textAlign(TextAlign.Center)
                   }
                   .width('50%')
-                  .height(40)
                   .backgroundColor(this.currentTab === 1 ? '#182431' : '#F1F3F5')
                   .borderRadius(8)
-                  .margin({ left: 2.5, right: 5 })
                   .alignItems(VerticalAlign.Center)
+                  .justifyContent(FlexAlign.Center)
                   .onClick(() => {
                     this.currentTab = 1;
                   })
+                  .margin({ left: 2.5, right: 5 })
+                  .padding({ top: 8, bottom: 8 })
                 }
                 .width('100%')
-                .height(50)
+                .alignItems(VerticalAlign.Center)
                 .margin({ left: 10, right: 10, top: 5, bottom: 5 })
               }
             }
