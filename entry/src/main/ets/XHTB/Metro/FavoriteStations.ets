@@ -449,10 +449,10 @@ struct FavoriteStations {
     },
     {
       name: '18号线语音播报',
-      englishName: '',
-      lineNumber: '',
+      englishName: 'Line 18',
+      lineNumber: '18',
       stationNumber: '',
-      lineColor: getLineColor(0),
+      lineColor: getLineColor(12),
       description: '乘客您好 18号线开往天府机场北方向的列车即将进站\n' +
         '请先下后上 小心列车与站台之间的空隙\nDear passengers\n' +
         'The train on line 18 bound for\n' +
@@ -463,10 +463,10 @@ struct FavoriteStations {
     },
     {
       name: '19号线语音播报',
-      englishName: '',
-      lineNumber: '',
+      englishName: 'Line 19',
+      lineNumber: '19',
       stationNumber: '',
-      lineColor: getLineColor(0),
+      lineColor: getLineColor(13),
       description: '列车到站前，车站广播会不间断播放线路线别、列车编组及终点站提示信息，其中18号线采用女声播报，19号线采用男声播报，乘客可通过男女声音区分18、19号线列车。'
     }
   ];
