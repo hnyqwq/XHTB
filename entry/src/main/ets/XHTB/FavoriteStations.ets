@@ -1,5 +1,6 @@
 import { media } from '@kit.MediaKit';
 import { BusinessError } from '@kit.BasicServicesKit';
+import router from '@ohos.router';
 
 // 定义站点信息接口
 interface StationInfo {
@@ -425,36 +426,48 @@ struct FavoriteStations {
     }
   ];
 
-  build() {
-    Column() {
-      // 页面标题
-      Row() {
-        Text('常用站点')
-          .fontSize(18)
-          .fontWeight(FontWeight.Bold)
-          .margin({ left: 20 })
-      }
-      .height(60)
-      .alignItems(VerticalAlign.Center)
-      
-      // 站点列表项
-      ForEach(this.favoriteStations, (station: StationInfo, index: number) => {
-        Column() {
-          FavoriteStationItem({
-            stationName: station.name,
-            stationEnglishName: station.englishName,
-            lineNumber: station.lineNumber,
-            stationNumber: station.stationNumber,
-            lineColor: station.lineColor,
-          })
-          
-          // 分割线
-          Divider()
-            .color('#E5E5E5')
-            .strokeWidth(1)
+  build()
+  {
+    Column()
+    {
+      Column() {
+        // 页面标题（不含返回按钮）
+        Row() {
+          Text('彩蛋站点')
+            .fontSize(18)
+            .fontWeight(FontWeight.Bold)
+            .margin({ left: 20 })
         }
-      })
+        .height(60)
+        .alignItems(VerticalAlign.Center)
+
+        // 站点列表项
+        ForEach(this.favoriteStations, (station: StationInfo, index: number) => {
+          Column() {
+            FavoriteStationItem({
+              stationName: station.name,
+              stationEnglishName: station.englishName,
+              lineNumber: station.lineNumber,
+              stationNumber: station.stationNumber,
+              lineColor: station.lineColor,
+            })
+
+            // 分割线
+            Divider()
+              .color('#E5E5E5')
+              .strokeWidth(1)
+          }
+        })
+      }
+      .height('100%')
+      
+      // 固定在左上角的返回按钮
+      Text('󰃚')
+        .fontSize(35)
+        .position({ x: 20, y: 10 })
+        .onClick(() => {
+          router.back();
+        })
     }
-    .height('100%')
   }
 }

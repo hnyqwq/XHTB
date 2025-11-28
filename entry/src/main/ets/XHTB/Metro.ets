@@ -815,6 +815,16 @@ struct SideTab {
               this.searchQuery = value;
               this.performSearch(value);
             })
+
+          // 返回按钮
+          Text('󰙲')
+            .fontSize(35)
+            .margin({ right: 30 })
+            .onClick(() => {
+              router.pushUrl({ url: 'XHTB/FavoriteStations' }).catch((error: BusinessError) => {
+                console.error('Failed to navigate to FavoriteStations page. Cause: ' + error.message);
+              });
+            })
         }
         .width('100%')
         .height(60)
