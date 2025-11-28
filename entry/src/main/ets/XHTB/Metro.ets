@@ -921,12 +921,16 @@ struct SideTab {
                           .margin({ left: 20 })
                           .draggable(true)
                           .copyOption(CopyOptions.LocalDevice)
+                          .maxLines(999)
+                          .textOverflow({ overflow: TextOverflow.Clip })
                         Text(StationTranslations.get(result.stationName) || '')
                           .fontSize(12)
                           .fontColor('#999999')
                           .margin({ left: 20, top: 2 })
                           .draggable(true)
                           .copyOption(CopyOptions.LocalDevice)
+                          .maxLines(999)
+                          .textOverflow({ overflow: TextOverflow.Clip })
                       }
                       .layoutWeight(1)
                       .justifyContent(FlexAlign.Center)
@@ -949,10 +953,10 @@ struct SideTab {
                         .margin({ right: 20 })
                       }
                     }
-                    .height(60)
                     .alignItems(VerticalAlign.Center)
                     .backgroundColor('#FFFFFF')
                     .width('100%')
+                    .padding({ top: 10, bottom: 10 })
                     
                     // 添加灰色分割线（除了最后一项）
                     if (index < this.searchResults.length - 1) {
@@ -978,12 +982,16 @@ struct SideTab {
                           .margin({ left: 20 })
                           .draggable(true)
                           .copyOption(CopyOptions.LocalDevice)
+                          .maxLines(999)
+                          .textOverflow({ overflow: TextOverflow.Clip })
                         Text(StationTranslations.get(stationName) || '')
                           .fontSize(12)
                           .fontColor('#999999')
                           .margin({ left: 20, top: 2 })
                           .draggable(true)
                           .copyOption(CopyOptions.LocalDevice)
+                          .maxLines(999)
+                          .textOverflow({ overflow: TextOverflow.Clip })
                       }
                       .layoutWeight(1)
                       .justifyContent(FlexAlign.Center)
@@ -1008,10 +1016,10 @@ struct SideTab {
                         .margin({ right: 20 })
                       }
                     }
-                    .height(60)
                     .alignItems(VerticalAlign.Center)
                     .backgroundColor('#FFFFFF')
                     .width('100%')
+                    .padding({ top: 10, bottom: 10 })
                     // 点击行可以修改内容（示例）
                     .onClick(() => {
                       // 这里可以添加修改逻辑，例如弹出输入框
