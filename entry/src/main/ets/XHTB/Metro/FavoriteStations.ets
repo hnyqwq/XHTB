@@ -475,7 +475,7 @@ struct FavoriteStations {
             Text(station.description)
               .fontSize(12)
               .fontColor('#666666')
-              .margin({ left: 20, top: 5 })
+              .margin({ left: 20, top: 5, right: 20 })
               .textAlign(TextAlign.Start)
               
             FavoriteStationItem({
