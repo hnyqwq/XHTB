@@ -244,7 +244,7 @@ const StationTranslations = new Map<string, string>([
   // 7号线
   ['府青路', 'Fuqing Road'],
   ['八里庄', 'Balizhuang'],
-  ['二仙桥', 'Erxiang Bridge'],
+  ['二仙桥', 'Erxian Bridge'],
   ['理工大学', 'Chengdu University of Technology'],
   ['崔家店', 'Cuijiadian'],
   ['双店路', 'Shuangdian Road'],
