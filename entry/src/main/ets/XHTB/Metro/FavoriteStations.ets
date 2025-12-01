@@ -203,16 +203,17 @@ struct FavoriteStationItem {
   aboutToAppear() {
     // 初始化音频URL
     const audioUrls: Map<string, string> = new Map([
-      ['龙平路', 'http://www.hnyqwq.cn/hvideo/audios/LongpingRoad.mp3'],
-      ['界牌', 'http://www.hnyqwq.cn/hvideo/audios/Jiepai.mp3'],
-      ['成都行政学院', 'http://www.hnyqwq.cn/hvideo/audios/ChengduAcademyofGovernance.mp3'],
-      ['塔子山公园', 'http://www.hnyqwq.cn/hvideo/audios/TazishanPark.mp3'],
-      ['白果林', 'http://www.hnyqwq.cn/hvideo/audios/Baiguolin.mp3'],
-      ['一品天下', 'http://www.hnyqwq.cn/hvideo/audios/Yipingtianxia.mp3'],
-      ['文明乘车', 'http://www.hnyqwq.cn/hvideo/audios/wmcc.mp3'],
-      ['文明乘车日', 'http://www.hnyqwq.cn/hvideo/audios/11.mp3'],
-      ['18号线语音播报', 'http://www.hnyqwq.cn/hvideo/audios/18.mp3'],
-      ['19号线语音播报', 'http://www.hnyqwq.cn/hvideo/audios/19.mp3']
+      ['龙平路', 'http://www.hnyqwq.cn/hvideo/audios/metro/LongpingRoad.mp3'],
+      ['界牌', 'http://www.hnyqwq.cn/hvideo/audios/metro/Jiepai.mp3'],
+      ['成都行政学院', 'http://www.hnyqwq.cn/hvideo/audios/metro/ChengduAcademyofGovernance.mp3'],
+      ['塔子山公园', 'http://www.hnyqwq.cn/hvideo/audios/metro/TazishanPark.mp3'],
+      ['白果林', 'http://www.hnyqwq.cn/hvideo/audios/metro/Baiguolin.mp3'],
+      ['一品天下', 'http://www.hnyqwq.cn/hvideo/audios/metro/Yipingtianxia.mp3'],
+      ['文明乘车', 'http://www.hnyqwq.cn/hvideo/audios/metro/wmcc.mp3'],
+      ['文明乘车日', 'http://www.hnyqwq.cn/hvideo/audios/metro/11.mp3'],
+      ['18号线语音播报', 'http://www.hnyqwq.cn/hvideo/audios/metro/18.mp3'],
+      ['19号线语音播报', 'http://www.hnyqwq.cn/hvideo/audios/metro/19.mp3'],
+      ['扶梯', 'http://www.hnyqwq.cn/hvideo/audios/metro/ft.mp3']
     ]);
     
     this.audioUrl = audioUrls.get(this.stationName) || '';
@@ -542,6 +543,14 @@ struct FavoriteStations {
       stationNumber: '',
       lineColor: getLineColor(13),
       description: '列车到站前，车站广播会不间断播放线路线别、列车编组及终点站提示信息，其中18号线采用女声播报，19号线采用男声播报，乘客可通过男女声音区分18、19号线列车。'
+    },
+    {
+      name: '扶梯',
+      englishName: '',
+      lineNumber: '',
+      stationNumber: '',
+      lineColor: getLineColor(0),
+      description: 'ft'
     }
   ];
 
