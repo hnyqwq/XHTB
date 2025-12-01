@@ -230,22 +230,35 @@ struct FavoriteStationItem {
     }
   }
 
-  // 初始化播放器
-  private async initPlayer() {
-    if (!this.audioUrl) {
-      console.error(`${this.tag}: audio url is empty for station ${this.stationName}`);
-      return;
-    }
-
+  // 播放音频（总是从头开始播放）
+  private async playAudio() {
+    console.log(`${this.tag}: playAudio called, audioUrl: ${this.audioUrl}`);
     try {
-      // 使用 await 确保 AVPlayer 创建完成
+      // 如果已经有播放器实例，先释放它
+      if (this.avPlayer) {
+        console.log(`${this.tag}: releasing existing player`);
+        this.avPlayer.release().then(() => {
+          console.log(`${this.tag}: player released successfully`);
+          this.avPlayer = null;
+        }).catch((error: BusinessError) => {
+          console.error(`${this.tag}: release player failed, error: ${JSON.stringify(error)}`);
+        });
+        this.avPlayer = null;
+      }
+      
+      // 创建新的播放器实例
+      console.log(`${this.tag}: creating new AVPlayer`);
       this.avPlayer = await media.createAVPlayer();
+      console.log(`${this.tag}: AVPlayer created, setting url: ${this.audioUrl}`);
       this.avPlayer.url = this.audioUrl;
       
       // 监听播放完成事件
       this.avPlayer.on('stateChange', (state: string) => {
+        console.log(`${this.tag}: player state changed to: ${state}`);
         if (state === 'completed') {
           this.isPlaying = false;
+          // 播放完成后重置播放器以便重复播放
+          this.avPlayer?.reset();
         }
       });
       
@@ -255,60 +268,120 @@ struct FavoriteStationItem {
         this.isPlaying = false;
       });
       
-      // 立即准备播放器
+      // 准备并播放
+      console.log(`${this.tag}: preparing player`);
       await this.avPlayer.prepare();
+      console.log(`${this.tag}: playing audio`);
+      await this.avPlayer.play();
+      this.isPlaying = true;
+      console.log(`${this.tag}: audio is now playing`);
     } catch (error) {
-      console.error(`${this.tag}: init player failed, error: ${JSON.stringify(error)}`);
+      console.error(`${this.tag}: play audio failed, error: ${JSON.stringify(error)}`);
+      this.isPlaying = false;
+    }
+  }
+
+  // 暂停音频
+  private async pauseAudio() {
+    console.log(`${this.tag}: pauseAudio called`);
+    if (this.avPlayer) {
+      try {
+        if (this.isPlaying) {
+          console.log(`${this.tag}: pausing player`);
+          await this.avPlayer.pause();
+        }
+        this.isPlaying = false;
+        console.log(`${this.tag}: audio paused`);
+      } catch (error) {
+        console.error(`${this.tag}: pause audio failed, error: ${JSON.stringify(error)}`);
+      }
+    } else {
+      console.log(`${this.tag}: no player to pause`);
     }
   }
 
   // 播放/暂停音频
   private async togglePlay() {
+    console.log(`${this.tag}: togglePlay called, isPlaying: ${this.isPlaying}, has avPlayer: ${!!this.avPlayer}`);
     if (!this.audioUrl) {
       console.error(`${this.tag}: no audio url for station ${this.stationName}`);
       return;
     }
 
     try {
-      if (!this.avPlayer) {
-        // 初始化播放器并等待其完成
-        await this.initPlayer();
-        
-        // 确保播放器已创建且可以使用
+      if (this.isPlaying) {
+        // 当前正在播放，需要暂停
+        console.log(`${this.tag}: currently playing, will pause`);
         if (this.avPlayer) {
-          // 设置初始 isPlaying 状态为 true，提供即时反馈
-          this.isPlaying = true;
-          
-          // 播放器已准备好，直接播放
-          const player = this.avPlayer as media.AVPlayer;
-          await player.play();
-        }
-      } else {
-        const player = this.avPlayer as media.AVPlayer;
-        if (this.isPlaying) {
+          const player: media.AVPlayer = this.avPlayer as media.AVPlayer;
           await player.pause();
           this.isPlaying = false;
-        } else {
-          // 如果处于完成状态，需要重新准备
-          this.isPlaying = true; // 提供即时反馈
-          await player.prepare().catch((err: Error) => {
-            console.error(`${this.tag}: prepare failed, error: ${JSON.stringify(err)}`);
-            this.isPlaying = false;
-            throw err;
-          });
-          await player.play().catch((err: Error) => {
-            console.error(`${this.tag}: play failed, error: ${JSON.stringify(err)}`);
-            this.isPlaying = false;
-            throw err;
-          });
         }
+      } else {
+        // 当前未播放，需要播放
+        console.log(`${this.tag}: currently not playing, will play`);
+        // 如果已经有播放器实例，先释放它
+        if (this.avPlayer) {
+          console.log(`${this.tag}: releasing existing player`);
+          try {
+            const player: media.AVPlayer = this.avPlayer as media.AVPlayer;
+            await player.release();
+            console.log(`${this.tag}: player released successfully`);
+          } catch (releaseError) {
+            console.error(`${this.tag}: release player failed, error: ${JSON.stringify(releaseError)}`);
+          }
+          this.avPlayer = null;
+        }
+        
+        // 创建新的播放器实例
+        console.log(`${this.tag}: creating new AVPlayer`);
+        this.avPlayer = await media.createAVPlayer() as media.AVPlayer;
+        this.avPlayer.url = this.audioUrl;
+        
+        // 监听播放完成事件
+        this.avPlayer.on('stateChange', (state: string) => {
+          console.log(`${this.tag}: player state changed to: ${state}`);
+          if (state === 'completed') {
+            this.isPlaying = false;
+          }
+        });
+        
+        // 监听错误事件
+        this.avPlayer.on('error', (error: BusinessError) => {
+          console.error(`${this.tag}: player error, error: ${JSON.stringify(error)}`);
+          this.isPlaying = false;
+        });
+        
+        // 等待一段时间确保播放器状态正确
+        await new Promise<void>((resolve) => setTimeout(() => resolve(), 100));
+        
+        // 准备并播放
+        console.log(`${this.tag}: preparing player`);
+        await this.avPlayer.prepare().catch(async (prepareError: Error) => {
+          console.error(`${this.tag}: prepare failed, error: ${JSON.stringify(prepareError)}`);
+          // 如果prepare失败，尝试reset后重新prepare
+          try {
+            if (this.avPlayer) {
+              const player: media.AVPlayer = this.avPlayer as media.AVPlayer;
+              await player.reset();
+              await player.prepare();
+            }
+          } catch (resetError) {
+            console.error(`${this.tag}: reset and prepare failed, error: ${JSON.stringify(resetError)}`);
+            throw new Error(JSON.stringify(resetError));
+          }
+        });
+        
+        console.log(`${this.tag}: playing audio`);
+        if (this.avPlayer) {
+          const player: media.AVPlayer = this.avPlayer as media.AVPlayer;
+          await player.play();
+        }
+        this.isPlaying = true;
+        console.log(`${this.tag}: audio is now playing`);
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.error(`${this.tag}: toggle play failed, error: ${JSON.stringify(error)}`);
-      } else {
-        console.error(`${this.tag}: toggle play failed, error: ${JSON.stringify(error)}`);
-      }
+      console.error(`${this.tag}: togglePlay failed, error: ${JSON.stringify(error)}`);
       this.isPlaying = false;
     }
   }
@@ -369,6 +442,7 @@ struct FavoriteStationItem {
         .height(30)
         .margin({ right: 20 })
         .onClick(() => {
+          // 不等待异步调用完成，直接触发播放/暂停
           this.togglePlay();
         })
     }
