@@ -6,8 +6,10 @@ import { scanCore, generateBarcode } from '@kit.ScanKit';
 import { textToSpeech } from '@kit.CoreSpeechKit';//语音
 
 import router from '@ohos.router';
+
 //点光源效果
-import { hdsEffect } from '@kit.UIDesignKit';
+/*import { hdsEffect } from '@kit.UIDesignKit';*/
+
 let ttsEngine: textToSpeech.TextToSpeechEngine;
 
 @Entry
@@ -26,8 +28,8 @@ export struct ReadQR {
   @StorageLink('isPlaying') isPlaying: boolean = false;
 
   //点光源效果
-  @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;
-  @State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();
+  /*@State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;
+  @State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();*/
 
   aboutToDisappear() {
     try {
@@ -65,7 +67,7 @@ export struct ReadQR {
             this.networkVideoSrc = networkVideoSrc;
             AppStorage.set('networkVideoSrc', networkVideoSrc);
           })
-          .visualEffect(new hdsEffect.HdsEffectBuilder()
+          /*.visualEffect(new hdsEffect.HdsEffectBuilder()
             .shaderEffect({
               effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
               animation: {
@@ -90,7 +92,7 @@ export struct ReadQR {
                 }
               }
             })
-            .buildEffect())
+            .buildEffect())*/
 
         Row({ space: 40 }) {
           Button('', { type: ButtonType.Circle, stateEffect: true })
@@ -140,7 +142,7 @@ export struct ReadQR {
             AppStorage.set('networkVideoSrc', networkVideoSrc);
           })
 
-          .visualEffect(new hdsEffect.HdsEffectBuilder()
+          /*.visualEffect(new hdsEffect.HdsEffectBuilder()
             .shaderEffect({
               effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
               animation: {
@@ -165,7 +167,7 @@ export struct ReadQR {
                 }
               }
             })
-            .buildEffect())
+            .buildEffect())*/
         Button($r('app.string.pick'))
           .margin({ top: 10 })
           .onClick(() => {

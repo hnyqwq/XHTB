@@ -24,7 +24,7 @@ import MediaFileUri from '../media/MediaFileUri';
 import KnockShareGuideCard, { CardRes } from '../model/KnockShareGuideCard';
 
 //点光源效果
-import { hdsEffect } from '@kit.UIDesignKit';
+/*import { hdsEffect } from '@kit.UIDesignKit';*/
 
 let logger = Logger.getLogger('[KnockShare]');
 let context = getContext(this) as common.UIAbilityContext;
@@ -64,8 +64,8 @@ export struct HomePage {
   //碰一碰
   @State whiteStatus: boolean = false;
   //点光源效果
-  @State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();
-  @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;
+  /*@State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();
+  @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;*/
 
   //隔空投送
   private immersiveListening() {
@@ -427,7 +427,7 @@ export struct HomePage {
           .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
           .borderRadius(20)
           .justifyContent(FlexAlign.Center) // 垂直方向上居中
-          .visualEffect(new hdsEffect.HdsEffectBuilder()
+          /*.visualEffect(new hdsEffect.HdsEffectBuilder()
             .shaderEffect({
               effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
               animation: {
@@ -452,7 +452,7 @@ export struct HomePage {
                 }
               }
             })
-            .buildEffect())
+            .buildEffect())*/
 
 
           Text($r('app.string.pengyipeng_title'))
@@ -500,7 +500,7 @@ export struct HomePage {
               this.handleImageUpdate(); // 触发图片更新逻辑
             }
           })
-          .visualEffect(new hdsEffect.HdsEffectBuilder()
+          /*.visualEffect(new hdsEffect.HdsEffectBuilder()
             .shaderEffect({
               effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
               animation: {
@@ -525,7 +525,7 @@ export struct HomePage {
                 }
               }
             })
-            .buildEffect())
+            .buildEffect())*/
         Text($r('app.string.texton'))
           .textAlign(TextAlign.Center)
           .margin({ top: 5, bottom: 10 })
@@ -604,7 +604,7 @@ export struct HomePage {
               AppStorage.set('networkVideoSrc', networkVideoSrc);
             }
           })
-          .visualEffect(new hdsEffect.HdsEffectBuilder()
+          /*.visualEffect(new hdsEffect.HdsEffectBuilder()
             .shaderEffect({
               effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
               animation: {
@@ -629,7 +629,7 @@ export struct HomePage {
                 }
               }
             })
-            .buildEffect())
+            .buildEffect())*/
           .margin({ top: 5, bottom: 10 })
         Row()
         {
@@ -644,7 +644,7 @@ export struct HomePage {
               this.pengtitle = pengtitle;
               AppStorage.set('pengtitle', pengtitle);
             })
-            .visualEffect(new hdsEffect.HdsEffectBuilder()
+            /*.visualEffect(new hdsEffect.HdsEffectBuilder()
               .shaderEffect({
                 effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
                 animation: {
@@ -669,7 +669,7 @@ export struct HomePage {
                   }
                 }
               })
-              .buildEffect())
+              .buildEffect())*/
         }
         .margin({ top: 10 })
         .width('90%')  // 控制内容区域宽度
@@ -685,7 +685,7 @@ export struct HomePage {
               .width('40%')
               .height(50)
               .backgroundColor(0x66CCFF)//蓝色
-              .visualEffect(new hdsEffect.HdsEffectBuilder()
+              /*.visualEffect(new hdsEffect.HdsEffectBuilder()
                 .pointLight({
                   sourceType:  hdsEffect.PointLightSourceType.NONE,
                   illuminatedType: hdsEffect.PointLightIlluminatedType.DEFAULT_FEATHERING_BORDER
@@ -697,7 +697,7 @@ export struct HomePage {
                 } else if (event.type === TouchType.Up || event.type === TouchType.Cancel) {
                   this.lightSourceType = hdsEffect.PointLightSourceType.NONE;
                 }
-              })
+              })*/
               .onClick(() => {
                 logger.info('分享按钮被点击');
                 try {
