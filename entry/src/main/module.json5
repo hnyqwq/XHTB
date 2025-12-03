@@ -52,10 +52,16 @@
 					{
 						"name": "ohos.ability.shortcuts",
 						"resource": "$profile:shortcuts_config"
+					},
+					{
+						"name": "ohos.permission.KEEP_BACKGROUND_RUNNING"
 					}
 				],
 				"description":"$string:EntryAbility_desc",
-				"launchType":"singleton"
+				"launchType":"singleton",
+				"backgroundModes": [
+					"audioPlayback" // 长时任务类型的配置项
+				]
 			}/*,
 			{
 				"name": "ShareUIAbility",
