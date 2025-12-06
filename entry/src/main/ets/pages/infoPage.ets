@@ -31,6 +31,14 @@ let distributionOSVersion: string = deviceInfo.distributionOSVersion
 // 输出结果：the value of the distributionOSVersion is :5.0.0
 console.info('the value of the deviceInfo distributionOSVersion is :' + distributionOSVersion);
 
+let performanceClass = deviceInfo.performanceClass;
+// 输出结果：the value of the deviceInfo performanceClass is :0
+console.info('the value of the deviceInfo performanceClass is :' + performanceClass);
+
+let chipType: string = deviceInfo.chipType;
+// 输出结果：the value of the deviceInfo chipType is :kirin9000s
+console.info('the value of the deviceInfo chipType is :' + chipType);
+
 let bbh = displayVersionInfo.match(/0\s([\d.]+)/);
 let bbhsr = (bbh && bbh[1]) || '';//6.0.0.35
 
@@ -72,7 +80,8 @@ export struct infoPage {
     new FirstMenu('two', $r('app.string.info2'), productModelInfo, $r('app.string.void')),
     new FirstMenu('three',$r('app.string.info3'),distributionOSVersion, $r('app.string.void')),
     new FirstMenu('four',$r('app.string.info4'),fullVersionsr, $r('app.string.void')),
-    new FirstMenu('five',$r('app.string.info5') ,versionSegsr, $r('app.string.void'))
+    new FirstMenu('five',$r('app.string.info6') ,chipType, $r('app.string.void')),
+    new FirstMenu('six',$r('app.string.info5') ,versionSegsr, $r('app.string.void'))
   ];
 
   build() {

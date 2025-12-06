@@ -66,11 +66,11 @@
     },
     {
       "name":"Home",
-      "value":"Share Tool"
+      "value": "Sharing Tool"
     },
     {
       "name":"Second",
-      "value":"Tools"
+      "value": "Tool List"
     },
     {
       "name":"Mine",
@@ -90,7 +90,7 @@
     },
     {
       "name":"share",
-      "value":"\uDB80\uDC3D Use System Share Menu"
+      "value":"\uDB80\uDC3D Use System Share"
     },
     {
       "name":"sharesuccess",
@@ -218,7 +218,7 @@
     },
     {
       "name":"nowplaying",
-      "value":"③Current scan results , texts or links pending sharing or processing."
+      "value":"③Ready to Share ↓"
     },
     {
       "name":"pick",
@@ -249,10 +249,6 @@
       "value":"Hidden Page > < "
     },
     {
-      "name":"exunder",
-      "value":"Go to MeoW to subscribe to HSR news updates"
-    },
-    {
       "name":"infopagetitle",
       "value":"APP Info > < "
     },
@@ -270,7 +266,7 @@
     },
     {
       "name":"mine4",
-      "value":"Subscribe Douyin"
+      "value": "Subscribe douyin"
     },
     {
       "name":"mine5",
@@ -322,7 +318,7 @@
     },
     {
       "name":"sharepngon",
-      "value":"①Enter the direct link to the background image for sharing"
+      "value": "①Background image"
     },
     {
       "name":"sharepng",
@@ -330,7 +326,7 @@
     },
     {
       "name":"texton",
-      "value":"②Enter or process the links to be shared"
+      "value": "②Set the link to be shared"
     },{
       "name": "local_image_selected",
       "value": "Local image selected"
@@ -344,12 +340,16 @@
       "value": "Share failed"
     },
     {
-      "name": "pengtitleset",
-      "value": "Custom Sharing title"
-    },
-    {
       "name": "minelongpress",
       "value": "Go to YunYing Tool House"
+    },
+    {
+      "name": "meow",
+      "value": "Subscribe to the official channel"
+    },
+    {
+      "name": "5star",
+      "value": "Give a five-star review ๑>ᴗO๑"
     },
     {
       "name": "ShareUIAbility_label",
@@ -361,7 +361,107 @@
     },
     {
       "name": "toshare",
-      "value": "Go to app sharing"
+      "value": "Share on the APP"
+    },
+    {
+      "name": "pengtitleset",
+      "value": "Set the sharing title"
+    },
+    {
+      "name": "info6",
+      "value": "CPU（API 21+）"
+    },
+    {
+      "name": "ShareExtensionAbility_label",
+      "value": "Share link"
+    },
+    {
+      "name": "page_title",
+      "value": "Tool List"
+    },
+    {
+      "name": "sub_title1",
+      "value": "Common tools"
+    },
+    {
+      "name": "sub_title2",
+      "value": "Text processing"
+    },
+    {
+      "name": "sub_title3",
+      "value": "Internet"
+    },
+    {
+      "name": "sub_title1_value1",
+      "value": "Read & QR code"
+    },
+    {
+      "name": "sub_title1_value2",
+      "value": "Network auth tool"
+    },
+    {
+      "name": "sub_title2_value1",
+      "value": "Read & QR code"
+    },
+    {
+      "name": "sub_title3_value1",
+      "value": "Network auth tool"
+    },
+    {
+      "name": "InternetMon",
+      "value": "Please ensure that the current WIFI is connected to a network that requires authentication, and that you are currently attempting to open:"
+    },
+    {
+      "name": "Internet1",
+      "value": "Huawei source\nHuawei redirect"
+    },
+    {
+      "name": "Internet2",
+      "value": "Microsoft source\nPC redirect"
+    },
+    {
+      "name": "Internet3",
+      "value": "Apple source\nApple redirect"
+    },
+    {
+      "name": "Internet4",
+      "value": "Google source"
+    },
+    {
+      "name": "Internet5",
+      "value": "1.1.1.1\nAccount switch"
+    },
+    {
+      "name": "Internet6",
+      "value": "Test\nOpen website"
+    },
+    {
+      "name": "Internet7",
+      "value": "Test\nPlay video"
+    },
+    {
+      "name": "Internet1success",
+      "value": "Displaying 404 Not Found indicates that you have connected to the Internet; otherwise, it will automatically redirect to the login page"
+    },
+    {
+      "name": "Internet2success",
+      "value": "Displaying a blank interface indicates that you have connected to the Internet; otherwise, the page will automatically redirect to the login page"
+    },
+    {
+      "name": "Internetmsnsuccess",
+      "value": "Displaying the MSN homepage indicates that you have connected to the Internet; otherwise, the page will automatically redirect to the login page"
+    },
+    {
+      "name": "Internetapplesuccess",
+      "value": "Displaying a blank interface or \"Success\" indicates that you have connected to the Internet; otherwise, the page will automatically redirect to the login page"
+    },
+    {
+      "name": "Internet3success",
+      "value": "Opening the \"Version Description\" > \"All HarmonyOS Versions\" indicates that you have connected to the Internet; otherwise, it cannot be opened"
+    },
+    {
+      "name": "Internetselfsuccess",
+      "value": "The intro video will automatically play, indicating that you have connected to the Internet; otherwise, it will not be able to play"
     }
   ]
 }

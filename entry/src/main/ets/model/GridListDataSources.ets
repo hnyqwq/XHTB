@@ -61,16 +61,16 @@ export const
       ]),
 
 
-    new GridData($r('app.string.sub_title4'),
+    /*new GridData($r('app.string.sub_title4'),
       [
         new GridItemInfo($r('app.string.sub_title4_value1'), 'XHTB/Metro'),
         /*new GridItemInfo($r('app.string.sub_title4_value2'), 'pages/ReadQR'),
         new GridItemInfo($r('app.string.sub_title4_value3')),
         new GridItemInfo($r('app.string.sub_title4_value4')),
         new GridItemInfo($r('app.string.sub_title4_value5')),
-        new GridItemInfo($r('app.string.sub_title4_value6'))*/
+        new GridItemInfo($r('app.string.sub_title4_value6'))
       ]),
-    /*new GridData($r('app.string.sub_title5'),
+    new GridData($r('app.string.sub_title5'),
       [
         new GridItemInfo($r('app.string.sub_title5_value1'), 'pages/DetailPage'),
         new GridItemInfo($r('app.string.sub_title5_value2'), 'pages/HomePage'),

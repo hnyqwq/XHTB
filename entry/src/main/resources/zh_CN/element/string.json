@@ -118,7 +118,7 @@
     },
     {
       "name":"scancode",
-      "value":"\uDB80\uDC28\uDB80\uDD28 扫码提取文本或链接，可复制"
+      "value": "\uDB80\uDC28\uDB80\uDD28 扫码提取文本或链接（可复制）"
     },
     {
       "name":"downloaded",
@@ -218,7 +218,7 @@
     },
     {
       "name":"nowplaying",
-      "value":"③当前扫描的结果/待分享/待处理的文本或链接"
+      "value": "③当前准备分享 ↓"
     },
     {
       "name":"pick",
@@ -247,10 +247,6 @@
     {
       "name":"expagetitle",
       "value":"嘘！不要告诉别人哦~ > < "
-    },
-    {
-      "name":"exunder",
-      "value":"前往MeoW订阅时事推送"
     },
     {
       "name":"infopagetitle",
@@ -322,7 +318,7 @@
     },
     {
       "name":"sharepngon",
-      "value":"①输入分享的背景图片直链"
+      "value": "①设置碰一碰/隔空传送的背景图片"
     },
     {
       "name":"sharepng",
@@ -330,7 +326,7 @@
     },
     {
       "name":"texton",
-      "value":"②输入或处理需要分享的链接"
+      "value": "②设置需要分享的链接"
     },{
       "name": "local_image_selected",
       "value": "已选择本地图片"
@@ -345,11 +341,19 @@
     },
     {
       "name": "pengtitleset",
-      "value": "自定义分享标题"
+      "value": "设置分享标题"
     },
     {
       "name": "minelongpress",
       "value": "前往云影工具屋APP"
+    },
+    {
+      "name": "meow",
+      "value": "前往MeoW，订阅官方频道"
+    },
+    {
+      "name": "5star",
+      "value": "给个五星好评叭 ๑>ᴗO๑"
     },
     {
       "name": "ShareUIAbility_label",
@@ -362,6 +366,102 @@
     {
       "name": "toshare",
       "value": "前往APP分享"
+    },
+    {
+      "name": "info6",
+      "value": "CPU型号（API 21+）"
+    },
+    {
+      "name": "ShareExtensionAbility_label",
+      "value": "分享链接"
+    },
+    {
+      "name": "page_title",
+      "value": "工具列表"
+    },
+    {
+      "name": "sub_title1",
+      "value": "常用工具"
+    },
+    {
+      "name": "sub_title2",
+      "value": "文本处理"
+    },
+    {
+      "name": "sub_title3",
+      "value": "网络"
+    },
+    {
+      "name": "sub_title1_value1",
+      "value": "朗读&生成二维码"
+    },
+    {
+      "name": "sub_title1_value2",
+      "value": "网络认证工具"
+    },
+    {
+      "name": "sub_title2_value1",
+      "value": "朗读&生成二维码"
+    },
+    {
+      "name": "sub_title3_value1",
+      "value": "网络认证工具"
+    },
+    {
+      "name": "InternetMon",
+      "value": "请确保当前WIFI已连接需要认证的网络，当前正在尝试打开："
+    },
+    {
+      "name": "Internet1",
+      "value": "华为源\n华为默认跳转"
+    },
+    {
+      "name": "Internet2",
+      "value": "Microsoft源\nPC默认跳转"
+    },
+    {
+      "name": "Internet3",
+      "value": "Apple源\n苹果默认跳转"
+    },
+    {
+      "name": "Internet4",
+      "value": "Google源"
+    },
+    {
+      "name": "Internet5",
+      "value": "1.1.1.1\n可切换账号"
+    },
+    {
+      "name": "Internet6",
+      "value": "测试链接情况\n打开网页"
+    },
+    {
+      "name": "Internet7",
+      "value": "测试链接情况\n播放视频"
+    },
+    {
+      "name": "Internet1success",
+      "value": "显示 404 Not Found 即表示已连接到互联网，否则会自动跳转登录页面"
+    },
+    {
+      "name": "Internet2success",
+      "value": "显示 空白界面 即表示已连接到互联网，否则会自动跳转登录页面"
+    },
+    {
+      "name": "Internetmsnsuccess",
+      "value": "显示 MSN主页 即表示已连接到互联网，否则会自动跳转登录页面"
+    },
+    {
+      "name": "Internetapplesuccess",
+      "value": "显示 空白界面或Success 即表示已连接到互联网，否则会自动跳转登录页面"
+    },
+    {
+      "name": "Internet3success",
+      "value": "打开 版本说明>所有HarmonyOS版本 即表示已连接到互联网，否则会无法打开"
+    },
+    {
+      "name": "Internetselfsuccess",
+      "value": "自动播放intro视频 即表示已连接到互联网，否则会无法播放"
     }
   ]
 }

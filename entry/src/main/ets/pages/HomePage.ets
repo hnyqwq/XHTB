@@ -413,66 +413,6 @@ export struct HomePage {
     Scroll()
     {
       Column() {
-        Stack() {
-          Row() {
-            Image(this.sharepng)
-            //.width('1100px')
-              .height('1500px')
-              .width('90%')
-              .margin({ left: '5%', right: '5%' })
-              .margin({ bottom: '3%' }) // 图片下方留白
-              .objectFit(ImageFit.ScaleDown)
-          }
-          .margin({ top: 20 })
-          .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
-          .borderRadius(20)
-          .justifyContent(FlexAlign.Center) // 垂直方向上居中
-          /*.visualEffect(new hdsEffect.HdsEffectBuilder()
-            .shaderEffect({
-              effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-              animation: {
-                duration: 4000,
-                iterations: -1,
-                autoPlay: true,
-                onFinish: () => {
-                  console.info('Succeeded in finishing');
-                }
-              },
-              controller: this.controller,
-              params: {
-                firstEdgeFlowLight: {
-                  startPos: 0,
-                  endPos: 1.0,
-                  color: '#ff8a00',
-                },
-                secondEdgeFlowLight: {
-                  startPos: 0.5,
-                  endPos: 1.5,
-                  color: '#f3c52a',
-                }
-              }
-            })
-            .buildEffect())*/
-
-
-          Text($r('app.string.pengyipeng_title'))
-            .fontWeight(600)
-            .fontSize('20fp')
-            .margin({ top: 120 })
-            .fontWeight(FontWeight.Bold)
-          Text($r('app.string.pengyipeng_description'))
-            .fontWeight(600)
-            .fontSize('10fp')
-            .margin({ top: 170 })
-            .opacity(0.5)
-            .fontColor($r('app.color.version_color_182431'))
-          Image($r('app.media.CIcon'))
-            .width(20)
-            .height(20)
-            .margin({ top: 220 })
-        }
-        .width('100%')
-        .height(300)
         Row()
         {
           Text($r('app.string.sharepngon'))

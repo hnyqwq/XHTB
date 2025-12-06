@@ -58,7 +58,7 @@ export struct MinePage {
             context.startAbility(want)
             console.info(`MenuItem1 ability succeed`)
         })
-      MenuItem({ startIcon: this.iconStr, content: "前往MeoW，订阅官方频道" })
+      MenuItem({ startIcon: this.iconStr, content: $r('app.string.meow') })
         .onClick(() => {
           let want: Want = {
             "action": "ohos.want.action.viewData",
@@ -69,7 +69,7 @@ export struct MinePage {
           context.startAbility(want)
           console.info(`MenuItem2 ability succeed`)
         })
-      MenuItem({ startIcon: this.iconStr, content: "给个五星好评叭 ๑>ᴗO๑" })
+      MenuItem({ startIcon: this.iconStr, content: $r('app.string.5star') })
         .onClick(() => {
           try {
             const uiContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
