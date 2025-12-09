@@ -191,6 +191,7 @@ export struct HomePage {
     },
   ];
   private debounceTimer: number = 0
+  private urlDebounceTimer: number = 0
   // 修改 handleImageUpdate 方法
   private handleImageUpdate() {
     clearTimeout(this.debounceTimer);
@@ -247,25 +248,86 @@ export struct HomePage {
   }
 
   isValidUrl(url: string): boolean {
-    const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
-    return pattern.test(url);
+    if (!url || typeof url !== 'string') {
+      return false;
+    }
+    const trimmedUrl = url.trim();
+    if (trimmedUrl.length < 8 || trimmedUrl.length > 2048) {
+      return false;
+    }
+    
+    // 检查是否以 http:// 或 https:// 开头
+    if (!trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://')) {
+      return false;
+    }
+    
+    // 简单的URL格式验证，避免复杂正则表达式
+    const protocolEnd = trimmedUrl.indexOf('://');
+    if (protocolEnd === -1) return false;
+    
+    const domainStart = protocolEnd + 3;
+    if (domainStart >= trimmedUrl.length) return false;
+    
+    // 检查域名部分是否有效
+    const domainPart = trimmedUrl.substring(domainStart);
+    if (domainPart.length === 0) return false;
+    
+    // 域名至少包含一个点，且不包含空格
+    if (!domainPart.includes('.') || domainPart.includes(' ')) {
+      return false;
+    }
+    
+    // 检查是否包含基本的有效字符（避免使用正则表达式）
+    const validCharSet = new Set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-/?:#[]@!$&\'()*+,;=._~%+-');
+    for (let i = 0; i < domainPart.length; i++) {
+      if (!validCharSet.has(domainPart[i])) {
+        return false;
+      }
+    }
+    
+    return true;
   }
 
   // 从文本中提取链接
   extractUrlFromText(text: string): string | null {
-    // 匹配 http 或 https 链接的正则表达式
-    const urlRegex = /https?:\/\/[^\s"<>\u4e00-\u9fa5]+/g;
-    const matches = text.match(urlRegex);
-
-    if (matches && matches.length > 0) {
-      // 返回第一个有效的链接
-      for (let i = 0; i < matches.length; i++) {
-        if (this.isValidUrl(matches[i])) {
-          return matches[i];
-        }
+    if (!text || text.trim() === '') {
+      return null;
+    }
+    
+    const trimmedText = text.trim();
+    let startIndex = -1;
+    
+    // 查找 http:// 或 https:// 的起始位置
+    for (let i = 0; i < trimmedText.length - 6; i++) {
+      if (trimmedText.substr(i, 7) === 'http://' || 
+          (i < trimmedText.length - 7 && trimmedText.substr(i, 8) === 'https://')) {
+        startIndex = i;
+        break;
       }
     }
-
+    
+    if (startIndex === -1) {
+      return null;
+    }
+    
+    // 提取URL直到遇到空白字符或常见结束符
+    let endIndex = startIndex;
+    const endChars = [' ', '\n', '\t', '"', "'", '<', '>', '，', '。', '！', '？', '【', '】'];
+    while (endIndex < trimmedText.length) {
+      const char = trimmedText[endIndex];
+      if (endChars.includes(char)) {
+        break;
+      }
+      endIndex++;
+    }
+    
+    const extractedUrl = trimmedText.substring(startIndex, endIndex);
+    
+    // 验证提取的URL是否有效
+    if (this.isValidUrl(extractedUrl)) {
+      return extractedUrl;
+    }
+    
     return null;
   }
 
@@ -534,15 +596,21 @@ export struct HomePage {
           //.height(50)
           .margin({ right: 10 })
           .onChange((networkVideoSrc: string) => {
-            // 尝试从输入文本中提取链接
-            const extractedUrl = this.extractUrlFromText(networkVideoSrc);
-            if (extractedUrl) {
-              this.networkVideoSrc = extractedUrl;
-              AppStorage.set('networkVideoSrc', extractedUrl);
-            } else {
-              this.networkVideoSrc = networkVideoSrc;
-              AppStorage.set('networkVideoSrc', networkVideoSrc);
-            }
+            // 清除之前的防抖定时器
+            clearTimeout(this.urlDebounceTimer);
+            
+            // 设置新的防抖定时器，300ms后执行
+            this.urlDebounceTimer = setTimeout(() => {
+              // 尝试从输入文本中提取链接
+              const extractedUrl = this.extractUrlFromText(networkVideoSrc);
+              if (extractedUrl) {
+                this.networkVideoSrc = extractedUrl;
+                AppStorage.set('networkVideoSrc', extractedUrl);
+              } else {
+                this.networkVideoSrc = networkVideoSrc;
+                AppStorage.set('networkVideoSrc', networkVideoSrc);
+              }
+            }, 300);
           })
           /*.visualEffect(new hdsEffect.HdsEffectBuilder()
             .shaderEffect({
