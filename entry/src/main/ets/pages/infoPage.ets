@@ -116,6 +116,7 @@ export struct infoPage {
                 .width('90%')
                 .margin({ left: '5%', right: '5%' })
                 .margin({ bottom: '3%' }) // 图片下方留白
+                .draggable(false)
             }
             .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
             .borderRadius(20)
