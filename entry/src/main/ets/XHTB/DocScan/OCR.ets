@@ -19,6 +19,7 @@ import {
 
 import { cameraPicker as picker } from '@kit.CameraKit';
 import { camera } from '@kit.CameraKit';
+import { router } from '@kit.ArkUI';
 
 @Entry
 @Component
@@ -184,9 +185,9 @@ export struct OCR {
   build() {
     Column() {
       Row() {
-        Text('󰃚') // 自定义返回图标
+        SymbolGlyph($r('sys.symbol.chevron_left_circle'))
           .fontSize(35)
-          .margin({ left: 20 }) // 左侧留白
+          .margin({ left: 20 })
           .onClick(() => {
             router.back();
           })
