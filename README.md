@@ -33,7 +33,7 @@
 
 ## 开发与构建
 
-- 项目基于 HarmonyOS SDK 开发，使用 ETS (Enhanced TypeScript) 编写。
+- 项目基于 HarmonyOS SDK 开发，使用 ArkTS 编写。
 - 使用 HVIGOR 构建工具进行项目构建。
 
 ## 贡献代码
