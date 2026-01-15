@@ -252,40 +252,51 @@ export struct HomePage {
       return false;
     }
     const trimmedUrl = url.trim();
-    if (trimmedUrl.length < 8 || trimmedUrl.length > 2048) {
+    if (trimmedUrl.length < 3 || trimmedUrl.length > 2048) {
       return false;
     }
-    
-    // 检查是否以 http:// 或 https:// 开头
-    if (!trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://')) {
+
+    // 不能包含空格
+    if (trimmedUrl.includes(' ')) {
       return false;
     }
-    
-    // 简单的URL格式验证，避免复杂正则表达式
-    const protocolEnd = trimmedUrl.indexOf('://');
-    if (protocolEnd === -1) return false;
-    
-    const domainStart = protocolEnd + 3;
-    if (domainStart >= trimmedUrl.length) return false;
-    
-    // 检查域名部分是否有效
-    const domainPart = trimmedUrl.substring(domainStart);
-    if (domainPart.length === 0) return false;
-    
-    // 域名至少包含一个点，且不包含空格
-    if (!domainPart.includes('.') || domainPart.includes(' ')) {
+
+    // 检查是否为 http:// 或 https:// 开头的 URL
+    if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://')) {
+      const domainStart = trimmedUrl.indexOf('://') + 3;
+      if (domainStart >= trimmedUrl.length) return false;
+
+      const domainPart = trimmedUrl.substring(domainStart);
+      if (domainPart.length === 0) return false;
+
+      // 域名至少包含一个点
+      if (!domainPart.includes('.')) {
+        return false;
+      }
+
+      return true;
+    }
+
+    // 检查是否为 URL scheme 格式（如 bilibili://, weixin://, tel:, mailto:, etc.）
+    const colonIndex = trimmedUrl.indexOf(':');
+    if (colonIndex === -1 || colonIndex === 0) {
       return false;
     }
-    
-    // 检查是否包含基本的有效字符（避免使用正则表达式）
-    const validCharSet = new Set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-/?:#[]@!$&\'()*+,;=._~%+-');
-    for (let i = 0; i < domainPart.length; i++) {
-      if (!validCharSet.has(domainPart[i])) {
+
+    const scheme = trimmedUrl.substring(0, colonIndex);
+    const rest = trimmedUrl.substring(colonIndex + 1);
+
+    // scheme 部分必须只包含字母、数字、点、加号和减号
+    for (let i = 0; i < scheme.length; i++) {
+      const char = scheme[i];
+      const lowerChar = char.toLowerCase();
+      if (!((lowerChar >= 'a' && lowerChar <= 'z') || (char >= '0' && char <= '9') || char === '.' || char === '+' || char === '-')) {
         return false;
       }
     }
-    
-    return true;
+
+    // scheme 后面必须有内容（可以是 // 或其他内容）
+    return rest.length > 0;
   }
 
   // 从文本中提取链接
@@ -438,7 +449,14 @@ export struct HomePage {
   // 修改事件监听与解绑逻辑
   private whiteListening() {
     if (this.isNoListening()) {
-      harmonyShare.on('knockShare', this.whiteCallback);
+      harmonyShare.on('knockShare', (sharableTarget: harmonyShare.SharableTarget) => {
+        // 在回调中检查 networkVideoSrc 是否为有效链接
+        if (!this.isValidUrl(this.networkVideoSrc)) {
+          sharableTarget.clarifyNonShare({ message: '请在支持碰一碰分享的界面再试' });
+        } else {
+          this.whiteCallback(sharableTarget);
+        }
+      });
       this.whiteStatus = true;
     } else {
       promptAction.showToast({ message: $r('app.string.nopeng') });
