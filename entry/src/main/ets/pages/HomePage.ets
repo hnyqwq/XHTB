@@ -507,11 +507,12 @@ export struct HomePage {
               .blur(0) // 设置图片模糊效果为不模糊
               .linearGradientBlur(60,
                 { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
+              .borderRadius(30) // 设置图片圆角
 
           }
           .margin({ top: 20 })
           .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
-          .borderRadius(20)
+          .borderRadius(30)
           .justifyContent(FlexAlign.Center) // 垂直方向上居中
           Text($r('app.string.pengyipeng_title'))
             .fontWeight(600)
