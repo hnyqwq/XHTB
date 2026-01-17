@@ -96,6 +96,9 @@ export struct HomePage {
       return;
     }
 
+    console.log('=== selectImage 开始 ===');
+    console.log('选择的图片 URI: ' + uri);
+
     // 根据选中的图片URI更新扩展名
     if (uri.endsWith('.png')) {
       this.imageExtension = '.png';
@@ -108,17 +111,16 @@ export struct HomePage {
       this.imageExtension = '.png';
     }
 
+    console.log('更新后的 imageExtension: ' + this.imageExtension);
+
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-    console.log('=== selectImage 调试 ===');
     console.log('selectImage 中的 context.filesDir: ' + context.filesDir);
     console.log('全局 filesDir: ' + filesDir);
     console.log('两者是否相同: ' + (context.filesDir === filesDir));
-    console.log('===================');
+
     // 根据当前图片扩展名设置目标路径
     let targetPath = context.filesDir + '/pengyipeng' + this.imageExtension;
     console.log('目标完整路径 targetPath: ' + targetPath);
-
-    this.sharepng = 'file://' + targetPath;
 
     // 使用文件描述符方式复制文件（适配图库URI）
     try {
@@ -141,6 +143,14 @@ export struct HomePage {
       fileIo.closeSync(targetFile);
 
       hilog.info(0x0000, 'localsharepng' , 'Copy completed: ' + targetPath);
+
+      // 等待文件系统同步
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 100);
+      });
+
       // 验证文件是否真的存在
       const stat = fileIo.statSync(targetPath);
       hilog.info(0x0000, 'localsharepng' , 'File verified, size: ' + stat.size);
@@ -149,14 +159,22 @@ export struct HomePage {
       const imageSource = image.createImageSource(targetPath);
       this.localPixelMap = await imageSource.createPixelMap();
       hilog.info(0x0000, 'localsharepng' , 'PixelMap created: ' + (this.localPixelMap ? 'success' : 'failed'));
+
+      // 现在文件已经复制完成，更新 sharepng
+      this.sharepng = 'file://' + targetPath;
+      hilog.info(0x0000, 'localsharepng' , 'sharepng updated to: ' + this.sharepng);
+      hilog.info(0x0000, 'localsharepng' , '当前 imageExtension: ' + this.imageExtension);
     } catch (error) {
       hilog.error(0x0000, 'localsharepng' , 'Copy failed: ' + JSON.stringify(error));
+      return;
     }
 
     // 强制刷新图片显示
     this.imageKey = Date.now().toString();
     // 重新获取图片宽高比以更新显示
     await this.getImageAspectRatio();
+
+    console.log('=== selectImage 结束 ===');
   }
 
   private openPhoto(): Promise<string> {
@@ -310,6 +328,11 @@ export struct HomePage {
 
     // 不能包含空格
     if (trimmedUrl.includes(' ')) {
+      return false;
+    }
+
+    // 检查是否为 file:// 协议（本地文件），不算作网络 URL
+    if (trimmedUrl.startsWith('file://')) {
       return false;
     }
 
@@ -537,6 +560,15 @@ export struct HomePage {
     console.log('当前的 imageExtension: ' + this.imageExtension);
     console.log('当前的 sharepng: ' + this.sharepng);
     console.log('当前 context.filesDir: ' + currentContext.filesDir);
+
+    // 列出 filesDir 中的所有文件
+    try {
+      const files = fileIo.listFileSync(currentContext.filesDir);
+      console.log('filesDir 中的文件列表: ' + JSON.stringify(files));
+    } catch (e) {
+      console.log('列出文件失败: ' + JSON.stringify(e));
+    }
+
     console.log('====================');
     // 检查文件是否存在,存在才更新
     try {
