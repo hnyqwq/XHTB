@@ -67,6 +67,10 @@ export struct HomePage {
   /*@State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();
   @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;*/
 
+  // 添加一个状态来存储图片的宽高比
+  @State imageAspectRatio: number = 1; // 默认为1:1
+  @State isImageLoaded: boolean = false; // 图片是否已加载
+
   //隔空投送
   private immersiveListening() {
     harmonyShare.on('gesturesShare', this.immersiveCallback);
@@ -89,21 +93,56 @@ export struct HomePage {
       return;
     }
 
+    // 根据选中的图片URI更新扩展名
+    if (uri.endsWith('.png')) {
+      this.imageExtension = '.png';
+    } else if (uri.endsWith('.jpg') || uri.endsWith('.jpeg')) {
+      this.imageExtension = '.jpg';
+    } else if (uri.endsWith('.webp')) {
+      this.imageExtension = '.webp';
+    } else {
+      // 默认使用.png格式
+      this.imageExtension = '.png';
+    }
+
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+    console.log('=== selectImage 调试 ===');
+    console.log('selectImage 中的 context.filesDir: ' + context.filesDir);
+    console.log('全局 filesDir: ' + filesDir);
+    console.log('两者是否相同: ' + (context.filesDir === filesDir));
+    console.log('===================');
     // 根据当前图片扩展名设置目标路径
     let targetPath = context.filesDir + '/pengyipeng' + this.imageExtension;
+    console.log('目标完整路径 targetPath: ' + targetPath);
 
-    this.sharepng = targetPath;
+    this.sharepng = 'file://' + targetPath;
 
-    let originFile: fileIo.File | undefined;
+    // 使用文件描述符方式复制文件（适配图库URI）
     try {
-      originFile = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY); // 打开源URI文件
-      fileIo.copyFileSync(originFile.fd, targetPath); // 复制到目标路径
+      // 打开源文件（图库URI）
+      let sourceFile = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
+      // 创建目标文件
+      let targetFile = fileIo.openSync(targetPath, fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+
+      // 读取并写入文件
+      let bufferSize = 1024 * 1024; // 1MB 缓冲区
+      let buffer = new ArrayBuffer(bufferSize);
+      let readLen: number = 0;
+
+      while ((readLen = fileIo.readSync(sourceFile.fd, buffer)) > 0) {
+        fileIo.writeSync(targetFile.fd, buffer, { length: readLen });
+      }
+
+      // 关闭文件
+      fileIo.closeSync(sourceFile);
+      fileIo.closeSync(targetFile);
+
       hilog.info(0x0000, 'localsharepng' , 'Copy completed: ' + targetPath);
+      // 验证文件是否真的存在
+      const stat = fileIo.statSync(targetPath);
+      hilog.info(0x0000, 'localsharepng' , 'File verified, size: ' + stat.size);
     } catch (error) {
       hilog.error(0x0000, 'localsharepng' , 'Copy failed: ' + JSON.stringify(error));
-    } finally {
-      fileIo.closeSync(originFile); // 关闭文件句柄
     }
   }
 
@@ -399,8 +438,8 @@ export struct HomePage {
       AppStorage.delete('sharedVideoUrl');
     }
     const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-    // 根据当前图片扩展名设置文件路径
-    let filePath = this.context?.filesDir + "/pengyipeng" + this.imageExtension;
+    // 根据当前图片扩展名设置文件路径（使用当前 context 的 filesDir）
+    let filePath = context.filesDir + "/pengyipeng" + this.imageExtension;
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc,
@@ -468,7 +507,7 @@ export struct HomePage {
     this.whiteStatus = false;
   }
 
-  private immersiveCallback = (sharableTarget: harmonyShare.SharableTarget) => {
+  private immersiveCallback = (sharableTarget: harmonyShare.SharableTarget): void => {
     // 直接处理分享数据（假设数据已通过其他方式传递）
     const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
     if (sharedUrl && this.isValidUrl(sharedUrl)) {
@@ -476,9 +515,33 @@ export struct HomePage {
       //this.controller.start();
       AppStorage.delete('sharedVideoUrl');
     }
-    let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-    // 根据当前图片扩展名设置文件路径
-    let filePath = this.context?.filesDir + "/pengyipeng" + this.imageExtension;
+    // 更新显示的图片为当前缓存的图片
+    // 直接获取最新的 context，而不是使用全局变量
+    const currentContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
+    const imagePath = currentContext.filesDir + "/pengyipeng" + this.imageExtension;
+    console.log('=== 隔空投送调试 ===');
+    console.log('正在检查的图片路径: ' + imagePath);
+    console.log('当前的 imageExtension: ' + this.imageExtension);
+    console.log('当前的 sharepng: ' + this.sharepng);
+    console.log('当前 context.filesDir: ' + currentContext.filesDir);
+    console.log('====================');
+    // 检查文件是否存在,存在才更新
+    try {
+      const stat = fileIo.statSync(imagePath);
+      console.log('文件存在，状态: ' + JSON.stringify(stat));
+      if (stat.isFile()) {
+        this.sharepng = 'file://' + imagePath;
+        console.log('图片文件已找到并更新: ' + imagePath);
+      }
+    } catch (error) {
+      // 文件不存在,不更新图片
+      console.log('=== 文件未找到 ===');
+      console.log('路径: ' + imagePath);
+      console.log('错误信息: ' + JSON.stringify(error));
+      console.log('==================');
+    }
+    // 根据当前图片扩展名设置文件路径（使用相同的 currentContext）
+    let filePath = currentContext.filesDir + "/pengyipeng" + this.imageExtension;
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc,
@@ -489,32 +552,61 @@ export struct HomePage {
     sharableTarget.share(shareData);
   }
 
+  // 添加一个方法来获取图片的宽高比
+  private async getImageAspectRatio(): Promise<void> {
+    try {
+      let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      let imageSource: image.ImageSource;
+      
+      if (this.sharepng.startsWith('http://') || this.sharepng.startsWith('https://')) {
+        // 如果是网络图片，使用本地缓存文件
+        let imagePath = context.filesDir + '/pengyipeng' + this.imageExtension;
+        imageSource = image.createImageSource(imagePath);
+      } else if (this.sharepng.startsWith('file://')) {
+        // 如果是本地文件
+        let filePath = this.sharepng.substring(7); // 移除 'file://' 前缀
+        imageSource = image.createImageSource(filePath);
+      } else {
+        // 如果是资源文件
+        imageSource = image.createImageSource(this.sharepng);
+      }
+
+      const info = await imageSource.getImageInfo();
+      if (info && info.size && info.size.width > 0 && info.size.height > 0) {
+        this.imageAspectRatio = info.size.width / info.size.height;
+        this.isImageLoaded = true;
+      }
+    } catch (error) {
+      console.error('Failed to get image info: ' + JSON.stringify(error));
+      // 如果获取失败，默认按原始方式处理
+      this.isImageLoaded = true;
+    }
+  }
+
   build() {
     Scroll()
     {
       Column() {
 
         Stack() {
-          Row() {
-            Image(this.sharepng)
-            //.width('1100px')
-              .height('1500px')
-              .height('80%')
-              .width('80%')
-              .margin({ left: '5%', right: '5%' })
-              .margin({ bottom: '3%' }) // 图片下方留白
-              .objectFit(ImageFit.ScaleDown)
-              .blur(0) // 设置图片模糊效果为不模糊
-              .linearGradientBlur(60,
-                { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
-              .borderRadius(30) // 设置图片圆角
-
-          }
-          .margin({ top: 20 })
-          .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
-          .borderRadius(30)
-          .justifyContent(FlexAlign.Center) // 垂直方向上居中
-          Text($r('app.string.pengyipeng_title'))
+          // 根据宽高比动态决定图片尺寸
+          Image(this.sharepng)
+            .width(this.imageAspectRatio < 1 ? '60%' : '80%')
+            .height(this.imageAspectRatio < 1 ? 'auto' : '80%')
+            .margin({ 
+              bottom: '3%' 
+            })
+            .objectFit(ImageFit.Contain)
+            .blur(0) // 设置图片模糊效果为不模糊
+            .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : 60,
+              { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
+            .borderRadius(20) // 图片圆角
+            .onComplete(() => {
+              // 图片加载完成后尝试获取其宽高比
+              // 使用异步方法获取图片信息
+              this.getImageAspectRatio();
+            })
+          Text(this.pengtitle)
             .fontWeight(600)
             .fontSize('20fp')
             .margin({ top: 120 })
@@ -531,7 +623,7 @@ export struct HomePage {
             .margin({ top: 220 })
         }
         .width('100%')
-        .height(300)
+        .height(this.imageAspectRatio < 1 ? 'auto' : 300)
         Row()
         {
           Text($r('app.string.sharepngon'))
