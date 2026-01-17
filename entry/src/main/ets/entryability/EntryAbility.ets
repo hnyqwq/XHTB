@@ -3,14 +3,15 @@ import { actionCreate, actionNewWant, actionWindowStageCreate } from '../formcom
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { BusinessError } from '@kit.BasicServicesKit';
+import { BusinessError, deviceInfo } from '@kit.BasicServicesKit';
 import { router } from '@kit.ArkUI';
-import { url } from '@kit.ArkTS';
-import { promptAction } from '@kit.ArkUI';
 //接续
 import { ContentInfo } from '../model/ContentInfo';
-import { commonType, distributedDataObject } from '@kit.ArkData';
+import { distributedDataObject } from '@kit.ArkData';
 import Logger from '../utils/Loggerr';
+import { GlobalInfoModel } from '../common/GlobalInfoModel';
+import { BreakpointSystem } from '../common/utils/BreakpointType';
+import { WindowUtil } from '../common/utils/WindowUtils';
 
 interface CustomDataObject extends distributedDataObject.DataObject {
   networkVideoSrc?: string;
@@ -20,6 +21,10 @@ const TAG: string = 'EntryAbility';
 const DOMAIN_NUMBER: number = 0xFF00;
 
 export default class EntryAbility extends UIAbility {
+  private windowUtil?: WindowUtil = WindowUtil.getInstance();
+  private onWindowSizeChange: (windowSize: window.Size, context: UIContext) => void = (_, context) => {
+    this.windowUtil!.updateWidthBp(context);
+  }
   private selectPage: string = '';
   private currentWindowStage: window.WindowStage | null = null;
   private distributedObject: distributedDataObject.DataObject | undefined = undefined;
@@ -109,42 +114,72 @@ export default class EntryAbility extends UIAbility {
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
+    // 初始化 GlobalInfoModel
+    const globalInfoModel = new GlobalInfoModel();
+    AppStorage.setOrCreate('GlobalInfoModel', globalInfoModel);
     actionWindowStageCreate(windowStage);
     // Main window is created, set main page for this ability
     windowStage.loadContent('pages/Index', (err, data) => {
       if (err.code) {
+        hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
         return;
       }
-      let windowClass: window.Window = windowStage.getMainWindowSync(); // 获取应用主窗口
-      // 1. 设置窗口全屏
-      /*let isLayoutFullScreen = true;
-      windowClass.setWindowLayoutFullScreen(isLayoutFullScreen).then(() => {
-        console.info('Succeeded in setting the window layout to full-screen mode.');
-      }).catch((err: BusinessError) => {
-        console.error(`Failed to set the window layout to full-screen mode. Code is ${err.code}, message is ${err.message}`);
-      });
-      // 进行后续步骤2-3中的操作
-      //2
-      windowClass.setSpecificSystemBarEnabled('status', false).then(() => {
-        console.info('Succeeded in setting the status bar to be invisible.');
-      }).catch((err: BusinessError) => {
-        console.error(`Failed to set the status bar to be invisible. Code is ${err.code}, message is ${err.message}`);
-      });
-      //3
-      windowClass.setSpecificSystemBarEnabled('navigationIndicator', false).then(() => {
-        console.info('Succeeded in setting the navigation indicator to be invisible.');
-      }).catch((err: BusinessError) => {
-        console.error(`Failed to set the navigation indicator to be invisible. Code is ${err.code}, message is ${err.message}`);
-      });*/
+      hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
+      try {
+        let uiContext: UIContext | undefined = windowStage.getMainWindowSync().getUIContext();
+        AppStorage.setOrCreate('uiContext', uiContext);
+      } catch (error) {
+        hilog.error(0x0000, 'testTag', 'Failed to get main window. Cause: %{public}s', JSON.stringify(error) ?? '');
+      }
       //接续
       if (!this.storage.get('networkVideoSrc')) {
         Logger.warn(TAG, 'networkVideoSrc is empty!');
       }
     });
+    let windowClass: window.Window | undefined = undefined;
+    windowStage.getMainWindow((err: BusinessError, data: window.Window) => {
+      if (err.code) {
+        hilog.error(0x0000, 'testTag', 'Failed to get the main window. Cause: %{public}s', JSON.stringify(err) ?? '');
+        return;
+      }
+
+      try {
+        // 获取状态栏高度和其他窗口信息
+        const avoidArea = data.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
+        const windowProperties = data.getWindowProperties();
+        const globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel') || new GlobalInfoModel();
+
+        globalInfoModel.statusBarHeight = px2vp(avoidArea.topRect.height);
+        globalInfoModel.naviIndicatorHeight = px2vp(avoidArea.bottomRect.height);
+        globalInfoModel.decorHeight = windowProperties.windowRect.height;
+        globalInfoModel.deviceHeight = px2vp(windowProperties.windowRect.height);
+        globalInfoModel.deviceWidth = px2vp(windowProperties.windowRect.width);
+
+        AppStorage.setOrCreate('GlobalInfoModel', globalInfoModel);
+        hilog.info(0x0000, 'testTag', 'StatusBar height: %{public}d', globalInfoModel.statusBarHeight);
+
+        // 初始化断点系统
+        BreakpointSystem.getInstance().updateWidthBp(data);
+
+        this.windowUtil!.updateWidthBp(windowStage.getMainWindowSync().getUIContext());
+        data.on('windowSizeChange', (windowSize: window.Size) => this.onWindowSizeChange(windowSize,
+          windowStage.getMainWindowSync().getUIContext()));
+        windowClass = data;
+        if (deviceInfo.deviceType === '2in1') {
+          data.setWindowDecorVisible(false);
+          data.setWindowDecorHeight(0);
+        } else {
+          windowClass.setWindowLayoutFullScreen(true).catch((error: BusinessError) => {
+            hilog.error(0x0000, 'testTag', 'Failed to set window layout full screen. Cause: %{public}s', JSON.stringify(error) ?? '');
+          });
+        }
+      } catch (error) {
+        hilog.error(0x0000, 'testTag', 'Failed to  get main window. Cause: %{public}s', JSON.stringify(error) ?? '');
+      }
+    });
   }
 
   //接续
-  // EntryAbility.ets
   private async restoreDistributedObject(want: Want, launchParam: AbilityConstant.LaunchParam): Promise<void> {
     try {
       this.distributedObject = distributedDataObject.create(this.context, {});

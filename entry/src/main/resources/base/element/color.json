@@ -5,6 +5,10 @@
       "value": "#F1F3F5"
     },
     {
+      "name": "barBackgroundColor",
+      "value": "#CCF1F3F5"
+    },
+    {
       "name": "font_color_00000",
       "value": "#0c000000"
     },
