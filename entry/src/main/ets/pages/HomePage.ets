@@ -722,45 +722,41 @@ export struct HomePage {
                 this.handleImageUpdate(); // 触发图片更新逻辑
               }
             })
-            /*.visualEffect(new hdsEffect.HdsEffectBuilder()
-              .shaderEffect({
-                effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-                animation: {
-                  duration: 4000,
-                  iterations: -1,
-                  autoPlay: true,
-                  onFinish: () => {
-                    console.info('Succeeded in finishing');
-                  }
-                },
-                controller: this.controller,
-                params: {
-                  firstEdgeFlowLight: {
-                    startPos: 0,
-                    endPos: 1.0,
-                    color: '#FF66CC',
-                  },
-                  secondEdgeFlowLight: {
-                    startPos: 0.5,
-                    endPos: 1.5,
-                    color: '#b87cff',
-                  }
-                }
-              })
-              .buildEffect())*/
+
           Text($r('app.string.texton'))
             .textAlign(TextAlign.Center)
             .margin({ top: 5, bottom: 10 })
           Row() {
+            TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
+            //.type(InputType.URL)
+            //.backgroundColor('#FF9CCE')
+              .width('70%')
+              .margin({ right: 10 })
+              .onChange((networkVideoSrc: string) => {
+                // 清除之前的防抖定时器
+                clearTimeout(this.urlDebounceTimer);
+
+                // 设置新的防抖定时器，300ms后执行
+                this.urlDebounceTimer = setTimeout(() => {
+                  // 尝试从输入文本中提取链接
+                  const extractedUrl = this.extractUrlFromText(networkVideoSrc);
+                  if (extractedUrl) {
+                    this.networkVideoSrc = extractedUrl;
+                    AppStorage.set('networkVideoSrc', extractedUrl);
+                  } else {
+                    this.networkVideoSrc = networkVideoSrc;
+                    AppStorage.set('networkVideoSrc', networkVideoSrc);
+                  }
+                }, 300);
+              })
+
             Button($r('app.string.scancode'))
             //.globalButtonStyle()
             //.type(ButtonType.Capsule)
             //.backgroundColor(0x66CCFF)//蓝色
             //.backgroundColor('#0044fc')
-              .labelStyle({ overflow: TextOverflow.Ellipsis, maxLines: 3, minFontSize: 0 })
-              .width('55%')
-              .height(50)
-              .margin({ right: 10 })
+              .height(35)
+              .margin({ right: 2 })
               .backgroundColor(0xFF66CC)
               .onClick(async () => {
                 try {
@@ -788,12 +784,9 @@ export struct HomePage {
                     `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
                 }
               })
-            PasteButton({ icon: PasteIconStyle.LINES, text: PasteDescription.PASTE, buttonType: ButtonType.ROUNDED_RECTANGLE })
+            PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
               .backgroundColor(0xFF66CC)
-              //.backgroundColor(0x66CCFF)//浅蓝色
-              .width('40%')
-              .height(50)
-              //.padding({top: 12, bottom: 12, left: 24, right: 24})
+              .height(35)
               .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
                 if (PasteButtonOnClickResult.SUCCESS === result) {
                   pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
@@ -809,56 +802,6 @@ export struct HomePage {
           .width('100%')
           .margin({ top: 5, bottom: 10 })
 
-          TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
-          //.type(InputType.URL)
-          //.backgroundColor('#FF9CCE')
-            .width('100%')
-            //.height(50)
-            .margin({ right: 10 })
-            .onChange((networkVideoSrc: string) => {
-              // 清除之前的防抖定时器
-              clearTimeout(this.urlDebounceTimer);
-
-              // 设置新的防抖定时器，300ms后执行
-              this.urlDebounceTimer = setTimeout(() => {
-                // 尝试从输入文本中提取链接
-                const extractedUrl = this.extractUrlFromText(networkVideoSrc);
-                if (extractedUrl) {
-                  this.networkVideoSrc = extractedUrl;
-                  AppStorage.set('networkVideoSrc', extractedUrl);
-                } else {
-                  this.networkVideoSrc = networkVideoSrc;
-                  AppStorage.set('networkVideoSrc', networkVideoSrc);
-                }
-              }, 300);
-            })
-            /*.visualEffect(new hdsEffect.HdsEffectBuilder()
-              .shaderEffect({
-                effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-                animation: {
-                  duration: 4000,
-                  iterations: -1,
-                  autoPlay: true,
-                  onFinish: () => {
-                    console.info('Succeeded in finishing');
-                  }
-                },
-                controller: this.controller,
-                params: {
-                  firstEdgeFlowLight: {
-                    startPos: 0,
-                    endPos: 1.0,
-                    color: '#FF66CC',
-                  },
-                  secondEdgeFlowLight: {
-                    startPos: 0.5,
-                    endPos: 1.5,
-                    color: '#FFA4E5',
-                  }
-                }
-              })
-              .buildEffect())*/
-            .margin({ top: 5, bottom: 10 })
           Row()
           {
             Text($r('app.string.pengtitleset'))
@@ -872,32 +815,6 @@ export struct HomePage {
                 this.pengtitle = pengtitle;
                 AppStorage.set('pengtitle', pengtitle);
               })
-              /*.visualEffect(new hdsEffect.HdsEffectBuilder()
-                .shaderEffect({
-                  effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-                  animation: {
-                    duration: 4000,
-                    iterations: -1,
-                    autoPlay: true,
-                    onFinish: () => {
-                      console.info('Succeeded in finishing');
-                    }
-                  },
-                  controller: this.controller,
-                  params: {
-                    firstEdgeFlowLight: {
-                      startPos: 0,
-                      endPos: 1.0,
-                      color: '#1AD0F1',
-                    },
-                    secondEdgeFlowLight: {
-                      startPos: 0.5,
-                      endPos: 1.5,
-                      color: '#FFA4E5',
-                    }
-                  }
-                })
-                .buildEffect())*/
           }
           .margin({ top: 10 })
           .width('100%')  // 控制内容区域宽度
@@ -913,19 +830,6 @@ export struct HomePage {
                 .width('40%')
                 .height(50)
                 .backgroundColor(0x66CCFF)//蓝色
-                /*.visualEffect(new hdsEffect.HdsEffectBuilder()
-                  .pointLight({
-                    sourceType:  hdsEffect.PointLightSourceType.NONE,
-                    illuminatedType: hdsEffect.PointLightIlluminatedType.DEFAULT_FEATHERING_BORDER
-                  })
-                  .buildEffect())
-                .onTouch((event: TouchEvent) => {
-                  if (event.type === TouchType.Down) {
-                    this.lightSourceType = hdsEffect.PointLightSourceType.BRIGHT;
-                  } else if (event.type === TouchType.Up || event.type === TouchType.Cancel) {
-                    this.lightSourceType = hdsEffect.PointLightSourceType.NONE;
-                  }
-                })*/
                 .onClick(() => {
                   logger.info('分享按钮被点击');
                   try {
@@ -945,18 +849,6 @@ export struct HomePage {
               .copyOption(CopyOptions.LocalDevice)
               .textAlign(TextAlign.Center)//.margin({ right: 10 })
               .width('100%')
-
-            //碰一碰提示
-            Text($r('app.string.nowplayingon'))
-              .padding({ top: 20 , left: 24, right: 24 })
-              .maxLines(2)
-              .fontSize(11)
-              .maxFontScale(1.75)
-              .width('100%')
-              .constraintSize({ minHeight: 16 })
-              .fontColor($r('sys.color.font_secondary'))
-              .fontFamily('HarmonyHeiTi')
-              .textAlign(TextAlign.Center)
           }
           .width('100%')  // 控制内容区域宽度
           .alignItems(HorizontalAlign.Center) // 内容水平居中
@@ -969,21 +861,19 @@ export struct HomePage {
         .padding({ left: 16, right: 16, top: 16, bottom: 16 })
         .margin({ bottom: 20 })
 
+        //碰一碰提示
+        Text($r('app.string.nowplayingon'))
+          .padding({ top: 20 , left: 24, right: 24 })
+          .maxLines(2)
+          .fontSize(11)
+          .maxFontScale(1.75)
+          .width('100%')
+          .constraintSize({ minHeight: 16 })
+          .fontColor($r('sys.color.font_secondary'))
+          .fontFamily('HarmonyHeiTi')
+          .textAlign(TextAlign.Center)
         KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
           .padding({ top: 2 })
-
-          /*Text(this.myFileName)
-            .focusable(true)
-            .focusOnTouch(true)
-            .fontFamily('HarmonyHeiTi-Bold')
-            .textAlign(TextAlign.Start)
-            .maxLines(1)
-            .textOverflow({ overflow: TextOverflow.Ellipsis })
-          Text('Size: ' + JSON.stringify(this.myFileSize) + 'B')
-            .focusable(true)
-            .focusOnTouch(true)
-            .fontFamily('HarmonyHeiTi')
-            .textAlign(TextAlign.Start)*/
         }
         .width('90%')  // 控制内容区域宽度
         .alignItems(HorizontalAlign.Center) // 内容水平居中
@@ -996,16 +886,3 @@ export struct HomePage {
     return !this.whiteStatus;
   }
 }
-
-/*
-interface DurationObject {
-  duration: number;
-}
-
-interface TimeObject {
-  time: number;
-}
-
-interface FullscreenObject {
-  fullscreen: boolean;
-}*/

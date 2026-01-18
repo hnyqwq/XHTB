@@ -118,7 +118,7 @@
     },
     {
       "name":"scancode",
-      "value": "\uDB80\uDC28\uDB80\uDD28 扫码提取文本或链接（可复制）"
+      "value": "\uDB80\uDC28"
     },
     {
       "name":"downloaded",
