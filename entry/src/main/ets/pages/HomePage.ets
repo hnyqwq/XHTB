@@ -644,7 +644,7 @@ export struct HomePage {
                 .objectFit(ImageFit.Contain)
                 .blur(0)
                 .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : 60,
-                  { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
+                  { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
                 .borderRadius(20)
             }
             .border({ width: 1, color: 0xCCCCCC })
@@ -659,7 +659,7 @@ export struct HomePage {
                 .objectFit(ImageFit.Contain)
                 .blur(0)
                 .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : 60,
-                  { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
+                  { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
                 .borderRadius(20)
                 .onComplete(() => {
                   this.getImageAspectRatio();
@@ -672,21 +672,23 @@ export struct HomePage {
           Text(this.pengtitle)
             .fontWeight(600)
             .fontSize('20fp')
-            .margin({ top: 120 })
+            .margin({ bottom: 70 })
             .fontWeight(FontWeight.Bold)
           Text($r('app.string.pengyipeng_description'))
-            .fontWeight(600)
-            .fontSize('10fp')
-            .margin({ top: 170 })
+            .fontWeight(400)
+            .fontSize('13vp')
+            .margin({ bottom: 50 })
+            .fontWeight(FontWeight.Medium)
             .opacity(0.5)
             .fontColor($r('app.color.version_color_182431'))
           Image($r('app.media.CIcon'))
             .width(20)
             .height(20)
-            .margin({ top: 220 })
+            .margin({ bottom: 20 })
         }
         .width('100%')
         .height(this.imageAspectRatio < 1 ? 'auto' : 300)
+        .alignContent(Alignment.Bottom)
         .margin({ top: (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) })
 
         // 卡片容器：包含从图片组件往下到碰一碰引导提示组件以上的所有内容
