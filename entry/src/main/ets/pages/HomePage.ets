@@ -690,6 +690,7 @@ export struct HomePage {
         .height(this.imageAspectRatio < 1 ? 'auto' : 300)
         .alignContent(Alignment.Bottom)
         .margin({ top: (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) })
+        .margin({ bottom: 20 })
 
         // 卡片容器：包含从图片组件往下到碰一碰引导提示组件以上的所有内容
         Column() {
@@ -966,6 +967,7 @@ export struct HomePage {
         .backgroundColor('#F5F5F5')
         .borderRadius(16)
         .padding({ left: 16, right: 16, top: 16, bottom: 16 })
+        .margin({ bottom: 20 })
 
         KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
           .padding({ top: 2 })
