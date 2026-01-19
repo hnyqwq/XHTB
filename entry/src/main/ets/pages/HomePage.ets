@@ -730,7 +730,7 @@ export struct HomePage {
             TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
             //.type(InputType.URL)
             //.backgroundColor('#FF9CCE')
-              .width('70%')
+              .width('60%')
               .margin({ right: 10 })
               .onChange((networkVideoSrc: string) => {
                 // 清除之前的防抖定时器
@@ -855,7 +855,7 @@ export struct HomePage {
           .margin({ top: 10 })
           //.height('100%')
         }
-        .width('90%')
+        .width('100%')
         .backgroundColor('#F5F5F5')
         .borderRadius(16)
         .padding({ left: 16, right: 16, top: 16, bottom: 16 })
