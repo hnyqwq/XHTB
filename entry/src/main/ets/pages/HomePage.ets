@@ -91,7 +91,7 @@ export struct HomePage {
   @State currentDescription: Resource = $r('app.string.pengyipeng_description'); // 当前显示的描述
 
   // 主颜色获取相关
-  @State mainColor: string = '#FFFFFF'; // 获取的主颜色，用于文字背景
+  @State mainColor: string = '#F5E5D8'; // 获取的主颜色，用于文字背景，默认为#F5E5D8
 
   //隔空投送
   private immersiveListening() {
@@ -304,6 +304,8 @@ export struct HomePage {
 
     if (this.sharepng !== '') {
       try {
+        console.log('=== DownloadToSandbox 开始下载 ===');
+        console.log('sharepng: ' + this.sharepng);
         // 根据URL确定图片扩展名（再次确认）
         this.updateImageExtension();
 
@@ -314,13 +316,32 @@ export struct HomePage {
           // 文件不存在是正常情况，忽略错误
         }
 
-        // 下载新文件
-        await request.downloadFile(context, {
+        // 下载新文件，使用回调确保下载完成
+        const downloadTask = await request.downloadFile(context, {
           url: this.sharepng,
           filePath: filesDir + '/pengyipeng' + this.imageExtension
         });
 
-        console.log('Image downloaded successfully as ' + this.imageExtension);
+        // 等待下载完成
+        await new Promise<void>((resolve) => {
+          downloadTask.on('complete', () => {
+            console.log('Image downloaded successfully as ' + this.imageExtension);
+            
+            // 下载完成后，等待文件系统同步
+            setTimeout(async () => {
+              console.log('下载完成，开始获取宽高比');
+              await this.getImageAspectRatio();
+              console.log('getImageAspectRatio 执行完成，宽高比: ' + this.imageAspectRatio);
+              console.log('=== DownloadToSandbox 下载完成 ===');
+              resolve();
+            }, 500);
+          });
+          
+          downloadTask.on('fail', (err: number) => {
+            console.error('Download failed with error code: ' + err);
+            resolve(); // 即使失败也resolve，避免卡住
+          });
+        });
       } catch (error) {
         console.error('Download failed:', error);
       }
@@ -448,6 +469,7 @@ export struct HomePage {
   }
 
   aboutToAppear(): void {
+    console.log('=== aboutToAppear 开始 ===');
     this.DownloadToSandbox();
     this.whiteListening()
     this.immersiveListening();
@@ -473,6 +495,8 @@ export struct HomePage {
     })
 
     context.eventHub.on('onBackGround', this.onBackGround);
+
+    console.log('=== aboutToAppear 结束 ===');
   }
 
   aboutToDisappear(): void {
@@ -646,24 +670,48 @@ export struct HomePage {
       let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
       let imageSource: image.ImageSource;
 
+      console.log('=== getImageAspectRatio 开始 ===');
+      console.log('当前 sharepng: ' + this.sharepng);
+      console.log('当前 imageExtension: ' + this.imageExtension);
+
       if (this.sharepng.startsWith('http://') || this.sharepng.startsWith('https://')) {
         // 如果是网络图片，使用本地缓存文件
         let imagePath = context.filesDir + '/pengyipeng' + this.imageExtension;
+        console.log('使用网络图片缓存路径: ' + imagePath);
         imageSource = image.createImageSource(imagePath);
       } else if (this.sharepng.startsWith('file://')) {
         // 如果是本地文件
         let filePath = this.sharepng.substring(7); // 移除 'file://' 前缀
+        console.log('使用本地文件路径: ' + filePath);
         imageSource = image.createImageSource(filePath);
       } else {
         // 如果是资源文件
+        console.log('使用资源文件: ' + this.sharepng);
         imageSource = image.createImageSource(this.sharepng);
       }
 
       const info = await imageSource.getImageInfo();
+      console.log('获取到的图片信息: ' + JSON.stringify(info));
+
       if (info && info.size && info.size.width > 0 && info.size.height > 0) {
         this.imageAspectRatio = info.size.width / info.size.height;
         this.isImageLoaded = true;
+        console.log('宽高比: ' + this.imageAspectRatio);
+        console.log('图片宽度: ' + info.size.width);
+        console.log('图片高度: ' + info.size.height);
+
+        // 如果是横屏图片，自动获取主颜色
+        if (this.imageAspectRatio >= 1) {
+          console.log('检测到横屏图片，开始获取主颜色');
+          await this.extractMainColor();
+          console.log('主颜色获取完成: ' + this.mainColor);
+        } else {
+          console.log('不是横屏图片，不获取主颜色');
+        }
+      } else {
+        console.log('图片信息无效');
       }
+      console.log('=== getImageAspectRatio 结束 ===');
     } catch (error) {
       console.error('Failed to get image info: ' + JSON.stringify(error));
       // 如果获取失败，默认按原始方式处理
@@ -736,7 +784,7 @@ export struct HomePage {
         Stack() {
           // 横屏图片 + 碰一碰模式：使用卡片样式
           if (this.imageAspectRatio >= 1 && this.selectedShareMode === 0) {
-            // 横屏图片 + 隔空模式：使用主颜色背景填充整个卡片
+            // 横屏图片 + 碰一碰模式：使用主颜色背景填充整个卡片
             Column() {
               // 图片
               if (this.localPixelMap) {
@@ -772,7 +820,7 @@ export struct HomePage {
               Text(this.pengtitle)
                 .fontSize(20)
                 .fontWeight(FontWeight.Bold)
-                .margin({ bottom: 8 })
+                .margin({ bottom: 8 , top: 10 })
                 .blur(0) // 文字不模糊
 
               // 描述
@@ -786,12 +834,12 @@ export struct HomePage {
               Image($r('app.media.CIcon'))
                 .width(20)
                 .height(20)
-                .margin({ bottom: 5 })
+                .margin({ bottom: 15 })
                 .blur(0) // 图标不模糊
             }
             .width('auto')
             .height('auto')
-            .padding(10)
+            .padding(0)
             .backgroundColor(this.mainColor) // 使用主颜色填充整个卡片
             .borderRadius(20)
             .border({ width: 2, color: 0xCCCCCC })
