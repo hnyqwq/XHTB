@@ -74,6 +74,16 @@ export struct HomePage {
   @State isImageLoaded: boolean = false; // 图片是否已加载
   @State imageKey: string = ''; // 图片key用于强制刷新
 
+  // 调试数据状态
+  @State debugImagePath: string = '';
+  @State debugImageExtension: string = '';
+  @State debugSharepng: string = '';
+  @State debugFilesDir: string = '';
+  @State debugFilesList: string = '';
+  @State debugFileExists: boolean = false;
+  @State debugFileStat: string = '';
+  @State debugFileError: string = '';
+
   //隔空投送
   private immersiveListening() {
     harmonyShare.on('gesturesShare', this.immersiveCallback);
@@ -555,6 +565,16 @@ export struct HomePage {
     // 直接获取最新的 context，而不是使用全局变量
     const currentContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
     const imagePath = currentContext.filesDir + "/pengyipeng" + this.imageExtension;
+
+    // 更新调试数据到状态变量
+    this.debugImagePath = imagePath;
+    this.debugImageExtension = this.imageExtension;
+    this.debugSharepng = this.sharepng;
+    this.debugFilesDir = currentContext.filesDir;
+    this.debugFileExists = false;
+    this.debugFileStat = '';
+    this.debugFileError = '';
+
     console.log('=== 隔空投送调试 ===');
     console.log('正在检查的图片路径: ' + imagePath);
     console.log('当前的 imageExtension: ' + this.imageExtension);
@@ -564,8 +584,10 @@ export struct HomePage {
     // 列出 filesDir 中的所有文件
     try {
       const files = fileIo.listFileSync(currentContext.filesDir);
+      this.debugFilesList = JSON.stringify(files);
       console.log('filesDir 中的文件列表: ' + JSON.stringify(files));
     } catch (e) {
+      this.debugFilesList = '列出文件失败: ' + JSON.stringify(e);
       console.log('列出文件失败: ' + JSON.stringify(e));
     }
 
@@ -573,13 +595,16 @@ export struct HomePage {
     // 检查文件是否存在,存在才更新
     try {
       const stat = fileIo.statSync(imagePath);
+      this.debugFileStat = `size: ${stat.size}, isFile: ${stat.isFile()}, isDirectory: ${stat.isDirectory()}`;
       console.log('文件存在，状态: ' + JSON.stringify(stat));
       if (stat.isFile()) {
+        this.debugFileExists = true;
         this.sharepng = 'file://' + imagePath;
         console.log('图片文件已找到并更新: ' + imagePath);
       }
     } catch (error) {
       // 文件不存在,不更新图片
+      this.debugFileError = JSON.stringify(error);
       console.log('=== 文件未找到 ===');
       console.log('路径: ' + imagePath);
       console.log('错误信息: ' + JSON.stringify(error));
@@ -694,6 +719,57 @@ export struct HomePage {
 
         // 卡片容器：包含从图片组件往下到碰一碰引导提示组件以上的所有内容
         Column() {
+          // 调试数据显示区域
+          Column() {
+            Text('隔空投送调试信息')
+              .fontSize(14)
+              .fontWeight(FontWeight.Bold)
+              .fontColor(0xFF0000)
+              .margin({ bottom: 8 })
+            Text('图片路径: ' + this.debugImagePath)
+              .fontSize(10)
+              .fontColor(0x666666)
+              .margin({ bottom: 4 })
+            Text('扩展名: ' + this.debugImageExtension)
+              .fontSize(10)
+              .fontColor(0x666666)
+              .margin({ bottom: 4 })
+            Text('sharepng: ' + this.debugSharepng)
+              .fontSize(10)
+              .fontColor(0x666666)
+              .margin({ bottom: 4 })
+            Text('filesDir: ' + this.debugFilesDir)
+              .fontSize(10)
+              .fontColor(0x666666)
+              .margin({ bottom: 4 })
+            Text('文件列表: ' + this.debugFilesList)
+              .fontSize(10)
+              .fontColor(0x666666)
+              .margin({ bottom: 4 })
+            Text('文件存在: ' + (this.debugFileExists ? '是' : '否'))
+              .fontSize(10)
+              .fontColor(this.debugFileExists ? 0x00FF00 : 0xFF0000)
+              .margin({ bottom: 4 })
+            if (this.debugFileStat) {
+              Text('文件状态: ' + this.debugFileStat)
+                .fontSize(10)
+                .fontColor(0x666666)
+                .margin({ bottom: 4 })
+            }
+            if (this.debugFileError) {
+              Text('错误信息: ' + this.debugFileError)
+                .fontSize(10)
+                .fontColor(0xFF0000)
+                .margin({ bottom: 4 })
+            }
+          }
+          .width('100%')
+          .backgroundColor(0xFFFFF0)
+          .borderRadius(8)
+          .padding(8)
+          .margin({ bottom: 16 })
+          .border({ width: 1, color: 0xFFCCCC })
+
           Row()
           {
             Text($r('app.string.sharepngon'))
