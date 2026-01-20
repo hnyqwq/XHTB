@@ -736,56 +736,6 @@ export struct HomePage {
         Stack() {
           // 横屏图片 + 碰一碰模式：使用卡片样式
           if (this.imageAspectRatio >= 1 && this.selectedShareMode === 0) {
-            Column() {
-              // 图片
-              if (this.localPixelMap) {
-                Image(this.localPixelMap)
-                  .width(300)
-                  .height(200)
-                  .margin({ bottom: 12 })
-                  .objectFit(ImageFit.Cover)
-                  .borderRadius(10)
-              } else {
-                Image(this.sharepng)
-                  .width(300)
-                  .height(200)
-                  .margin({ bottom: 12 })
-                  .objectFit(ImageFit.Cover)
-                  .borderRadius(10)
-                  .onComplete(() => {
-                    this.getImageAspectRatio();
-                  })
-              }
-
-              // 标题
-              Text(this.pengtitle)
-                .fontSize(20)
-                .fontWeight(FontWeight.Bold)
-                .margin({ bottom: 8 })
-                .blur(0) // 文字不模糊
-
-              // 描述
-              Text(this.currentDescription)
-                .fontSize(16)
-                .fontColor(0xCCCCCC)
-                .margin({ bottom: 5 })
-                .blur(0) // 文字不模糊
-
-              Image($r('app.media.CIcon'))
-                .width(20)
-                .height(20)
-                .margin({ bottom: 5 })
-                .blur(0) // 图标不模糊
-            }
-            .width('auto')
-            .height('auto')
-            .padding(10)
-            .backgroundColor(0xFFFFFF)
-            .borderRadius(20)
-            .border({ width: 2, color: 0xCCCCCC })
-            .alignItems(HorizontalAlign.Center)
-            .justifyContent(FlexAlign.Start)
-          } else if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
             // 横屏图片 + 隔空模式：使用主颜色背景填充整个卡片
             Column() {
               // 图片
@@ -824,7 +774,8 @@ export struct HomePage {
               // 描述
               Text(this.currentDescription)
                 .fontSize(16)
-                .fontColor(0xCCCCCC)
+                .fontColor(0xA3A3A3)
+                //.fontWeight(FontWeight.Medium)
                 .margin({ bottom: 5 })
                 .blur(0) // 文字不模糊
 
@@ -838,6 +789,57 @@ export struct HomePage {
             .height('auto')
             .padding(10)
             .backgroundColor(this.mainColor) // 使用主颜色填充整个卡片
+            .borderRadius(20)
+            .border({ width: 2, color: 0xCCCCCC })
+            .alignItems(HorizontalAlign.Center)
+            .justifyContent(FlexAlign.Start)
+          } else if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
+            Column() {
+              // 图片
+              if (this.localPixelMap) {
+                Image(this.localPixelMap)
+                  .width(300)
+                  .height(200)
+                  .margin({ bottom: 12 })
+                  .objectFit(ImageFit.Cover)
+                  .borderRadius(10)
+              } else {
+                Image(this.sharepng)
+                  .width(300)
+                  .height(200)
+                  .margin({ bottom: 12 })
+                  .objectFit(ImageFit.Cover)
+                  .borderRadius(10)
+                  .onComplete(() => {
+                    this.getImageAspectRatio();
+                  })
+              }
+
+              // 标题
+              Text(this.pengtitle)
+                .fontSize(20)
+                .fontWeight(FontWeight.Bold)
+                .margin({ bottom: 8 })
+                .blur(0) // 文字不模糊
+
+              // 描述
+              Text(this.currentDescription)
+                .fontSize(16)
+                .fontColor(0xA3A3A3)
+                //.fontWeight(FontWeight.Medium)
+                .margin({ bottom: 5 })
+                .blur(0) // 文字不模糊
+
+              Image($r('app.media.CIcon'))
+                .width(20)
+                .height(20)
+                .margin({ bottom: 5 })
+                .blur(0) // 图标不模糊
+            }
+            .width('auto')
+            .height('auto')
+            .padding(10)
+            .backgroundColor(0xFFFFFF)
             .borderRadius(20)
             .border({ width: 2, color: 0xCCCCCC })
             .alignItems(HorizontalAlign.Center)
