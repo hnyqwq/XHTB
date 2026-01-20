@@ -85,7 +85,8 @@ export struct HomePage {
   @State debugFileStat: string = '';
   @State debugFileError: string = '';
 
-  //顶部胶囊按钮
+  // 顶部胶囊按钮
+  @State selectedShareMode: number = 0; // 0: 碰一碰, 1: 隔空传输
 
   //隔空投送
   private immersiveListening() {
@@ -664,66 +665,121 @@ export struct HomePage {
         DeviceSegmentButton()
           .margin({ top: 10 + (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) , bottom : 5 })
         Stack() {
-          // 图片区域
-          if (this.localPixelMap) {
-            // 使用 PixelMap 显示本地选择的图片
+          // 横屏图片 + 碰一碰模式：使用卡片样式
+          if (this.imageAspectRatio >= 1 && this.selectedShareMode === 0) {
             Column() {
-              Image(this.localPixelMap)
-                .width(this.imageAspectRatio < 1 ? '60%' : '80%')
-                .height(this.imageAspectRatio < 1 ? 'auto' : '80%')
-                .objectFit(ImageFit.Contain)
-                .blur(0)
-                .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : 60,
-                  { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
-                .borderRadius(20)
+              // 图片
+              if (this.localPixelMap) {
+                Image(this.localPixelMap)
+                  .width(300)
+                  .height(200)
+                  .margin({ bottom: 12 })
+                  .objectFit(ImageFit.Cover)
+                  .borderRadius(10)
+              } else {
+                Image(this.sharepng)
+                  .width(300)
+                  .height(200)
+                  .margin({ bottom: 12 })
+                  .objectFit(ImageFit.Cover)
+                  .borderRadius(10)
+                  .onComplete(() => {
+                    this.getImageAspectRatio();
+                  })
+              }
+
+              // 标题
+              Text(this.pengtitle)
+                .fontSize(20)
+                .fontWeight(FontWeight.Bold)
+                .margin({ bottom: 8 })
+
+              // 描述
+              Text($r('app.string.pengyipeng_description'))
+                .fontSize(16)
+                .fontColor(0xCCCCCC)
+                .margin({ bottom: 5 })
+
+              Image($r('app.media.CIcon'))
+                .width(20)
+                .height(20)
+                .margin({ bottom: 5 })
             }
-            .border({ width: 1, color: 0xCCCCCC })
+            .width('auto')
+            .height('auto')
+            .padding(10)
+            .backgroundColor(0xFFFFFF)
             .borderRadius(20)
-            .alignSelf(ItemAlign.Start)
+            .border({ width: 2, color: 0xCCCCCC })
+            .alignItems(HorizontalAlign.Center)
+            .justifyContent(FlexAlign.Start)
           } else {
-            // 使用 URL 显示图片
-            Column() {
-              Image(this.sharepng)
-                .width(this.imageAspectRatio < 1 ? '60%' : '80%')
-                .height(this.imageAspectRatio < 1 ? 'auto' : '80%')
-                .objectFit(ImageFit.Contain)
-                .blur(0)
-                .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : 60,
-                  { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
-                .borderRadius(20)
-                .onComplete(() => {
-                  this.getImageAspectRatio();
-                })
+            // 其他模式：保持原有 Stack 样式
+            // 图片区域
+            if (this.localPixelMap) {
+              // 使用 PixelMap 显示本地选择的图片
+              Column() {
+                Image(this.localPixelMap)
+                  .width(this.imageAspectRatio < 1 ? '60%' : '80%')
+                  .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 ? 'auto' : '80%'))
+                  .objectFit(ImageFit.Contain)
+                  .blur(0)
+                  .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : (this.selectedShareMode === 1 ? 0 : 60),
+                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
+                  .borderRadius(20)
+              }
+              .border({ width: 1, color: 0xCCCCCC })
+              .borderRadius(20)
+              .alignSelf(ItemAlign.Start)
+              .justifyContent(this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? FlexAlign.Start : FlexAlign.Center)
+              .margin({ top: this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '15%' : 0 })
+            } else {
+              // 使用 URL 显示图片
+              Column() {
+                Image(this.sharepng)
+                  .width(this.imageAspectRatio < 1 ? '60%' : '80%')
+                  .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 ? 'auto' : '80%'))
+                  .objectFit(ImageFit.Contain)
+                  .blur(0)
+                  .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : (this.selectedShareMode === 1 ? 0 : 60),
+                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
+                  .borderRadius(20)
+                  .onComplete(() => {
+                    this.getImageAspectRatio();
+                  })
+              }
+              .border({ width: 1, color: 0xCCCCCC })
+              .borderRadius(20)
+              .alignSelf(ItemAlign.Start)
+              .justifyContent(this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? FlexAlign.Start : FlexAlign.Center)
+              .margin({ top: this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '15%' : 0 })
             }
-            .border({ width: 1, color: 0xCCCCCC })
-            .borderRadius(20)
-            .alignSelf(ItemAlign.Start)
+            // 文字区域
+            Column() {
+              Text(this.pengtitle)
+                .fontWeight(600)
+                .fontSize('20fp')
+                .fontWeight(FontWeight.Bold)
+              Text($r('app.string.pengyipeng_description'))
+                .fontWeight(400)
+                .fontSize('13vp')
+                .margin({ top: 5, bottom: 5 })
+                .fontWeight(FontWeight.Medium)
+                .opacity(0.5)
+                .fontColor($r('app.color.version_color_182431'))
+              Image($r('app.media.CIcon'))
+                .width(20)
+                .height(20)
+                .margin({ top: 5, bottom: 10 })
+            }
+            .width('100%')
+            .alignItems(HorizontalAlign.Center)
+            .align(Alignment.Bottom)
+            .constraintSize({ maxWidth: '100%' })
           }
-          // 文字区域
-          Column() {
-            Text(this.pengtitle)
-              .fontWeight(600)
-              .fontSize('20fp')
-              .fontWeight(FontWeight.Bold)
-            Text($r('app.string.pengyipeng_description'))
-              .fontWeight(400)
-              .fontSize('13vp')
-              .margin({ top: 5, bottom: 5 })
-              .fontWeight(FontWeight.Medium)
-              .opacity(0.5)
-              .fontColor($r('app.color.version_color_182431'))
-            Image($r('app.media.CIcon'))
-              .width(20)
-              .height(20)
-              .margin({ top: 5, bottom: 10 })
-          }
-          .width('100%')
-          .alignItems(HorizontalAlign.Center)
-          .align(Alignment.Bottom)
-          .constraintSize({ maxWidth: '100%' })
         }
         .width('100%')
-        .height(this.imageAspectRatio < 1 ? 'auto' : 300)
+        .height(this.selectedShareMode === 1 ? 300 : 'auto')
         .alignContent(Alignment.Bottom)
         .margin({ bottom: 20 })
 
