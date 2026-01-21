@@ -916,21 +916,19 @@ export struct HomePage {
             .border({ width: 2, color: 0xCCCCCC })
             .alignItems(HorizontalAlign.Center)
             .justifyContent(FlexAlign.Start)
-          } else if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
+          } else if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) { // 横屏+隔空
             Column() {
               // 图片
               if (this.localPixelMap) {
                 Image(this.localPixelMap)
                   .width('100%')
                   .aspectRatio(1.4)
-                  .margin({ bottom: 12 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(10)
               } else {
                 Image(this.sharepng)
                   .width('100%')
                   .aspectRatio(1.4)
-                  .margin({ bottom: 12 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(10)
                   .onComplete(() => {
@@ -942,7 +940,7 @@ export struct HomePage {
               Text(this.pengtitle)
                 .fontSize(20)
                 .fontWeight(FontWeight.Bold)
-                .margin({ bottom: 8 })
+                .margin({ top: 12 , bottom: 8 })
                 .blur(0) // 文字不模糊
 
               // 描述
@@ -956,13 +954,13 @@ export struct HomePage {
               Image($r('app.media.CIcon'))
                 .width(20)
                 .height(20)
-                .margin({ bottom: 5 })
                 .blur(0) // 图标不模糊
+                .margin({ bottom: 8 })
             }
             .width('100%')
             .constraintSize({ maxWidth: 350 })
             .height('auto')
-            .padding(10)
+            .padding(8)
             .backgroundColor(0xFFFFFF)
             .borderRadius(20)
             .border({ width: 2, color: 0xCCCCCC })
