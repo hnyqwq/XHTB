@@ -5,7 +5,7 @@ import { image } from '@kit.ImageKit';
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { BusinessError } from '@kit.BasicServicesKit';
 import Logger from '../utils/Logger';
-import router from '@ohos.router';
+import { navigationManager } from '../common/NavigationManager';
 
 //点光源效果
 import { hdsEffect } from '@kit.UIDesignKit';
@@ -188,10 +188,7 @@ struct ShareExtDialog {
             .margin({ left: 10 })
             .onClick(() => {
               this.networkVideoSrc = this.htmlLink;
-              router.pushUrl({ url: 'pages/Index' })
-                .catch((e: BusinessError) => {
-                  console.error('路由跳转失败', e);
-                });
+              navigationManager.pushPath('pages/Index');
               /*let want: Want = {
                 "action": "ohos.want.action.viewData",
                 "entities": ["entity.system.browsable"],

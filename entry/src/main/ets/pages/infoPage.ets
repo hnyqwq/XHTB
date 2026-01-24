@@ -2,13 +2,14 @@ import { updateManager } from '@kit.AppGalleryKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import type { common } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import router from '@ohos.router';
+import { navigationManager } from '../common/NavigationManager';
 
 import { deviceInfo } from '@kit.BasicServicesKit';
 
 import { AppUtil } from '@pura/harmony-utils';
 import { promptAction } from '@kit.ArkUI';
 import { GlobalInfoModel } from '../common/GlobalInfoModel';
+import { BackButton } from '../common/BackButton';
 
 let bundleName = AppUtil.getBundleName();
 let versionCode = AppUtil.getVersionCode();
@@ -71,6 +72,7 @@ class FirstMenu {
 @Entry
 @Component
 export struct infoPage {
+  @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
   @StorageProp('bottomRectHeight')
   bottomRectHeight: number = 0;
   @StorageProp('topRectHeight')
@@ -91,12 +93,7 @@ export struct infoPage {
         Column() {
           Row()
           {
-            SymbolGlyph($r('sys.symbol.chevron_left_circle')) // 自定义返回图标
-              .fontSize(35)
-              .margin({ left: 20 }) // 左侧留白
-              .onClick(() => {
-                  router.back();
-                })
+            BackButton()
             Text($r('app.string.infopagetitle'))
               .fontSize(20)
               .fontColor($r('app.color.font_color_info'))
@@ -107,6 +104,7 @@ export struct infoPage {
           }
           .width('100%')          // 占满父容器宽度
           .justifyContent(FlexAlign.Start) // 主轴线左对齐
+          .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
         }
         .padding({ bottom: 20 })
           Stack() {

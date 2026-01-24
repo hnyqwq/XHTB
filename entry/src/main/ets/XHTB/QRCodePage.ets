@@ -2,25 +2,25 @@ import { image } from '@kit.ImageKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { scanCore, generateBarcode } from '@kit.ScanKit';
-import router from '@ohos.router';
+import { navigationManager } from '../common/NavigationManager';
+import { BackButton } from '../common/BackButton';
+import { GlobalInfoModel } from '../common/GlobalInfoModel';
 
 @Entry
 @Component
 export struct QRCodePage {
   @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
+  @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
   @State pixelMap: image.PixelMap | undefined = undefined
 
   build() {
     Column({ space: 0 }) {
       Row() {
-        SymbolGlyph($r('sys.symbol.chevron_left_circle')) // 自定义返回图标
-          .fontSize(35)
-          .margin({ left: 20 }) // 左侧留白
-          .onClick(() => {
-            router.back();
-          })
+        BackButton()
       }
       .width('100%')
+      .height(56)
+      .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
       
       Column({ space: 20 }) {
         Text('二维码生成')

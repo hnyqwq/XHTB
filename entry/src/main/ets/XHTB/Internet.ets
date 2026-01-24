@@ -5,7 +5,9 @@ import { TabItem } from './InternetTab/TabItem';
 import { promptAction } from '@kit.ArkUI';//视频
 import { unifiedDataChannel, uniformTypeDescriptor } from '@kit.ArkData';
 
-import router from '@ohos.router';
+import { navigationManager } from '../common/NavigationManager';
+import { BackButton } from '../common/BackButton';
+import { GlobalInfoModel } from '../common/GlobalInfoModel';
 
 @Extend(Text) function text() {
   .maxLines(2)
@@ -20,7 +22,8 @@ import router from '@ohos.router';
 
 @Entry
 @Component
-struct BackgroundLightTab {
+export struct Internet {
+  @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
   @State tabArray: Array<TabItem> = initTabData();
   @State focusIndex: number = 0;
   @State index: number = 0;
@@ -71,12 +74,7 @@ struct BackgroundLightTab {
   build() {
     Column() {
       Row() {
-        SymbolGlyph($r('sys.symbol.chevron_left_circle')) // 自定义返回图标
-          .fontSize(35)
-          .margin({ left: 20 }) // 左侧留白
-          .onClick(() => {
-            router.back();
-          })
+        BackButton()
         // [Start BackgroundLightTab_list]
         List({ scroller: this.listScroller }) {
           ForEach(this.tabArray.slice(0, 7),
@@ -90,11 +88,13 @@ struct BackgroundLightTab {
         .listDirection(Axis.Horizontal)
         .scrollBar(BarState.Off)
         .edgeEffect(EdgeEffect.Spring)
-        .margin({ top: 10, right: 10 })
+        .margin({ left: 10, right: 10 })
       }
+      .width('100%')
       .alignItems(VerticalAlign.Center)
-      .height(52)
+      .height(56)
       .margin({ top: 10 })
+
       Row() {
         Text($r('app.string.InternetMon'))
           .text()
@@ -239,6 +239,7 @@ struct BackgroundLightTab {
       })
     }
     .height('100%')
+    .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
   }
 }
 

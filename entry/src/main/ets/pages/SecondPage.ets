@@ -1,16 +1,19 @@
-import { router } from '@kit.ArkUI';
 import { CommonConstants, ScrollPosition } from '../constants/CommonConstants';
 import { ListDataConstants } from '../constants/ListDataConstants';
 import GridComponent from '../model/GridComponent';
 import { featureGridData, GridData, otherGridDataList } from '../model/GridListDataSources';
 import { GlobalInfoModel } from '../common/GlobalInfoModel';
+import { navigationManager } from '../common/NavigationManager';
+import { TextToSpeechPage } from '../XHTB/TextToSpeechPage';
+import { QRCodePage } from '../XHTB/QRCodePage';
+import { Internet } from '../XHTB/Internet';
+import { OCR } from '../XHTB/DocScan/OCR';
 
-@Entry
 @Component
-export struct SecondPage {
-  //0 for scrolling to the top of the list, 1 for the middle value, and 2 for scrolling to the bottom of the list.
+struct SecondPageContent {
+  //0 for scrolling to the top of list, 1 for middle value, and 2 for scrolling to the bottom of list.
   @State listPosition: number = ScrollPosition.start;
-  //0 for scrolling to the top of the page, 1 for the middle value, and 2 for scrolling to the bottom of the page.
+  //0 for scrolling to the top of page, 1 for middle value, and 2 for scrolling to the bottom of page.
   @State scrollPosition: number = ScrollPosition.start;
   @State currentIndex: number = 0;
   private scrollerForScroll: Scroller = new Scroller();
@@ -44,11 +47,11 @@ export struct SecondPage {
             .width(CommonConstants.FULL_PERCENT)
             .edgeEffect(EdgeEffect.None)
             .scrollBar(BarState.Off)
-            // Triggers when the start position is reached.
+            // Triggers when start position is reached.
             .onReachStart(() => {
               this.listPosition = ScrollPosition.start;
             })
-            // Triggers when the end position is reached.
+            // Triggers when end position is reached.
             .onReachEnd(() => {
               this.listPosition = ScrollPosition.end;
             })
@@ -61,7 +64,7 @@ export struct SecondPage {
               if (this.currentIndex === ListDataConstants.TITLE_LIST.length - 1 && offset > 0) {
                 return { offsetRemain: 0 }
               }
-              // When sliding to the middle of the list
+              // When sliding to middle of list
               if (!((this.listPosition === ScrollPosition.start && offset < 0) ||
                 (this.listPosition === ScrollPosition.end && offset > 0))) {
                 this.listPosition = ScrollPosition.center;
@@ -151,5 +154,86 @@ export struct SecondPage {
     }
     .margin({ top: $r('app.float.title_list_top_margin') })
     .padding({ left: $r('app.float.title_list_padding'), right: $r('app.float.title_list_padding') })
+  }
+}
+
+
+
+@Entry
+@Component
+export struct SecondPage {
+  @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
+  @StorageLink('SecondPageRightPage') currentRightPage: string = '';
+  @StorageProp('currentWidthBreakpoint') currentBreakpoint: string = 'sm';
+  @State useSplitLayout: boolean = false;
+
+  aboutToAppear() {
+    // 根据屏幕宽度决定使用分栏布局还是垂直布局
+    // lg及以上使用分栏布局(lg>=840vp)
+    this.useSplitLayout = this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl';
+    // 设置全局标志,告诉GridItemComponent当前在SecondPage分栏模式
+    AppStorage.setOrCreate<boolean>('SecondPageSplitMode', this.useSplitLayout);
+    console.info(`========== SecondPage初始化 ==========`);
+    console.info(`currentBreakpoint: ${this.currentBreakpoint}`);
+    console.info(`useSplitLayout: ${this.useSplitLayout}`);
+    console.info(`设置SecondPageSplitMode=${this.useSplitLayout}`);
+    console.info(`========== SecondPage初始化结束 ==========`);
+  }
+
+  build() {
+    if (this.useSplitLayout) {
+      // 分栏布局：左边是原内容，右边是跳转的页面
+      Row() {
+        // 左侧：原来SecondPage的内容
+        Column() {
+          SecondPageContent()
+        }
+        .width('40%')
+        .height('100%')
+        .border({ width: { right: 1 }, color: $r('app.color.listColor') })
+
+        // 右侧：显示跳转的页面内容
+        Column() {
+          if (this.currentRightPage === '') {
+            // 未选择时显示占位内容
+            Column() {
+              Text('请从左侧选择一个功能')
+                .fontSize(18)
+                .fontColor($r('app.color.font_color_182431'))
+            }
+            .width('100%')
+            .height('100%')
+            .justifyContent(FlexAlign.Center)
+          } else {
+            // 直接渲染页面组件
+            this.pageBuilder()
+          }
+        }
+        .layoutWeight(1)
+        .height('100%')
+      }
+      .width('100%')
+      .height('100%')
+      .backgroundColor($r('app.color.White'))
+    } else {
+      // 垂直布局：原来的完整页面
+      SecondPageContent()
+    }
+  }
+
+  // 右侧页面构建器
+  @Builder
+  pageBuilder() {
+    // 这里需要根据currentRightPage动态加载对应的页面组件
+    // 由于HarmonyOS的限制,我们需要使用条件渲染
+    if (this.currentRightPage === 'XHTB/TextToSpeechPage') {
+      TextToSpeechPage()
+    } else if (this.currentRightPage === 'XHTB/QRCodePage') {
+      QRCodePage()
+    } else if (this.currentRightPage === 'XHTB/DocScan/OCR') {
+      OCR()
+    } else if (this.currentRightPage === 'XHTB/Internet') {
+      Internet()
+    }
   }
 }

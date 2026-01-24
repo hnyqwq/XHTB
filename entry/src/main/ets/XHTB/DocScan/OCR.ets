@@ -19,13 +19,16 @@ import {
 
 import { cameraPicker as picker } from '@kit.CameraKit';
 import { camera } from '@kit.CameraKit';
-import { router } from '@kit.ArkUI';
+import { navigationManager } from '../../common/NavigationManager';
+import { BackButton } from '../../common/BackButton';
+import { GlobalInfoModel } from '../../common/GlobalInfoModel';
 
 @Entry
 @Component
   // 使用@Entry装饰器标记为入口组件，@Component表示自定义组件
 export struct OCR {
   context: common.Context = getContext(this);
+  @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
   @State initialOrientation: window.Orientation = window.Orientation.PORTRAIT; // 记录初始方向
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
   @State isShortcutKeyEnabled: boolean = false
@@ -185,14 +188,11 @@ export struct OCR {
   build() {
     Column() {
       Row() {
-        SymbolGlyph($r('sys.symbol.chevron_left_circle')) // 自定义返回图标
-          .fontSize(35)
-          .margin({ left: 20 }) // 左侧留白
-          .onClick(() => {
-            router.back();
-          })
+        BackButton()
       }
       .width('100%')
+      .height(56)
+      .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
 
       Row() {
         CollaborationServiceStateDialog({

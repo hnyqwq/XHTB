@@ -1,6 +1,6 @@
 import { common, Want } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import router from '@ohos.router';
+import { navigationManager } from '../common/NavigationManager';
 import { commentManager } from '@kit.AppGalleryKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { GlobalInfoModel } from '../common/GlobalInfoModel';
@@ -145,10 +145,7 @@ export struct MinePage {
                     let uri = '';
                     switch (item.id) {
                       case 'setting':
-                        router.pushUrl({ url: 'pages/infoPage' })
-                          .catch((e: BusinessError) => {
-                            console.error('路由跳转失败', e);
-                          });
+                        navigationManager.pushPath('pages/infoPage');
                         break;
                       case 'vipownsetting':
                         uri = 'https://www.hnyqwq.cn';

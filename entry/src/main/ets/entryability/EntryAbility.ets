@@ -4,7 +4,6 @@ import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.Ab
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { BusinessError, deviceInfo } from '@kit.BasicServicesKit';
-import { router } from '@kit.ArkUI';
 //接续
 import { ContentInfo } from '../model/ContentInfo';
 import { distributedDataObject } from '@kit.ArkData';
@@ -55,17 +54,8 @@ export default class EntryAbility extends UIAbility {
     // 原有扫码逻辑保留
     let uri = want?.uri;
     if (uri) {
-      setTimeout(() => {
-        router.pushUrl({
-          url: 'pages/Index', // 确保跳转到正确的页面
-          params: {
-            videoUrl: uri,
-            source: 'scan'
-          }
-        }).catch((e: BusinessError) => {
-          console.error('扫码路由跳转失败', e);
-        });
-      }, 100);
+      // 保存视频URL到AppStorage,供HomePage使用
+      AppStorage.setOrCreate<string>('sharedVideoUrl', uri.toString());
     }
 
     // 保留原有逻辑
@@ -81,14 +71,8 @@ export default class EntryAbility extends UIAbility {
 
     //快捷方式的快速打开页面跳转
     if (want.parameters?.ShortCutPage) {
-      setTimeout(() => {
-        if (want.parameters && want.parameters.ShortCutPage === 'infoPage') {
-          router.pushUrl({ url: 'pages/infoPage' })
-            .catch((e: BusinessError) => {
-              console.error('路由跳转失败', e);
-            });
-        }
-      }, 50);
+      // 保存快捷方式参数到AppStorage
+      AppStorage.setOrCreate<string>('ShortCutPage', want.parameters.ShortCutPage as string);
     }
   }
 

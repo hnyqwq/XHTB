@@ -1,6 +1,8 @@
 import { textToSpeech } from '@kit.CoreSpeechKit';//语音
 import { BusinessError } from '@kit.BasicServicesKit';
-import router from '@ohos.router';
+import { navigationManager } from '../common/NavigationManager';
+import { BackButton } from '../common/BackButton';
+import { GlobalInfoModel } from '../common/GlobalInfoModel';
 
 let ttsEngine: textToSpeech.TextToSpeechEngine;
 
@@ -8,6 +10,7 @@ let ttsEngine: textToSpeech.TextToSpeechEngine;
 @Component
 export struct TextToSpeechPage {
   @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
+  @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
   @State originalText: string = ''; //语音
   @State createCount: number = 0;
   @State result: boolean = false;
@@ -35,14 +38,11 @@ export struct TextToSpeechPage {
   build() {
     Column({ space: 0 }) {
       Row() {
-        SymbolGlyph($r('sys.symbol.chevron_left_circle')) // 自定义返回图标
-          .fontSize(35)
-          .margin({ left: 20 }) // 左侧留白
-          .onClick(() => {
-            router.back();
-          })
+        BackButton()
       }
       .width('100%')
+      .height(56)
+      .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
       
       Column({ space: 20 }) {
         Text('朗读功能')

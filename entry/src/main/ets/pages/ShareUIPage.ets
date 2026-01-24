@@ -4,7 +4,7 @@ import { uniformTypeDescriptor as utd } from '@kit.ArkData';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { image } from '@kit.ImageKit';
 import Logger from '../utils/Logger';
-import router from '@ohos.router';
+import { navigationManager } from '../common/NavigationManager';
 
 //点光源效果
 import { hdsEffect } from '@kit.UIDesignKit';
@@ -154,10 +154,7 @@ struct SystemShare {
             .margin({ left: 10 })
             .onClick(() => {
               this.networkVideoSrc = this.htmlLink;
-              router.pushUrl({ url: 'pages/Index' })
-                .catch((e: BusinessError) => {
-                  console.error('路由跳转失败', e);
-                });
+              navigationManager.pushPath('pages/Index');
             })
             .visualEffect(new hdsEffect.HdsEffectBuilder()
               .shaderEffect({

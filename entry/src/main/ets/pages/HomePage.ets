@@ -14,7 +14,7 @@ import { pasteboard } from '@kit.BasicServicesKit';
 //分享相关
 import { fileUri } from '@kit.CoreFileKit';
 import request from '@ohos.request';
-import router from '@ohos.router';
+import { navigationManager } from '../common/NavigationManager';
 import { image } from '@kit.ImageKit';
 import { effectKit } from '@kit.ArkGraphics2D';
 import { CommonConstants } from '../constants/CommonConstants';
@@ -491,7 +491,7 @@ export struct HomePage {
     this.pengtitle = this.context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id);
 
     // 建议调整顺序确保实时参数优先
-    const params = router.getParams() as Record<string, string>;
+    const params = navigationManager.getParams() as Record<string, string>;
     if (params?.['videoUrl']) {
       this.networkVideoSrc = params['videoUrl'];
     }
