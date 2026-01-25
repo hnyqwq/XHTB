@@ -48,7 +48,7 @@ export struct MinePage {
   @Builder
   MyMenu() {
     Menu() {
-      MenuItem({ startIcon: this.iconStr, content: $r('app.string.minelongpress'), })
+      /*MenuItem({ startIcon: this.iconStr, content: $r('app.string.minelongpress'), })
         .onClick(() => {
             let want: Want = {
               "action": "ohos.want.action.viewData",
@@ -58,7 +58,7 @@ export struct MinePage {
             let context = getContext(this) as common.UIAbilityContext;
             context.startAbility(want)
             console.info(`MenuItem1 ability succeed`)
-        })
+        })*/
       MenuItem({ startIcon: this.iconStr, content: $r('app.string.meow') })
         .onClick(() => {
           let want: Want = {
@@ -148,7 +148,8 @@ export struct MinePage {
                         navigationManager.pushPath('pages/infoPage');
                         break;
                       case 'vipownsetting':
-                        uri = 'https://www.hnyqwq.cn';
+                        //uri = 'https://www.hnyqwq.cn';
+                        uri = 'https://appgallery.huawei.com/apptest/8q2ifpJx0Qz';
                         //uri = 'bilibili://live/21220648';
                         break;
                       case 'mycollection':
