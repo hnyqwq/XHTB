@@ -1244,29 +1244,25 @@ export struct HomePage {
                 .justifyContent(FlexAlign.Center)
                 .margin({ top: 5, bottom: 10 })
 
-                Row()
-                {
-                  Text($r('app.string.pengtitleset'))
-                    .width('40%')
-                    .textAlign(TextAlign.Center)
-                    .margin({ right: 10 })
-                  TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
-                  //.backgroundColor('#FF9CCE')
-                    .width('55%')
-                    .onChange((pengtitle: string) => {
-                      this.pengtitle = pengtitle;
-                      // @StorageLink 会自动同步到 AppStorage,无需手动保存
-                    })
-                }
-                .margin({ top: 10 })
-                .width('100%')  // 控制内容区域宽度
+                Text($r('app.string.pengtitleset'))
+                  .textAlign(TextAlign.Center)
+                  .margin({ top: 5, bottom: 10 })
+                TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
+                //.backgroundColor('#FF9CCE')
+                  .width('55%')
+                  .onChange((pengtitle: string) => {
+                    this.pengtitle = pengtitle;
+                   // @StorageLink 会自动同步到 AppStorage,无需手动保存
+                  })
+                  .margin({ top: 5, bottom: 10 })
+
                 Column() {
                   Row()
                   {
-                    Text($r('app.string.nowplaying'))
+                    /*Text($r('app.string.nowplaying'))
                       .width('55%')
                       .textAlign(TextAlign.Center)
-                      .margin({ right: 10 })
+                      .margin({ right: 10 })*/
                     Button($r('app.string.share'))
                     //.type(ButtonType.Capsule)
                       .width('40%')
@@ -1283,7 +1279,9 @@ export struct HomePage {
                       })
                   }
                   .width('100%')
+                  .justifyContent(FlexAlign.Center)
                   .padding({ bottom: 10 })
+
 
 
                   Text(this.networkVideoSrc)
@@ -1702,10 +1700,6 @@ export struct HomePage {
             Column() {
               Row()
               {
-                Text($r('app.string.nowplaying'))
-                  .width('55%')
-                  .textAlign(TextAlign.Center)
-                  .margin({ right: 10 })
                 Button($r('app.string.share'))
                 //.type(ButtonType.Capsule)
                   .width('40%')
@@ -1722,6 +1716,7 @@ export struct HomePage {
                   })
               }
               .width('100%')
+              .justifyContent(FlexAlign.Center)
               .padding({ bottom: 10 })
 
 
