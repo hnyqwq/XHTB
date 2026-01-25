@@ -223,8 +223,7 @@ export struct infoPage {
             .margin({ bottom: $r('app.integer.layout_size_12') })
             .backgroundColor($r('app.color.font_color_FFFFFF'));*/
           }
-          .width('100%')
-          .layoutWeight(1);
+          .width('100%');
 
           Column() {
             Text($r('app.string.appname'))
@@ -235,12 +234,16 @@ export struct infoPage {
           .width('100%')
           .height(60)
           .alignItems(HorizontalAlign.Center)
+          .padding({ bottom: this.globalInfoModel.naviIndicatorHeight })
         }
         .padding({ bottom: 20 })
       }
       .width('100%')
-      .height('100%')
       .layoutWeight(1)
+      .padding({ top: this.topRectHeight })
+      .scrollable(ScrollDirection.Vertical)
+      .scrollBar(BarState.Auto)
+      .edgeEffect(EdgeEffect.Spring)
     }
     .width('100%')
     .height('100%')

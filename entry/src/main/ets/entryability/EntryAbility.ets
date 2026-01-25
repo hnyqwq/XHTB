@@ -103,8 +103,7 @@ export default class EntryAbility extends UIAbility {
     try {
       const avoidArea = windowClass.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
       const globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel') || new GlobalInfoModel();
-      // 增加额外间距，确保底部避让更充分
-      globalInfoModel.naviIndicatorHeight = px2vp(avoidArea.bottomRect.height) + 16;
+      globalInfoModel.naviIndicatorHeight = px2vp(avoidArea.bottomRect.height);
       AppStorage.setOrCreate('GlobalInfoModel', globalInfoModel);
       hilog.info(0x0000, 'testTag', 'NaviIndicator height updated: %{public}d', globalInfoModel.naviIndicatorHeight);
     } catch (error) {
@@ -149,8 +148,7 @@ export default class EntryAbility extends UIAbility {
         const globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel') || new GlobalInfoModel();
 
         globalInfoModel.statusBarHeight = px2vp(avoidArea.topRect.height);
-        // 增加额外间距，确保底部避让更充分
-        globalInfoModel.naviIndicatorHeight = px2vp(avoidArea.bottomRect.height) + 16;
+        globalInfoModel.naviIndicatorHeight = px2vp(avoidArea.bottomRect.height);
         globalInfoModel.decorHeight = windowProperties.windowRect.height;
         globalInfoModel.deviceHeight = px2vp(windowProperties.windowRect.height);
         globalInfoModel.deviceWidth = px2vp(windowProperties.windowRect.width);

@@ -187,11 +187,10 @@ export struct MinePage {
           .width('90%')
           .borderRadius($r('app.integer.layout_size_24'))
           .alignItems(VerticalAlign.Center)
-          .margin({ bottom: $r('app.integer.layout_size_12') })
+          .margin({ top: 20, bottom: 30 })
           //.backgroundColor($r('app.color.font_color_FFFFFF'));
           .backgroundColor($r('app.color.mine'))
         }
-        .layoutWeight(1)
         .width('100%');
 
         // 底部协议信息区域 - 保持不变
@@ -261,16 +260,18 @@ export struct MinePage {
           }
         }
         .width('100%')
-        .height(60)
+        .height(80)
         .alignItems(HorizontalAlign.Center)
-        .padding(10);
+        .padding({ left: 10, right: 10 });
       }
       .width('100%')
-      .height('100%')
-      .padding({ top: 30 + this.globalInfoModel.statusBarHeight, bottom: this.globalInfoModel.naviIndicatorHeight })
     }
     .width('100%')
     .height('100%')
+    .padding({ top: 30 + this.globalInfoModel.statusBarHeight, bottom: this.globalInfoModel.naviIndicatorHeight })
+    .scrollable(ScrollDirection.Vertical)
+    .scrollBar(BarState.Auto)
+    .edgeEffect(EdgeEffect.Spring)
     //.backgroundColor($r('app.color.start_window_background'))
   }
 }
