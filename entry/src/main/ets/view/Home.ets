@@ -15,6 +15,18 @@ export struct Home {
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
 
+  aboutToAppear(): void {
+    // 如果设置了初始 Tab 索引,则使用该索引
+    const initialTabIndex = AppStorage.get<number>('initialTabIndex');
+    if (initialTabIndex !== undefined && initialTabIndex !== null) {
+      this.firstLevelIndex = initialTabIndex;
+      // 清除标记,避免影响后续导航
+      AppStorage.delete('initialTabIndex');
+    }
+    // 保存初始的 Tab 索引到 AppStorage
+    AppStorage.setOrCreate('currentTabIndex', this.firstLevelIndex);
+  }
+
   getTabIcon(index: number, isSelected: boolean): Resource {
     switch (index) {
       case 0:
@@ -95,7 +107,8 @@ export struct Home {
       // [Start tab_to_page]
       // entry/src/main/ets/view/Home.ets
       Tabs({
-        barPosition: this.currentWidthBreakpoint === 'lg' ? BarPosition.Start : BarPosition.End
+        barPosition: this.currentWidthBreakpoint === 'lg' ? BarPosition.Start : BarPosition.End,
+        index: this.firstLevelIndex
       }) {
         TabContent() {
           HomePage()
@@ -123,6 +136,8 @@ export struct Home {
       .vertical(this.currentWidthBreakpoint === 'lg')
       .onChange((index: number) => {
         this.firstLevelIndex = index;
+        // 保存当前 Tab 索引到 AppStorage,供接续功能使用
+        AppStorage.setOrCreate('currentTabIndex', index);
       })
       // [End tab_to_page]
       .scrollable(false)

@@ -56,14 +56,14 @@ export struct HomePage {
   @State picture: PixelMap | undefined = undefined;
   @State localPixelMap: PixelMap | undefined = undefined; // 本地图片的PixelMap
   //@State networkPreviewUri: string = ''; // 默认网络预览图
-  @State sharepng: string = 'https://www.hnyqwq.cn/hvideo/share.png'
+  @StorageLink('sharepng') sharepng: string = 'https://www.hnyqwq.cn/hvideo/share.png'
   //@State networkPreviewUri: Resource = $r('app.media.homepageback');
   @State savefileUri: string = ' ';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
   @State isControls: boolean = false; // 控制栏显示状态
   @State handlePopup: boolean = false; // 气泡提示（Popup）
   @State enableShortcutKey: boolean = true; //设置组件支持快捷键响应。
-  @State pengtitle: string = ' ';//碰一碰分享标题
+  @StorageLink('pengtitle') pengtitle: string = ' '
   //分享
   @State localShareImageUri: string = ''; // 本地分享图片的URI
   @State isLocalImageSelected: boolean = false; // 是否已选择本地图片
@@ -484,14 +484,33 @@ export struct HomePage {
     this.immersiveListening();
     let context = getContext(this);
 
+    // 初始化 AppStorage 中的默认值（如果不存在）
+    if (!AppStorage.get('sharepng')) {
+      AppStorage.setOrCreate('sharepng', 'https://www.hnyqwq.cn/hvideo/share.png');
+    }
+    if (!AppStorage.get('pengtitle')) {
+      const defaultTitle = this.context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id);
+      AppStorage.setOrCreate('pengtitle', defaultTitle);
+    }
+
     // 获取顶部安全区域高度
     window.getLastWindow(this.getUIContext().getHostContext() as common.UIAbilityContext).then((windowInstance) => {
       this.topSafeHeight = this.getUIContext().px2vp(windowInstance.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM).topRect.height);
       this.extractTopBgColor(); // 获取初始背景颜色
     });
 
-    //碰一碰标题
+    // 碰一碰标题
     this.pengtitle = this.context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id);
+
+    // 恢复接续的数据（优先级最高）- @StorageLink 会自动订阅 AppStorage 变化
+    const restoredSharepng = AppStorage.get<string>('sharepng');
+    if (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/hvideo/share.png') {
+      console.log('接续恢复 sharepng:', restoredSharepng);
+    }
+    const restoredPengtitle = AppStorage.get<string>('pengtitle');
+    if (restoredPengtitle && restoredPengtitle !== this.pengtitle) {
+      console.log('接续恢复 pengtitle:', restoredPengtitle);
+    }
 
     // 建议调整顺序确保实时参数优先
     const params = navigationManager.getParams() as Record<string, string>;
@@ -1135,6 +1154,7 @@ export struct HomePage {
                   .margin({ top: 10, bottom: 10 })
                   .onChange((sharepng: string) => {
                     this.sharepng = sharepng;
+                    // @StorageLink 会自动同步到 AppStorage,无需手动保存
                     if (this.isValidUrl(sharepng)) {
                       this.handleImageUpdate(); // 触发图片更新逻辑
                     }
@@ -1231,7 +1251,7 @@ export struct HomePage {
                     .width('55%')
                     .onChange((pengtitle: string) => {
                       this.pengtitle = pengtitle;
-                      AppStorage.set('pengtitle', pengtitle);
+                      // @StorageLink 会自动同步到 AppStorage,无需手动保存
                     })
                 }
                 .margin({ top: 10 })
