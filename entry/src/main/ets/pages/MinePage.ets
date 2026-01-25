@@ -27,6 +27,7 @@ export struct MinePage {
   @State inputText: string = ''
   private customDialogComponentId: number = 0
   @State isDialogActive: boolean = false
+  @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
 
   aboutToDisappear(): void {  // 显式声明返回类型
     if (this.isDialogActive) {
@@ -266,7 +267,7 @@ export struct MinePage {
       }
       .width('100%')
       .height('100%')
-      .padding({ top: 30 + (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) }) // 为标题栏留出空间并添加安全区
+      .padding({ top: 30 + this.globalInfoModel.statusBarHeight, bottom: this.globalInfoModel.naviIndicatorHeight })
     }
     .width('100%')
     .height('100%')
