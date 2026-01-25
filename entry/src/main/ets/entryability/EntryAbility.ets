@@ -27,6 +27,7 @@ export default class EntryAbility extends UIAbility {
   private selectPage: string = '';
   private currentWindowStage: window.WindowStage | null = null;
   private distributedObject: distributedDataObject.DataObject | undefined = undefined;
+  private windowClass?: window.Window = undefined;
   storage: LocalStorage = new LocalStorage();
   private want: Want | undefined = undefined;
   private launchParam: AbilityConstant.LaunchParam | undefined = undefined;
@@ -97,6 +98,20 @@ export default class EntryAbility extends UIAbility {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onDestroy');
   }
 
+  // 更新导航条高度，针对平板横竖屏切换
+  private updateNaviIndicatorHeight(windowClass: window.Window): void {
+    try {
+      const avoidArea = windowClass.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
+      const globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel') || new GlobalInfoModel();
+      // 增加额外间距，确保底部避让更充分
+      globalInfoModel.naviIndicatorHeight = px2vp(avoidArea.bottomRect.height) + 16;
+      AppStorage.setOrCreate('GlobalInfoModel', globalInfoModel);
+      hilog.info(0x0000, 'testTag', 'NaviIndicator height updated: %{public}d', globalInfoModel.naviIndicatorHeight);
+    } catch (error) {
+      hilog.error(0x0000, 'testTag', 'Failed to update naviIndicatorHeight. Cause: %{public}s', JSON.stringify(error) ?? '');
+    }
+  }
+
   onWindowStageCreate(windowStage: window.WindowStage): void {
     // 初始化 GlobalInfoModel
     const globalInfoModel = new GlobalInfoModel();
@@ -134,7 +149,8 @@ export default class EntryAbility extends UIAbility {
         const globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel') || new GlobalInfoModel();
 
         globalInfoModel.statusBarHeight = px2vp(avoidArea.topRect.height);
-        globalInfoModel.naviIndicatorHeight = px2vp(avoidArea.bottomRect.height);
+        // 增加额外间距，确保底部避让更充分
+        globalInfoModel.naviIndicatorHeight = px2vp(avoidArea.bottomRect.height) + 16;
         globalInfoModel.decorHeight = windowProperties.windowRect.height;
         globalInfoModel.deviceHeight = px2vp(windowProperties.windowRect.height);
         globalInfoModel.deviceWidth = px2vp(windowProperties.windowRect.width);
@@ -146,8 +162,11 @@ export default class EntryAbility extends UIAbility {
         BreakpointSystem.getInstance().updateWidthBp(data);
 
         this.windowUtil!.updateWidthBp(windowStage.getMainWindowSync().getUIContext());
-        data.on('windowSizeChange', (windowSize: window.Size) => this.onWindowSizeChange(windowSize,
-          windowStage.getMainWindowSync().getUIContext()));
+        data.on('windowSizeChange', (windowSize: window.Size) => {
+          this.onWindowSizeChange(windowSize, windowStage.getMainWindowSync().getUIContext());
+          // 在窗口大小变化时更新导航条高度，针对平板横竖屏切换
+          this.updateNaviIndicatorHeight(data);
+        });
         windowClass = data;
         if (deviceInfo.deviceType === '2in1') {
           data.setWindowDecorVisible(false);
