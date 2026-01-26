@@ -106,7 +106,7 @@
     },
     {
       "name":"noplay",
-      "value":"Please enter the text or link ⪩ ⪨"
+      "value":"Please enter text or link ⪩ ⪨"
     },
     {
       "name":"paused",
@@ -122,7 +122,7 @@
     },
     {
       "name":"downloaded",
-      "value":"\uDB80\uDCD0\uDB80\uDC13 Download request successful! After the download is complete, you can view the video in Albums > Videos , and it will be categorized by the video’s creation date ."
+      "value":"\uDB80\uDCD0\uDB80\uDC13 Download request successful! After download is complete, you can view the video in Albums > Videos , and it will be categorized by the video's creation date ."
     },
     {
       "name":"pastedtishi",
@@ -310,11 +310,11 @@
     },
     {
       "name":"speak",
-      "value":"Enter the text to be spoken"
+      "value":"Enter text to be spoken"
     },
     {
       "name":"qrcode",
-      "value":"Enter the text to generate a QR code"
+      "value":"Enter text to generate a QR code"
     },
     {
       "name":"sharepngon",
@@ -322,12 +322,13 @@
     },
     {
       "name":"sharepng",
-      "value":"\uDB81\uDC94 Enter the direct link to the background image for sharing"
+      "value":"\uDB81\uDC94 Enter direct link to background image for sharing"
     },
     {
       "name":"texton",
       "value": "②Set the link to be shared"
-    },{
+    },
+    {
       "name": "local_image_selected",
       "value": "Local image selected"
     },
@@ -361,11 +362,11 @@
     },
     {
       "name": "toshare",
-      "value": "Share on the APP"
+      "value": "Share on APP"
     },
     {
       "name": "pengtitleset",
-      "value": "Set the sharing title"
+      "value": "Set sharing title"
     },
     {
       "name": "info6",
@@ -449,7 +450,7 @@
     },
     {
       "name": "Internetmsnsuccess",
-      "value": "Displaying the MSN homepage indicates that you have connected to the Internet; otherwise, the page will automatically redirect to the login page"
+      "value": "Displaying MSN homepage indicates that you have connected to the Internet; otherwise, the page will automatically redirect to the login page"
     },
     {
       "name": "Internetapplesuccess",
@@ -457,7 +458,7 @@
     },
     {
       "name": "Internet3success",
-      "value": "Opening the \"Version Description\" > \"All HarmonyOS Versions\" indicates that you have connected to the Internet; otherwise, it cannot be opened"
+      "value": "Opening \"Version Description\" > \"All HarmonyOS Versions\" indicates that you have connected to the Internet; otherwise, it cannot be opened"
     },
     {
       "name": "Internetselfsuccess",
@@ -477,7 +478,11 @@
     },
     {
       "name": "nopengsystem",
-      "value": "Please ensure that the content you share is a clickable link ⪩ ⪨"
+      "value": "Please ensure that content you share is a clickable link ⪩ ⪨"
+    },
+    {
+      "name": "large_device_hint",
+      "value": "Tablets, PCs, and 2-in-1 devices do not support Knock Share,\nAirDrop preview has been automatically selected."
     }
   ]
 }

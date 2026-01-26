@@ -214,7 +214,7 @@
     },
     {
       "name":"nowplayingon",
-      "value":"可碰一碰分享至 HarmonyOS 5 及以上版本手机"
+      "value": "可碰一碰分享至 HarmonyOS 5 及以上版本手机&PC/2in1"
     },
     {
       "name":"nowplaying",
@@ -478,6 +478,10 @@
     {
       "name": "nopengsystem",
       "value": "请确保分享的内容为可打开的链接 ⪩ ⪨"
+    },
+    {
+      "name": "large_device_hint",
+      "value": "平板和PC/2in1设备不支持碰一碰传送，\n已为您自动选择隔空传送预览。"
     }
   ]
 }

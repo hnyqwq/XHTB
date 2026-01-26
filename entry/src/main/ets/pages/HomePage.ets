@@ -1353,7 +1353,7 @@ export struct HomePage {
               } else {
                 // 大屏设备提示
                 Column() {
-                  Text('平板和PC/2in1设备不支持碰一碰传送，\n已为您自动选择隔空传送预览。')
+                  Text($r('app.string.large_device_hint'))
                     .fontSize(11)
                     .maxFontScale(1.75)
                     .width('100%')
@@ -1806,7 +1806,7 @@ export struct HomePage {
           } else {
             // 大屏设备提示
             Column() {
-              Text('平板和PC/2in1设备不支持碰一碰传送，\n已为您自动选择隔空传送预览。')
+              Text($r('app.string.large_device_hint'))
                 .fontSize(11)
                 .maxFontScale(1.75)
                 .width('100%')
