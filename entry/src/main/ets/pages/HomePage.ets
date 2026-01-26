@@ -1337,18 +1337,34 @@ export struct HomePage {
               .margin({ bottom: 20 })
 
               //碰一碰提示
-              Text($r('app.string.nowplayingon'))
-                .padding({ top: 20 , left: 24, right: 24 })
-                .maxLines(2)
-                .fontSize(11)
-                .maxFontScale(1.75)
+              if (this.currentBreakpoint !== 'lg' && this.currentBreakpoint !== 'xl') {
+                Text($r('app.string.nowplayingon'))
+                  .padding({ top: 20 , left: 24, right: 24 })
+                  .maxLines(2)
+                  .fontSize(11)
+                  .maxFontScale(1.75)
+                  .width('100%')
+                  .constraintSize({ minHeight: 16 })
+                  .fontColor($r('sys.color.font_secondary'))
+                  .fontFamily('HarmonyHeiTi')
+                  .textAlign(TextAlign.Center)
+                KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
+                  .padding({ top: 2 })
+              } else {
+                // 大屏设备提示
+                Column() {
+                  Text('平板和PC/2in1设备不支持碰一碰传送，\n已为您自动选择隔空传送预览。')
+                    .fontSize(11)
+                    .maxFontScale(1.75)
+                    .width('100%')
+                    .fontColor($r('sys.color.font_secondary'))
+                    .fontFamily('HarmonyHeiTi')
+                    .textAlign(TextAlign.Center)
+                    .lineHeight(18)
+                    .padding({ top: 20, bottom: 20 })
+                }
                 .width('100%')
-                .constraintSize({ minHeight: 16 })
-                .fontColor($r('sys.color.font_secondary'))
-                .fontFamily('HarmonyHeiTi')
-                .textAlign(TextAlign.Center)
-              KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
-                .padding({ top: 2 })
+              }
             }
             .width('100%')
             .alignItems(HorizontalAlign.Center)
@@ -1774,18 +1790,34 @@ export struct HomePage {
           .margin({ bottom: 20 })
 
           //碰一碰提示
-          Text($r('app.string.nowplayingon'))
-            .padding({ top: 20 , left: 24, right: 24 })
-            .maxLines(2)
-            .fontSize(11)
-            .maxFontScale(1.75)
+          if (this.currentBreakpoint !== 'lg' && this.currentBreakpoint !== 'xl') {
+            Text($r('app.string.nowplayingon'))
+              .padding({ top: 20 , left: 24, right: 24 })
+              .maxLines(2)
+              .fontSize(11)
+              .maxFontScale(1.75)
+              .width('100%')
+              .constraintSize({ minHeight: 16 })
+              .fontColor($r('sys.color.font_secondary'))
+              .fontFamily('HarmonyHeiTi')
+              .textAlign(TextAlign.Center)
+            KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
+              .padding({ top: 2 })
+          } else {
+            // 大屏设备提示
+            Column() {
+              Text('平板和PC/2in1设备不支持碰一碰传送，\n已为您自动选择隔空传送预览。')
+                .fontSize(11)
+                .maxFontScale(1.75)
+                .width('100%')
+                .fontColor($r('sys.color.font_secondary'))
+                .fontFamily('HarmonyHeiTi')
+                .textAlign(TextAlign.Center)
+                .lineHeight(18)
+                .padding({ top: 20, bottom: 20 })
+            }
             .width('100%')
-            .constraintSize({ minHeight: 16 })
-            .fontColor($r('sys.color.font_secondary'))
-            .fontFamily('HarmonyHeiTi')
-            .textAlign(TextAlign.Center)
-          KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
-            .padding({ top: 2 })
+          }
           }
           .width('90%')  // 控制内容区域宽度
           .alignItems(HorizontalAlign.Center) // 内容水平居中
