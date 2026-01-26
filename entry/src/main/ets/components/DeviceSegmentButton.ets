@@ -11,6 +11,11 @@ export struct DeviceSegmentButton {
     { text: '隔空传送预览' },
   ]);
 
+  aboutToAppear(): void {
+    // 使用传入的初始索引
+    this.selectedIndex = this.initialIndex;
+  }
+
   build() {
     CapsuleSegmentButtonV2({
       items: this.textItems,

@@ -102,6 +102,21 @@ export struct HomePage {
   // 断点相关
   @StorageProp('currentWidthBreakpoint') currentBreakpoint: string = 'md';
 
+  // 监听断点变化，动态调整默认分享模式
+  @Watch('onBreakpointChange')
+  @StorageProp('currentWidthBreakpoint') currentBreakpointWatcher: string = 'md';
+
+  // 断点变化回调
+  onBreakpointChange() {
+    // 如果是平板设备且当前是碰一碰模式，自动切换到隔空投送模式
+    if ((this.currentBreakpointWatcher === 'lg' || this.currentBreakpointWatcher === 'xl') &&
+        this.selectedShareMode === 0) {
+      this.selectedShareMode = 1;
+      this.currentDescription = $r('app.string.gekong_description');
+      console.log('检测到大屏设备，自动切换到隔空投送模式');
+    }
+  }
+
   //隔空投送
   private immersiveListening() {
     harmonyShare.on('gesturesShare', this.immersiveCallback);
@@ -506,6 +521,25 @@ export struct HomePage {
     // 碰一碰标题
     this.pengtitle = this.context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id);
 
+    // 根据设备能力设置默认分享模式
+    // 判断是否为大屏设备（平板），平板不支持碰一碰分享
+    // 直接从 AppStorage 读取断点值，确保获取最新的设备形态
+    const actualBreakpoint = AppStorage.get<string>('currentWidthBreakpoint') || this.currentBreakpointWatcher;
+    const isLargeScreen = actualBreakpoint === 'lg' || actualBreakpoint === 'xl';
+    console.log('当前断点: ' + actualBreakpoint + ', 是否大屏: ' + isLargeScreen);
+
+    if (canIUse('SystemCapability.Collaboration.HarmonyShare') && !isLargeScreen) {
+      // 支持碰一碰分享的能力且非平板，默认为碰一碰分享预览
+      this.selectedShareMode = 0;
+      this.currentDescription = $r('app.string.pengyipeng_description');
+      console.log('设备支持碰一碰分享且非平板，默认选择碰一碰模式');
+    } else {
+      // 不支持碰一碰分享或是平板，默认为隔空投送分享预览
+      this.selectedShareMode = 1;
+      this.currentDescription = $r('app.string.gekong_description');
+      console.log('设备不支持碰一碰分享或为平板设备，默认选择隔空投送模式');
+    }
+
     // 恢复接续的数据（优先级最高）- @StorageLink 会自动订阅 AppStorage 变化
     const restoredSharepng = AppStorage.get<string>('sharepng');
     if (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/hvideo/share.png') {
@@ -879,6 +913,7 @@ export struct HomePage {
               Column() {
                 // 布局选择胶囊按钮
                 DeviceSegmentButton({
+                  initialIndex: this.selectedShareMode,
                   onIndexChange: (index: number) => {
                     this.handleShareModeChange(index);
                   }
@@ -1331,6 +1366,7 @@ export struct HomePage {
           Column() {
             // 布局选择胶囊按钮
             DeviceSegmentButton({
+              initialIndex: this.selectedShareMode,
               onIndexChange: (index: number) => {
                 this.handleShareModeChange(index);
               }
