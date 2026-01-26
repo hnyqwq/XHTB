@@ -121,8 +121,8 @@
 			"value": "\uDB81\uDC94 输入链接"
 		},
 		{
-			"name":"scancode",
-			"value": "\uDB80\uDC28"
+			"name":"scancodelink",
+			"value": "\\uDB80\\uDC28\\uDB80\\uDD28 从二维码提取链接"
 		},
 		{
 			"name":"downloaded",
@@ -307,6 +307,10 @@
 		{
 			"name":"choose",
 			"value":"选择图片"
+		},
+		{
+			"name":"choosepad",
+			"value":"选择本地/附近设备图片"
 		},
 		{
 			"name":"appname",

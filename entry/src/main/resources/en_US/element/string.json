@@ -117,8 +117,8 @@
       "value": "\uDB81\uDC94 Enter link to share"
     },
     {
-      "name":"scancode",
-      "value": "\uDB80\uDC28"
+      "name":"scancodelink",
+      "value": "\uDB80\uDC28\uDB80\uDD28 Extract QR code link"
     },
     {
       "name":"downloaded",
@@ -295,6 +295,10 @@
     {
       "name":"choose",
       "value":"Choose local photo"
+    },
+    {
+      "name":"choosepad",
+      "value":"Choose photo"
     },
     {
       "name":"appname",
