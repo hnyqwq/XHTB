@@ -210,7 +210,8 @@ export default struct KnockShareGuideCard {
         .onChange(index => {
           this.swiperIndex = index;
         })
-        .autoPlay(false)
+        .autoPlay(true)
+        .interval(5000)
         .loop(true)
         .indicator(true)
         .itemSpace(12)
