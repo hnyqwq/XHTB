@@ -1280,7 +1280,7 @@ export struct HomePage {
                     .margin({ left: 10 })
                   }
                   .width('100%')
-                  .height(40)
+                  .alignItems(VerticalAlign.Center)
                   .margin({ top: 10, bottom: 10 })
                 }
                 .width('100%')
@@ -1370,7 +1370,7 @@ export struct HomePage {
                     .margin({ left: 10 })
                   }
                   .width('100%')
-                  .height(40)
+                  .alignItems(VerticalAlign.Center)
                   .margin({ top: 5, bottom: 10 })
                 }
                 .width('100%')
@@ -1416,7 +1416,7 @@ export struct HomePage {
                     .margin({ left: 10 })
                   }
                   .width('100%')
-                  .height(40)
+                  .alignItems(VerticalAlign.Center)
                   .margin({ top: 5, bottom: 10 })
                 }
                 .width('100%')
@@ -1685,7 +1685,7 @@ export struct HomePage {
           // 卡片容器：包含从图片组件往下到碰一碰引导提示组件以上的所有内容
           Column() {
             // 调试数据显示区域
-            Column() {
+            /*Column() {
               Text('背景图片调试信息')
                 .fontSize(14)
                 .fontWeight(FontWeight.Bold)
@@ -1733,239 +1733,250 @@ export struct HomePage {
             .borderRadius(8)
             .padding(8)
             .margin({ bottom: 16 })
-            .border({ width: 1, color: 0xFFCCCC })
+            .border({ width: 1, color: 0xFFCCCC })*/
 
-            Row()
-            {
-              Text($r('app.string.sharepngon'))
-                .textAlign(TextAlign.Center)
-                .width('55%')
-                .margin({ right: 10 })
-              // 跨设备协作状态对话框（用于接收其他设备的图片）
-              CollaborationServiceStateDialog({
-                onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer): void => this.doInsertPicture(stateCode,
-                  bufferType, buffer)
-              })
-              if (this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl') {
-                // 平板/PC设备：使用跨设备协作按钮
-                Button($r('app.string.choose'))
-                  .height(50)
-                  .width('40%')
-                  .backgroundColor(0xb87cff)//紫色
-                  .bindMenu(this.CrossDeviceMenu)
-              } else {
-                // 手机设备：使用普通按钮
-                Button($r('app.string.choose'))
-                  .height(50)
-                  .width('40%')
-                  .backgroundColor(0xb87cff)//紫色
-                  .onClick(() => {
-                    this.selectImage();
-                  })
-              }
-            }
-            .width('100%')
-
-            Row() {
-              TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
-              //.type(InputType.URL)
-              //.backgroundColor('#FF9CCE')
-                .layoutWeight(1)
-                .onChange((sharepng: string) => {
-                  this.sharepng = sharepng;
-                  if (this.isValidUrl(sharepng)) {
-                    this.handleImageUpdate(); // 触发图片更新逻辑
-                  }
-                })
-              Row() {
-                PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
-                  .backgroundColor(0xb87cff)
-                  .height(40)
-                  .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
-                    if (PasteButtonOnClickResult.SUCCESS === result) {
-                      pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
-                        if (err) {
-                          console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
-                          return;
-                        }
-                        this.sharepng = pasteData.getPrimaryText();
-                      });
-                    }
-                  })
-              }
-              .margin({ left: 10 })
-            }
-            .width('100%')
-            .height(40)
-            .margin({ top: 10, bottom: 10 })
-
-            Text($r('app.string.texton'))
-              .textAlign(TextAlign.Center)
-              .margin({ top: 5, bottom: 10 })
-            Row() {
-              TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
-              //.type(InputType.URL)
-              //.backgroundColor('#FF9CCE')
-                .layoutWeight(1)
-                .onChange((networkVideoSrc: string) => {
-                  // 清除之前的防抖定时器
-                  clearTimeout(this.urlDebounceTimer);
-
-                  // 设置新的防抖定时器，300ms后执行
-                  this.urlDebounceTimer = setTimeout(() => {
-                    // 尝试从输入文本中提取链接
-                    const extractedUrl = this.extractUrlFromText(networkVideoSrc);
-                    if (extractedUrl) {
-                      this.networkVideoSrc = extractedUrl;
-                      AppStorage.set('networkVideoSrc', extractedUrl);
-                    } else {
-                      this.networkVideoSrc = networkVideoSrc;
-                      AppStorage.set('networkVideoSrc', networkVideoSrc);
-                    }
-                  }, 300);
-                })
-
-              Button($r('app.string.scancodelink'))
-              //.globalButtonStyle()
-              //.type(ButtonType.Capsule)
-              //.backgroundColor(0x66CCFF)//蓝色
-              //.backgroundColor('#0044fc')
-                .height(40)
-                .margin({ right: 5 })
-                .backgroundColor(0xFF66CC)
-                .onClick(async () => {
-                  try {
-                    // 定义扫码参数options
-                    let options: scanBarcode.ScanOptions = {
-                      scanTypes: [scanCore.ScanType.ALL],
-                      enableMultiMode: true,
-                      enableAlbum: true
-                    };
-                    // 调用扫码功能
-                    scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
-                      // 正确获取扫描结果的字符串值
-                      const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
-                      this.networkVideoSrc = originalValue;
-                      promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
-                    }).catch((error: BusinessError) => {
-                      hilog.error(0x0001, '[Scan]',
-                        `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
-                      promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
-                    });
-                  } catch (error) {
-                    //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
-                    promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
-                    hilog.error(0x0001, '[Scan]',
-                      `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
-                  }
-                })
-              PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
-                .backgroundColor(0xFF66CC)
-                .height(40)
-                .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
-                  if (PasteButtonOnClickResult.SUCCESS === result) {
-                    pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
-                      if (err) {
-                        console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
-                        return;
-                      }
-                      this.networkVideoSrc = pasteData.getPrimaryText();
-                    });
-                  }
-                })
-            }
-            .width('100%')
-            .height(40)
-            .margin({ top: 5, bottom: 10 })
-
-            Row()
-            {
-              Text($r('app.string.pengtitleset'))
-                .width('40%')
-                .textAlign(TextAlign.Center)
-                .margin({ right: 10 })
-              TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
-              //.backgroundColor('#FF9CCE')
-                .layoutWeight(1)
-                .onChange((pengtitle: string) => {
-                  this.pengtitle = pengtitle;
-                  AppStorage.set('pengtitle', pengtitle);
-                })
-              Row() {
-                PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
-                  .backgroundColor(0x66CCFF)
-                  .height(40)
-                  .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
-                    if (PasteButtonOnClickResult.SUCCESS === result) {
-                      pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
-                        if (err) {
-                          console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
-                          return;
-                        }
-                        this.pengtitle = pasteData.getPrimaryText();
-                      });
-                    }
-                  })
-              }
-              .margin({ left: 10 })
-            }
-            .margin({ top: 10 })
-            .width('100%')  // 控制内容区域宽度
-            .height(40)
+            // 区域1：分享图片
             Column() {
-              Row()
-              {
-                Button($r('app.string.share'))
-                //.type(ButtonType.Capsule)
-                  .width('40%')
+              Row() {
+                Text($r('app.string.sharepngon'))
+                  .textAlign(TextAlign.Center)
+                  .width('55%')
+                  .margin({ right: 10 })
+                // 跨设备协作状态对话框（用于接收其他设备的图片）
+                CollaborationServiceStateDialog({
+                  onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer): void => this.doInsertPicture(stateCode,
+                    bufferType, buffer)
+                })
+                if (this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl') {
+                  // 平板/PC设备：使用跨设备协作按钮
+                  Button($r('app.string.choose'))
+                    .height(50)
+                    .width('40%')
+                    .backgroundColor(0xb87cff)//紫色
+                    .bindMenu(this.CrossDeviceMenu)
+                } else {
+                  // 手机设备：使用普通按钮
+                  Button($r('app.string.choose'))
+                    .height(50)
+                    .width('40%')
+                    .backgroundColor(0xb87cff)//紫色
+                    .onClick(() => {
+                      this.selectImage();
+                    })
+                }
+              }
+              .width('100%')
+              .height(50)
+
+              Row() {
+                TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
+                  .layoutWeight(1)
+                  .onChange((sharepng: string) => {
+                    this.sharepng = sharepng;
+                    if (this.isValidUrl(sharepng)) {
+                      this.handleImageUpdate(); // 触发图片更新逻辑
+                    }
+                  })
+                Row() {
+                  PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                    .backgroundColor(0xb87cff)
+                    .height(40)
+                    .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                      if (PasteButtonOnClickResult.SUCCESS === result) {
+                        pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                          if (err) {
+                            console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                            return;
+                          }
+                          this.sharepng = pasteData.getPrimaryText();
+                        });
+                      }
+                    })
+                }
+                .margin({ left: 10 })
+              }
+              .width('100%')
+              .alignItems(VerticalAlign.Center)
+              .margin({ top: 10, bottom: 10 })
+            }
+            .width('100%')
+            .backgroundColor('#FFFFFF')
+            .borderRadius(8)
+            .padding(12)
+            .margin({ bottom: 10 })
+            .border({ width: 1, color: 0xE0E0E0 })
+
+            // 区域2：分享链接
+            Column() {
+              Row() {
+                Text($r('app.string.texton'))
+                  .textAlign(TextAlign.Center)
+                  .width('55%')
+                  .margin({ right: 10 })
+
+                Button($r('app.string.scancodelink'))
                   .height(50)
-                  .backgroundColor(0x66CCFF)//蓝色
-                  .onClick(() => {
-                    logger.info('分享按钮被点击');
+                  .width('40%')
+                  .backgroundColor(0xFF66CC)
+                  .onClick(async () => {
                     try {
-                      this.share();
+                      // 定义扫码参数options
+                      let options: scanBarcode.ScanOptions = {
+                        scanTypes: [scanCore.ScanType.ALL],
+                        enableMultiMode: true,
+                        enableAlbum: true
+                      };
+                      // 调用扫码功能
+                      scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
+                        // 正确获取扫描结果的字符串值
+                        const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
+                        this.networkVideoSrc = originalValue;
+                        promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
+                      }).catch((error: BusinessError) => {
+                        hilog.error(0x0001, '[Scan]',
+                          `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
+                        promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
+                      });
                     } catch (error) {
-                      logger.error(`分享按钮点击异常: ${error.message}`);
-                      promptAction.showToast({ message: '分享功能异常: ' + error.message });
+                      //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
+                      promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
+                      hilog.error(0x0001, '[Scan]',
+                        `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
                     }
                   })
               }
               .width('100%')
-              .justifyContent(FlexAlign.Center)
-              .padding({ bottom: 10 })
+              .height(50)
 
+              Row() {
+                TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
+                  .layoutWeight(1)
+                  .onChange((networkVideoSrc: string) => {
+                    // 清除之前的防抖定时器
+                    clearTimeout(this.urlDebounceTimer);
 
-              Text(this.networkVideoSrc)
-                .padding({ top: 10 , bottom : 10 , left : 10 , right : 10 })
-                .copyOption(CopyOptions.LocalDevice)
-                .textAlign(TextAlign.Center)//.margin({ right: 10 })
-                .width('100%')
+                    // 设置新的防抖定时器，300ms后执行
+                    this.urlDebounceTimer = setTimeout(() => {
+                      // 尝试从输入文本中提取链接
+                      const extractedUrl = this.extractUrlFromText(networkVideoSrc);
+                      if (extractedUrl) {
+                        this.networkVideoSrc = extractedUrl;
+                        AppStorage.set('networkVideoSrc', extractedUrl);
+                      } else {
+                        this.networkVideoSrc = networkVideoSrc;
+                        AppStorage.set('networkVideoSrc', networkVideoSrc);
+                      }
+                    }, 300);
+                  })
+                Row() {
+                  PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                    .backgroundColor(0xFF66CC)
+                    .height(40)
+                    .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                      if (PasteButtonOnClickResult.SUCCESS === result) {
+                        pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                          if (err) {
+                            console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                            return;
+                          }
+                          this.networkVideoSrc = pasteData.getPrimaryText();
+                        });
+                      }
+                    })
+                }
+                .margin({ left: 10 })
+              }
+              .width('100%')
+              .alignItems(VerticalAlign.Center)
+              .margin({ top: 10, bottom: 10 })
             }
-            .width('100%')  // 控制内容区域宽度
-            .alignItems(HorizontalAlign.Center) // 内容水平居中
-            .margin({ top: 10 })
-            //.height('100%')
+            .width('100%')
+            .backgroundColor('#FFFFFF')
+            .borderRadius(8)
+            .padding(12)
+            .margin({ bottom: 10 })
+            .border({ width: 1, color: 0xE0E0E0 })
+
+            // 区域3：分享标题
+            Column() {
+              Row() {
+                Text($r('app.string.pengtitleset'))
+                  .textAlign(TextAlign.Center)
+                  .width('100%')
+              }
+              .width('100%')
+              .height(50)
+
+              Row() {
+                TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
+                  .layoutWeight(1)
+                  .onChange((pengtitle: string) => {
+                    this.pengtitle = pengtitle;
+                    AppStorage.set('pengtitle', pengtitle);
+                  })
+                Row() {
+                  PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                    .backgroundColor(0x66CCFF)
+                    .height(40)
+                    .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                      if (PasteButtonOnClickResult.SUCCESS === result) {
+                        pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                          if (err) {
+                            console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                            return;
+                          }
+                          this.pengtitle = pasteData.getPrimaryText();
+                        });
+                      }
+                    })
+                }
+                .margin({ left: 10 })
+              }
+              .width('100%')
+              .alignItems(VerticalAlign.Center)
+              .margin({ top: 5, bottom: 10 })
+            }
+            .width('100%')
+            .backgroundColor('#FFFFFF')
+            .borderRadius(8)
+            .padding(12)
+            .margin({ bottom: 10 })
+            .border({ width: 1, color: 0xE0E0E0 })
           }
-          .width('100%')
-          .backgroundColor('#F5F5F5')
-          .borderRadius(16)
-          .padding({ left: 16, right: 16, top: 16, bottom: 16 })
-          .margin({ bottom: 20 })
+
+          // 系统分享按钮
+          Button($r('app.string.share'))
+            .width('90%')
+            .height(50)
+            .backgroundColor(0x66CCFF)//蓝色
+            .onClick(() => {
+              logger.info('分享按钮被点击');
+              try {
+                this.share();
+              } catch (error) {
+                logger.error(`分享按钮点击异常: ${error.message}`);
+                promptAction.showToast({ message: '分享功能异常: ' + error.message });
+              }
+            })
+            .margin({ bottom: 20 })
 
           //碰一碰提示
           if (this.currentBreakpoint !== 'lg' && this.currentBreakpoint !== 'xl') {
-            Text($r('app.string.nowplayingon'))
-              .padding({ top: 20 , left: 24, right: 24 })
-              .maxLines(2)
-              .fontSize(11)
-              .maxFontScale(1.75)
-              .width('100%')
-              .constraintSize({ minHeight: 16 })
-              .fontColor($r('sys.color.font_secondary'))
-              .fontFamily('HarmonyHeiTi')
-              .textAlign(TextAlign.Center)
-            KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
-              .padding({ top: 2 })
+            Column() {
+              Text($r('app.string.nowplayingon'))
+                .padding({ top: 20 , left: 24, right: 24 })
+                .maxLines(2)
+                .fontSize(11)
+                .maxFontScale(1.75)
+                .width('100%')
+                .constraintSize({ minHeight: 16 })
+                .fontColor($r('sys.color.font_secondary'))
+                .fontFamily('HarmonyHeiTi')
+                .textAlign(TextAlign.Center)
+              KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
+                .padding({ top: 2 })
+            }
+            .width('100%')
           } else {
             // 大屏设备提示
             Column() {
@@ -1979,15 +1990,13 @@ export struct HomePage {
                 .lineHeight(18)
                 .padding({ top: 20, bottom: 20 })
             }
-            .width('100%')
+            .width('90%')
           }
-          }
-          .width('90%')  // 控制内容区域宽度
-          .alignItems(HorizontalAlign.Center) // 内容水平居中
-          .margin({ top: 10 })
-          //.height('100%')
         }
         .width('90%')
+        .alignItems(HorizontalAlign.Center) // 内容水平居中
+        .margin({ top: 10 })
+      }
       }
     }
     .width(CommonConstants.FULL_PARENT)
