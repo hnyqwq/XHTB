@@ -4,6 +4,7 @@ import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.Ab
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { BusinessError, deviceInfo } from '@kit.BasicServicesKit';
+import { AppUtil } from '@pura/harmony-utils';
 //接续
 import { ContentInfo } from '../model/ContentInfo';
 import { distributedDataObject } from '@kit.ArkData';
@@ -41,6 +42,7 @@ export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     this.want = want;
     this.launchParam = launchParam;
+    AppUtil.init(this.context);
     actionCreate(want);
     createDbInsertData(this.context);
     //接续 - 先标记是接续场景
