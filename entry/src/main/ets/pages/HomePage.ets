@@ -1465,8 +1465,9 @@ export struct HomePage {
                       // 使用 PixelMap 显示本地选择的图片
                       Column() {
                         Image(this.localPixelMap)
-                          .width(this.imageAspectRatio < 1 ? '60%' : '80%')
+                          .width(this.imageAspectRatio < 1 ? '100%' : '80%')
                           .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '80%' : '80%'))
+                          .constraintSize({ maxWidth: this.imageAspectRatio < 1 ? 250 : '100%' })
                           .objectFit(ImageFit.Contain)
                           .blur(0)
                           .linearGradientBlur(60,
@@ -1475,7 +1476,6 @@ export struct HomePage {
                       }
                       .border({ width: 1, color: 0xCCCCCC })
                       .borderRadius(20)
-                      .padding(8)
                       .alignSelf(ItemAlign.Start)
                       .justifyContent(FlexAlign.Center)
                       .margin({ top: 0 })
@@ -1483,8 +1483,9 @@ export struct HomePage {
                       // 使用 URL 显示图片
                       Column() {
                         Image(this.sharepng)
-                          .width(this.imageAspectRatio < 1 ? '60%' : '80%')
+                          .width(this.imageAspectRatio < 1 ? '100%' : '80%')
                           .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '80%' : '80%'))
+                          .constraintSize({ maxWidth: this.imageAspectRatio < 1 ? 250 : '100%' })
                           .objectFit(ImageFit.Contain)
                           .blur(0)
                           .linearGradientBlur(60,
@@ -1496,7 +1497,6 @@ export struct HomePage {
                       }
                       .border({ width: 1, color: 0xCCCCCC })
                       .borderRadius(20)
-                      .padding(8)
                       .alignSelf(ItemAlign.Start)
                       .justifyContent(FlexAlign.Center)
                       .margin({ top: 0 })
@@ -1850,6 +1850,7 @@ export struct HomePage {
                     Column() {
                       Row() {
                         Text('选择图片')
+                          .textAlign(TextAlign.Center)
                           .width('55%')
                           .margin({ right: 10 })
                         Button($r('app.string.choose'))
@@ -1890,6 +1891,7 @@ export struct HomePage {
                     Column() {
                       Row() {
                         Text('选择视频')
+                          .textAlign(TextAlign.Center)
                           .width('40%')
                           .margin({ right: 10 })
                         Button('选择视频')
@@ -1930,6 +1932,7 @@ export struct HomePage {
                     Column() {
                       Row() {
                         Text('选择文件')
+                          .textAlign(TextAlign.Center)
                           .width('55%')
                           .margin({ right: 10 })
                         Button('选择文件')
@@ -2226,8 +2229,9 @@ export struct HomePage {
                 // 使用 PixelMap 显示本地选择的图片
                 Column() {
                   Image(this.localPixelMap)
-                    .width(this.imageAspectRatio < 1 ? '60%' : '80%')
+                    .width(this.imageAspectRatio < 1 ? '100%' : '80%')
                     .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '80%' : '80%'))
+                    .constraintSize({ maxWidth: this.imageAspectRatio < 1 ? 250 : '100%' })
                     .objectFit(ImageFit.Contain)
                     .blur(0)
                     .linearGradientBlur(60,
@@ -2243,8 +2247,9 @@ export struct HomePage {
                 // 使用 URL 显示图片
                 Column() {
                   Image(this.sharepng)
-                    .width(this.imageAspectRatio < 1 ? '60%' : '80%')
+                    .width(this.imageAspectRatio < 1 ? '100%' : '80%')
                     .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '80%' : '80%'))
+                    .constraintSize({ maxWidth: this.imageAspectRatio < 1 ? 250 : '100%' })
                     .objectFit(ImageFit.Contain)
                     .blur(0)
                     .linearGradientBlur(60,
@@ -2593,6 +2598,7 @@ export struct HomePage {
                 Column() {
                   Row() {
                     Text('选择图片')
+                      .textAlign(TextAlign.Center)
                       .width('55%')
                       .margin({ right: 10 })
                     Button($r('app.string.choose'))
@@ -2633,6 +2639,7 @@ export struct HomePage {
                 Column() {
                   Row() {
                     Text('选择视频')
+                      .textAlign(TextAlign.Center)
                       .width('40%')
                       .margin({ right: 10 })
                     Button('选择视频')
@@ -2673,6 +2680,7 @@ export struct HomePage {
                 Column() {
                   Row() {
                     Text('选择文件')
+                      .textAlign(TextAlign.Center)
                       .width('55%')
                       .margin({ right: 10 })
                     Button('选择文件')
