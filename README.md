@@ -15,6 +15,7 @@
 1. **安装**
    - 在 HarmonyOS 5 及以上系统的手机/平板/电脑的应用市场中搜索“星河工具盒”或通过以下链接下载安装：
      [应用市场链接](https://appgallery.huawei.com/app/detail?id=yylx.hny.qwq)
+   - 体验新版本，加入邀请测试链接：https://appgallery.huawei.com/apptest/8q2ifpJx0Qz
 
 2. **启动应用**
    - 安装完成后，点击桌面图标启动应用。
