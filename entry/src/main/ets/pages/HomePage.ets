@@ -1475,6 +1475,7 @@ export struct HomePage {
                       }
                       .border({ width: 1, color: 0xCCCCCC })
                       .borderRadius(20)
+                      .padding(8)
                       .alignSelf(ItemAlign.Start)
                       .justifyContent(FlexAlign.Center)
                       .margin({ top: 0 })
@@ -1495,6 +1496,7 @@ export struct HomePage {
                       }
                       .border({ width: 1, color: 0xCCCCCC })
                       .borderRadius(20)
+                      .padding(8)
                       .alignSelf(ItemAlign.Start)
                       .justifyContent(FlexAlign.Center)
                       .margin({ top: 0 })
@@ -1502,22 +1504,25 @@ export struct HomePage {
                     // 文字区域
                     Column() {
                       Text(this.pengtitle)
-                        .fontWeight(600)
-                        .fontSize('20fp')
+                        .fontSize(20)
                         .fontWeight(FontWeight.Bold)
+                        .margin({ top: 12 ,bottom: 8 })
+                        .blur(0) // 文字不模糊
+
                       Text(this.currentDescription)
-                        .fontWeight(400)
-                        .fontSize('13vp')
-                        .margin({ top: 5, bottom: 5 })
-                        .fontWeight(FontWeight.Medium)
-                        .opacity(0.5)
-                        .fontColor($r('app.color.version_color_182431'))
+                        .fontSize(16)
+                        .fontColor(0xA3A3A3)
+                        .margin({ bottom: 5 })
+                        .blur(0) // 文字不模糊
+
                       Image($r('app.media.CIcon'))
                         .width(20)
                         .height(20)
-                        .margin({ top: 5, bottom: 10 })
+                        .margin({ bottom: 8 })
+                        .blur(0) // 图标不模糊
                     }
                     .width('100%')
+                    .padding(8)
                     .alignItems(HorizontalAlign.Center)
                     .align(Alignment.Bottom)
                     .constraintSize({ maxWidth: '100%' })
