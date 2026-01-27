@@ -64,7 +64,10 @@ export struct HomePage {
   @State picture: PixelMap | undefined = undefined;
   @State localPixelMap: PixelMap | undefined = undefined; // 本地图片的PixelMap
   //@State networkPreviewUri: string = ''; // 默认网络预览图
-  @StorageLink('sharepng') sharepng: string = 'https://www.hnyqwq.cn/hvideo/share.png'
+  @StorageLink('sharepng') sharepng: string = 'https://www.hnyqwq.cn/hvideo/share.png' // 背景图片(预览卡片显示)
+  @State backgroundImagePath: string = 'https://www.hnyqwq.cn/hvideo/share.png' // 背景图片路径(独立)
+  @State backgroundPixelMap: PixelMap | undefined = undefined; // 背景图片的PixelMap(独立)
+  @State backgroundImageKey: string = ''; // 背景图片key(独立)
   //@State networkPreviewUri: Resource = $r('app.media.homepageback');
   @State savefileUri: string = ' ';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
@@ -221,26 +224,23 @@ export struct HomePage {
       const stat = fileIo.statSync(targetPath);
       hilog.info(0x0000, 'localsharepng' , 'File verified, size: ' + stat.size);
 
-      // 直接加载为 PixelMap
+      // 加载为 PixelMap,只更新背景图片,不更新分享图片
       const imageSource = image.createImageSource(targetPath);
-      this.localPixelMap = await imageSource.createPixelMap();
-      hilog.info(0x0000, 'localsharepng' , 'PixelMap created: ' + (this.localPixelMap ? 'success' : 'failed'));
+      this.backgroundPixelMap = await imageSource.createPixelMap();
+      hilog.info(0x0000, 'localsharepng' , 'PixelMap created for background image');
 
-      // 现在文件已经复制完成，更新 sharepng
-      this.sharepng = 'file://' + targetPath;
-      hilog.info(0x0000, 'localsharepng' , 'sharepng updated to: ' + this.sharepng);
-      hilog.info(0x0000, 'localsharepng' , '当前 imageExtension: ' + this.imageExtension);
-
-      // 更新分享图片路径
-      this.shareImagePath = targetPath;
+      // 只更新背景图片路径,不影响分享图片
+      this.backgroundImagePath = 'file://' + targetPath;
+      hilog.info(0x0000, 'localsharepng' , 'Background image path updated');
     } catch (error) {
       hilog.error(0x0000, 'localsharepng' , 'Copy failed: ' + JSON.stringify(error));
       return;
     }
 
-    // 强制刷新图片显示
-    this.imageKey = Date.now().toString();
-    // 重新获取图片宽高比以更新显示
+    // 强制刷新背景图片显示
+    this.backgroundImageKey = Date.now().toString();
+
+    // 重新获取图片宽高比
     await this.getImageAspectRatio();
 
     // 如果是横屏+隔空模式，获取主颜色
@@ -249,6 +249,85 @@ export struct HomePage {
     }
 
     console.log('=== selectImage 结束 ===');
+  }
+
+  // 选择分享图片(不影响背景图片)
+  private async selectShareImage() {
+    let uri = await this.openPhoto();
+    if (uri === undefined) {
+      hilog.error(0x0000, 'OCRDemo', "Failed to get uri.");
+      return;
+    }
+
+    console.log('=== selectShareImage 开始 ===');
+    console.log('选择的图片 URI: ' + uri);
+
+    // 根据选中的图片URI更新扩展名
+    if (uri.endsWith('.png')) {
+      this.imageExtension = '.png';
+    } else if (uri.endsWith('.jpg') || uri.endsWith('.jpeg')) {
+      this.imageExtension = '.jpg';
+    } else if (uri.endsWith('.webp')) {
+      this.imageExtension = '.webp';
+    } else {
+      // 默认使用.png格式
+      this.imageExtension = '.png';
+    }
+
+    console.log('更新后的 imageExtension: ' + this.imageExtension);
+
+    let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+
+    // 根据当前图片扩展名设置目标路径(分享图片使用不同的文件名)
+    let targetPath = context.filesDir + '/shareimg' + this.imageExtension;
+    console.log('目标完整路径 targetPath: ' + targetPath);
+
+    // 使用文件描述符方式复制文件（适配图库URI）
+    try {
+      // 打开源文件（图库URI）
+      let sourceFile = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
+      // 创建目标文件
+      let targetFile = fileIo.openSync(targetPath, fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+
+      // 读取并写入文件
+      let bufferSize = 1024 * 1024; // 1MB 缓冲区
+      let buffer = new ArrayBuffer(bufferSize);
+      let readLen: number = 0;
+
+      while ((readLen = fileIo.readSync(sourceFile.fd, buffer)) > 0) {
+        fileIo.writeSync(targetFile.fd, buffer, { length: readLen });
+      }
+
+      // 关闭文件
+      fileIo.closeSync(sourceFile);
+      fileIo.closeSync(targetFile);
+
+      hilog.info(0x0000, 'localsharepng', 'Copy completed: ' + targetPath);
+
+      // 等待文件系统同步
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 100);
+      });
+
+      // 验证文件是否真的存在
+      const stat = fileIo.statSync(targetPath);
+      hilog.info(0x0000, 'localsharepng', 'File verified, size: ' + stat.size);
+
+      // 只更新分享图片路径,不影响背景图片
+      this.shareImagePath = targetPath;
+      this.shareImagePaths = [uri]; // 更新分享图片路径数组
+      hilog.info(0x0000, 'localsharepng', 'Share image path updated');
+    } catch (error) {
+      hilog.error(0x0000, 'localsharepng', 'Copy failed: ' + JSON.stringify(error));
+      return;
+    }
+
+    // 强制刷新分享图片显示
+    this.imageKey = Date.now().toString();
+
+    console.log('=== selectShareImage 结束 ===');
   }
 
   // 将指定图片设置为背景图片
@@ -298,16 +377,16 @@ export struct HomePage {
 
       // 加载为PixelMap
       const imageSource = image.createImageSource(targetPath);
-      this.localPixelMap = await imageSource.createPixelMap();
+      this.backgroundPixelMap = await imageSource.createPixelMap();
 
-      // 更新背景图片
-      this.sharepng = 'file://' + targetPath;
-      hilog.info(0x0000, 'HomePage', 'Background image updated to: ' + this.sharepng);
+      // 更新背景图片(独立状态,不影响分享图片)
+      this.backgroundImagePath = 'file://' + targetPath;
+      hilog.info(0x0000, 'HomePage', 'Background image updated to: ' + this.backgroundImagePath);
 
-      // 强制刷新图片显示
-      this.imageKey = Date.now().toString();
+      // 强制刷新背景图片显示
+      this.backgroundImageKey = Date.now().toString();
 
-      // 重新获取图片宽高比
+      // 重新获取图片宽高比(使用背景图片)
       await this.getImageAspectRatio();
 
       // 如果是横屏+隔空模式，获取主颜色
@@ -1166,25 +1245,29 @@ export struct HomePage {
     try {
       let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
       let imageSource: image.ImageSource;
+      // 优先使用背景图片路径
+      let imagePath = this.backgroundImagePath !== '' ? this.backgroundImagePath : this.sharepng;
 
       console.log('=== getImageAspectRatio 开始 ===');
-      console.log('当前 sharepng: ' + this.sharepng);
+      console.log('当前背景图片路径: ' + this.backgroundImagePath);
+      console.log('当前分享图片路径: ' + this.sharepng);
+      console.log('使用的图片路径: ' + imagePath);
       console.log('当前 imageExtension: ' + this.imageExtension);
 
-      if (this.sharepng.startsWith('http://') || this.sharepng.startsWith('https://')) {
+      if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
         // 如果是网络图片，使用本地缓存文件
-        let imagePath = context.filesDir + '/pengyipeng' + this.imageExtension;
-        console.log('使用网络图片缓存路径: ' + imagePath);
-        imageSource = image.createImageSource(imagePath);
-      } else if (this.sharepng.startsWith('file://')) {
+        let localPath = context.filesDir + '/pengyipeng' + this.imageExtension;
+        console.log('使用网络图片缓存路径: ' + localPath);
+        imageSource = image.createImageSource(localPath);
+      } else if (imagePath.startsWith('file://')) {
         // 如果是本地文件
-        let filePath = this.sharepng.substring(7); // 移除 'file://' 前缀
+        let filePath = imagePath.substring(7); // 移除 'file://' 前缀
         console.log('使用本地文件路径: ' + filePath);
         imageSource = image.createImageSource(filePath);
       } else {
         // 如果是资源文件
-        console.log('使用资源文件: ' + this.sharepng);
-        imageSource = image.createImageSource(this.sharepng);
+        console.log('使用资源文件: ' + imagePath);
+        imageSource = image.createImageSource(imagePath);
       }
 
       const info = await imageSource.getImageInfo();
@@ -1222,14 +1305,14 @@ export struct HomePage {
       let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
       let pixelMap: PixelMap;
 
-      if (this.localPixelMap) {
-        // 使用本地选择的 PixelMap
-        pixelMap = this.localPixelMap;
+      if (this.backgroundPixelMap) {
+        // 使用背景图片的 PixelMap
+        pixelMap = this.backgroundPixelMap;
       } else {
         // 从文件加载 PixelMap
         let imagePath: string;
-        if (this.sharepng.startsWith('file://')) {
-          imagePath = this.sharepng.substring(7); // 移除 'file://' 前缀
+        if (this.backgroundImagePath.startsWith('file://')) {
+          imagePath = this.backgroundImagePath.substring(7); // 移除 'file://' 前缀
         } else {
           imagePath = context.filesDir + '/pengyipeng' + this.imageExtension;
         }
@@ -1276,12 +1359,12 @@ export struct HomePage {
       let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
       let pixelMap: PixelMap;
 
-      if (this.localPixelMap) {
-        pixelMap = this.localPixelMap;
+      if (this.backgroundPixelMap) {
+        pixelMap = this.backgroundPixelMap;
       } else {
         let imagePath: string;
-        if (this.sharepng.startsWith('file://')) {
-          imagePath = this.sharepng.substring(7);
+        if (this.backgroundImagePath.startsWith('file://')) {
+          imagePath = this.backgroundImagePath.substring(7);
         } else {
           imagePath = context.filesDir + '/pengyipeng' + this.imageExtension;
         }
@@ -1351,8 +1434,8 @@ export struct HomePage {
                     // 横屏图片 + 碰一碰模式：使用主颜色背景填充整个卡片
                     Column() {
                       // 图片
-                      if (this.localPixelMap) {
-                        Image(this.localPixelMap)
+                      if (this.backgroundPixelMap) {
+                        Image(this.backgroundPixelMap)
                           .width('100%')
                           .aspectRatio(1.5)
                           .margin({ bottom: 0 })
@@ -1366,7 +1449,7 @@ export struct HomePage {
                           })
 
                       } else {
-                        Image(this.sharepng)
+                        Image(this.backgroundImagePath)
                           .width('100%')
                           .aspectRatio(1.5)
                           .objectFit(ImageFit.Cover)
@@ -1411,14 +1494,14 @@ export struct HomePage {
                   } else if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) { // 横屏+隔空
                     Column() {
                       // 图片
-                      if (this.localPixelMap) {
-                        Image(this.localPixelMap)
+                      if (this.backgroundPixelMap) {
+                        Image(this.backgroundPixelMap)
                           .width('100%')
                           .aspectRatio(1.4)
                           .objectFit(ImageFit.Cover)
                           .borderRadius(10)
                       } else {
-                        Image(this.sharepng)
+                        Image(this.backgroundImagePath)
                           .width('100%')
                           .aspectRatio(1.4)
                           .objectFit(ImageFit.Cover)
@@ -1461,10 +1544,10 @@ export struct HomePage {
                   } else {
                     // 其他模式：保持原有 Stack 样式
                     // 图片区域
-                    if (this.localPixelMap) {
+                    if (this.backgroundPixelMap) {
                       // 使用 PixelMap 显示本地选择的图片
                       Column() {
-                        Image(this.localPixelMap)
+                        Image(this.backgroundPixelMap)
                           .width(this.imageAspectRatio < 1 ? '100%' : '80%')
                           .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '80%' : '80%'))
                           .constraintSize({ maxWidth: this.imageAspectRatio < 1 ? 250 : '100%' })
@@ -1482,7 +1565,7 @@ export struct HomePage {
                     } else {
                       // 使用 URL 显示图片
                       Column() {
-                        Image(this.sharepng)
+                        Image(this.backgroundImagePath)
                           .width(this.imageAspectRatio < 1 ? '100%' : '80%')
                           .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '80%' : '80%'))
                           .constraintSize({ maxWidth: this.imageAspectRatio < 1 ? 250 : '100%' })
@@ -1858,7 +1941,7 @@ export struct HomePage {
                           .width('40%')
                           .backgroundColor(0xb87cff)
                           .onClick(() => {
-                            this.selectImage();
+                            this.selectShareImage();
                           })
                       }
                       .width('100%')
@@ -2115,8 +2198,8 @@ export struct HomePage {
               // 横屏图片 + 碰一碰模式：使用主颜色背景填充整个卡片
               Column() {
                 // 图片
-                if (this.localPixelMap) {
-                  Image(this.localPixelMap)
+                if (this.backgroundPixelMap) {
+                  Image(this.backgroundPixelMap)
                     .width('100%')
                     .aspectRatio(1.5)
                     .margin({ bottom: 0 })
@@ -2130,7 +2213,7 @@ export struct HomePage {
                     })
 
                 } else {
-                  Image(this.sharepng)
+                  Image(this.backgroundImagePath)
                     .width('100%')
                     .aspectRatio(1.5)
                     .objectFit(ImageFit.Cover)
@@ -2175,14 +2258,14 @@ export struct HomePage {
             } else if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) { // 横屏+隔空
               Column() {
                 // 图片
-                if (this.localPixelMap) {
-                  Image(this.localPixelMap)
+                if (this.backgroundPixelMap) {
+                  Image(this.backgroundPixelMap)
                     .width('100%')
                     .aspectRatio(1.4)
                     .objectFit(ImageFit.Cover)
                     .borderRadius(10)
                 } else {
-                  Image(this.sharepng)
+                  Image(this.backgroundImagePath)
                     .width('100%')
                     .aspectRatio(1.4)
                     .objectFit(ImageFit.Cover)
@@ -2225,10 +2308,10 @@ export struct HomePage {
             } else {
               // 其他模式：保持原有 Stack 样式
               // 图片区域
-              if (this.localPixelMap) {
+              if (this.backgroundPixelMap) {
                 // 使用 PixelMap 显示本地选择的图片
                 Column() {
-                  Image(this.localPixelMap)
+                  Image(this.backgroundPixelMap)
                     .width(this.imageAspectRatio < 1 ? '100%' : '80%')
                     .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '80%' : '80%'))
                     .constraintSize({ maxWidth: this.imageAspectRatio < 1 ? 250 : '100%' })
@@ -2246,7 +2329,7 @@ export struct HomePage {
               } else {
                 // 使用 URL 显示图片
                 Column() {
-                  Image(this.sharepng)
+                  Image(this.backgroundImagePath)
                     .width(this.imageAspectRatio < 1 ? '100%' : '80%')
                     .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '80%' : '80%'))
                     .constraintSize({ maxWidth: this.imageAspectRatio < 1 ? 250 : '100%' })
@@ -2606,7 +2689,7 @@ export struct HomePage {
                       .width('40%')
                       .backgroundColor(0xb87cff)
                       .onClick(() => {
-                        this.selectImage();
+                        this.selectShareImage();
                       })
                   }
                   .width('100%')
