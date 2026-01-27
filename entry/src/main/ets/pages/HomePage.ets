@@ -106,9 +106,12 @@ export struct HomePage {
   // 各类型分享内容
   @State shareLinkContent: string = ''; // 链接内容
   @State shareTextContent: string = ''; // 文本内容
-  @State shareImagePath: string = ''; // 图片路径
-  @State shareVideoPath: string = ''; // 视频路径
-  @State shareFilePath: string = ''; // 文件路径
+  @State shareImagePath: string = ''; // 图片路径（单个）
+  @State shareImagePaths: string[] = []; // 图片路径数组（多个）
+  @State shareVideoPath: string = ''; // 视频路径（单个）
+  @State shareVideoPaths: string[] = []; // 视频路径数组（多个）
+  @State shareFilePath: string = ''; // 文件路径（单个）
+  @State shareFilePaths: string[] = []; // 文件路径数组（多个）
   @State downloadUrl: string = ''; // 下载链接
   @State downloadProgress: string = '0'; // 下载进度
 
@@ -253,8 +256,12 @@ export struct HomePage {
       let photoPicker: photoAccessHelper.PhotoViewPicker = new photoAccessHelper.PhotoViewPicker();
       photoPicker.select({
         MIMEType: photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE,
-        maxSelectNumber: 1
+        maxSelectNumber: 500 // 最多选择500个图片
       }).then((res: photoAccessHelper.PhotoSelectResult) => {
+        this.shareImagePaths = res.photoUris; // 保存所有选择的图片
+        if (res.photoUris.length > 1) {
+          promptAction.showToast({ message: `已选择${res.photoUris.length}张图片` });
+        }
         resolve(res.photoUris[0]);
       }).catch((err: BusinessError) => {
         hilog.error(0x0000, 'OCRDemo', `Failed to get photo image uri. code：${err.code}，message：${err.message}`);
@@ -333,21 +340,36 @@ export struct HomePage {
           promptAction.showToast({ message: '请选择要分享的图片' });
           return;
         }
-        await this.shareImage(contextFaker);
+        // 如果选择了多个图片，使用多文件分享
+        if (this.shareImagePaths.length > 1) {
+          await this.shareMultipleImages(contextFaker);
+        } else {
+          await this.shareImage(contextFaker);
+        }
         break;
       case 3: // 视频分享
         if (!this.shareVideoPath) {
           promptAction.showToast({ message: '请选择要分享的视频' });
           return;
         }
-        await this.shareVideo(contextFaker);
+        // 如果选择了多个视频，使用多文件分享
+        if (this.shareVideoPaths.length > 1) {
+          await this.shareMultipleVideos(contextFaker);
+        } else {
+          await this.shareVideo(contextFaker);
+        }
         break;
       case 4: // 文件分享
         if (!this.shareFilePath) {
           promptAction.showToast({ message: '请选择要分享的文件' });
           return;
         }
-        await this.shareFile(contextFaker);
+        // 如果选择了多个文件，使用多文件分享
+        if (this.shareFilePaths.length > 1) {
+          await this.shareMultipleFiles(contextFaker);
+        } else {
+          await this.shareFile(contextFaker);
+        }
         break;
     }
   }
@@ -473,6 +495,122 @@ export struct HomePage {
       description: '分享文件',
     });
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
+    controller.show(context, {
+      previewMode: systemShare.SharePreviewMode.DETAIL,
+      selectionMode: systemShare.SelectionMode.SINGLE
+    }).then(() => {
+      console.info('ShareController show success.');
+    }).catch((error: BusinessError) => {
+      console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+    });
+  }
+
+  // 分享多个文件
+  private async shareMultipleFiles(contextFaker: Context) {
+    if (this.shareFilePaths.length === 0) {
+      promptAction.showToast({ message: '请先选择要分享的文件' });
+      return;
+    }
+
+    // 为每个文件创建SharedData
+    let shareDataList: systemShare.SharedData[] = [];
+    for (let i = 0; i < this.shareFilePaths.length; i++) {
+      let filePath = this.shareFilePaths[i];
+      let extension = filePath.substring(filePath.lastIndexOf('.'));
+      let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.FILE);
+
+      let shareData = new systemShare.SharedData({
+        utd: utdTypeId,
+        uri: fileUri.getUriFromPath(filePath),
+        content: filePath,
+        title: `分享文件${i + 1}`,
+        description: `分享文件${i + 1}`,
+      });
+      shareDataList.push(shareData);
+    }
+
+    // 创建ShareController并显示
+    let controller: systemShare.ShareController = new systemShare.ShareController(shareDataList[0]);
+    controller.show(context, {
+      previewMode: systemShare.SharePreviewMode.DETAIL,
+      selectionMode: systemShare.SelectionMode.SINGLE
+    }).then(() => {
+      console.info('ShareController show success.');
+    }).catch((error: BusinessError) => {
+      console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+    });
+  }
+
+  // 分享多个图片
+  private async shareMultipleImages(contextFaker: Context) {
+    if (this.shareImagePaths.length === 0) {
+      promptAction.showToast({ message: '请先选择要分享的图片' });
+      return;
+    }
+
+    // 为每个图片创建SharedData
+    let shareDataList: systemShare.SharedData[] = [];
+    for (let i = 0; i < this.shareImagePaths.length; i++) {
+      let imagePath = this.shareImagePaths[i];
+      let extension = imagePath.substring(imagePath.lastIndexOf('.'));
+      let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.IMAGE);
+
+      let shareData = new systemShare.SharedData({
+        utd: utdTypeId,
+        uri: imagePath,
+        title: `分享图片${i + 1}`,
+        description: `分享图片${i + 1}`,
+      });
+      shareDataList.push(shareData);
+    }
+
+    let controller: systemShare.ShareController = new systemShare.ShareController(shareDataList[0]);
+    controller.show(context, {
+      previewMode: systemShare.SharePreviewMode.DETAIL,
+      selectionMode: systemShare.SelectionMode.SINGLE
+    }).then(() => {
+      console.info('ShareController show success.');
+    }).catch((error: BusinessError) => {
+      console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+    });
+  }
+
+  // 分享多个视频
+  private async shareMultipleVideos(contextFaker: Context) {
+    if (this.shareVideoPaths.length === 0) {
+      promptAction.showToast({ message: '请先选择要分享的视频' });
+      return;
+    }
+
+    // 获取缩略图
+    let thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+    let imageSource: image.ImageSource = image.createImageSource(thumbnailPath);
+    let imagePacker: image.ImagePacker = image.createImagePacker();
+    let buffer: ArrayBuffer | undefined = undefined;
+
+    try {
+      buffer = await imagePacker.packToData(imageSource, {
+        format: 'image/jpeg',
+        quality: 30,
+      });
+    } catch (error) {
+      console.error(`packToData error. Code: ${error?.code}, message: ${error?.message}`);
+    }
+
+    // 为每个视频创建SharedData
+    let shareDataList: systemShare.SharedData[] = [];
+    for (let i = 0; i < this.shareVideoPaths.length; i++) {
+      let shareData = new systemShare.SharedData({
+        utd: utd.UniformDataType.VIDEO,
+        uri: this.shareVideoPaths[i],
+        title: `分享视频${i + 1}`,
+        description: `分享视频${i + 1}`,
+        thumbnail: buffer ? new Uint8Array(buffer) : undefined,
+      });
+      shareDataList.push(shareData);
+    }
+
+    let controller: systemShare.ShareController = new systemShare.ShareController(shareDataList[0]);
     controller.show(context, {
       previewMode: systemShare.SharePreviewMode.DETAIL,
       selectionMode: systemShare.SelectionMode.SINGLE
@@ -1630,6 +1768,12 @@ export struct HomePage {
                       .width('100%')
                       TextArea({ placeholder: '图片路径', text: this.shareImagePath })
                         .enabled(false)
+                      if (this.shareImagePaths.length > 1) {
+                        Text(`已选择${this.shareImagePaths.length}张图片`)
+                          .fontSize(12)
+                          .fontColor('#999999')
+                          .margin({ top: 5 })
+                      }
                     }
                   } else if (this.shareTypeIndex === 3) {
                     // 视频分享
@@ -1647,7 +1791,7 @@ export struct HomePage {
                           })
                         Button('剪辑视频')
                           .height(50)
-                          .width('25%')
+                          .width('30%')
                           .backgroundColor(0xFF66CC)
                           .onClick(() => {
                             if (this.shareVideoPath) {
@@ -1660,6 +1804,12 @@ export struct HomePage {
                       .width('100%')
                       TextArea({ placeholder: '视频路径', text: this.shareVideoPath })
                         .enabled(false)
+                      if (this.shareVideoPaths.length > 1) {
+                        Text(`已选择${this.shareVideoPaths.length}个视频`)
+                          .fontSize(12)
+                          .fontColor('#999999')
+                          .margin({ top: 5 })
+                      }
                     }
                   } else if (this.shareTypeIndex === 4) {
                     // 文件分享
@@ -1679,6 +1829,12 @@ export struct HomePage {
                       .width('100%')
                       TextArea({ placeholder: '文件路径', text: this.shareFilePath })
                         .enabled(false)
+                      if (this.shareFilePaths.length > 1) {
+                        Text(`已选择${this.shareFilePaths.length}个文件`)
+                          .fontSize(12)
+                          .fontColor('#999999')
+                          .margin({ top: 5 })
+                      }
                       Row() {
                         Text('下载文件')
                           .width('55%')
@@ -2331,6 +2487,12 @@ export struct HomePage {
                   .width('100%')
                   TextArea({ placeholder: '图片路径', text: this.shareImagePath })
                     .enabled(false)
+                  if (this.shareImagePaths.length > 1) {
+                    Text(`已选择${this.shareImagePaths.length}张图片`)
+                      .fontSize(12)
+                      .fontColor('#999999')
+                      .margin({ top: 5 })
+                  }
                 }
               } else if (this.shareTypeIndex === 3) {
                 // 视频分享
@@ -2348,7 +2510,7 @@ export struct HomePage {
                       })
                     Button('剪辑视频')
                       .height(50)
-                      .width('25%')
+                      .width('30%')
                       .backgroundColor(0xFF66CC)
                       .onClick(() => {
                         if (this.shareVideoPath) {
@@ -2361,6 +2523,12 @@ export struct HomePage {
                   .width('100%')
                   TextArea({ placeholder: '视频路径', text: this.shareVideoPath })
                     .enabled(false)
+                  if (this.shareVideoPaths.length > 1) {
+                    Text(`已选择${this.shareVideoPaths.length}个视频`)
+                      .fontSize(12)
+                      .fontColor('#999999')
+                      .margin({ top: 5 })
+                  }
                 }
               } else if (this.shareTypeIndex === 4) {
                 // 文件分享
@@ -2380,6 +2548,12 @@ export struct HomePage {
                   .width('100%')
                   TextArea({ placeholder: '文件路径', text: this.shareFilePath })
                     .enabled(false)
+                  if (this.shareFilePaths.length > 1) {
+                    Text(`已选择${this.shareFilePaths.length}个文件`)
+                      .fontSize(12)
+                      .fontColor('#999999')
+                      .margin({ top: 5 })
+                  }
                   Row() {
                     Text('下载文件')
                       .width('55%')
@@ -2563,10 +2737,15 @@ export struct HomePage {
       let photoPicker: photoAccessHelper.PhotoViewPicker = new photoAccessHelper.PhotoViewPicker();
       photoPicker.select({
         MIMEType: photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE,
-        maxSelectNumber: 1
+        maxSelectNumber: 500 // 最多选择500个视频
       }).then((res: photoAccessHelper.PhotoSelectResult) => {
-        this.shareVideoPath = res.photoUris[0];
-        promptAction.showToast({ message: '视频选择成功' });
+        this.shareVideoPaths = res.photoUris;
+        this.shareVideoPath = res.photoUris[0]; // 第一个视频用于显示
+        if (res.photoUris.length > 1) {
+          promptAction.showToast({ message: `已选择${res.photoUris.length}个视频` });
+        } else {
+          promptAction.showToast({ message: '视频选择成功' });
+        }
         resolve();
       }).catch((err: BusinessError) => {
         hilog.error(0x0000, 'HomePage', `Failed to select video. code：${err.code}，message：${err.message}`);
@@ -2583,16 +2762,21 @@ export struct HomePage {
       // 使用文件系统API选择文件
       const documentPicker = new picker.DocumentViewPicker();
       const options: picker.DocumentSelectOptions = {
-        maxSelectNumber: 1,
+        maxSelectNumber: 10,
         fileSuffixFilters: ['.*']
       };
       hilog.info(0x0000, 'HomePage', 'Calling documentPicker.select');
       const result = await documentPicker.select(options);
       hilog.info(0x0000, 'HomePage', `Document picker returned ${result.length} results`);
       if (result && result.length > 0) {
-        this.shareFilePath = result[0];
-        hilog.info(0x0000, 'HomePage', `File selected: ${this.shareFilePath}`);
-        promptAction.showToast({ message: '文件选择成功' });
+        this.shareFilePaths = result;
+        this.shareFilePath = result[0]; // 第一个文件用于显示
+        if (result.length > 1) {
+          promptAction.showToast({ message: `已选择${result.length}个文件` });
+        } else {
+          hilog.info(0x0000, 'HomePage', `File selected: ${this.shareFilePath}`);
+          promptAction.showToast({ message: '文件选择成功' });
+        }
       } else {
         hilog.info(0x0000, 'HomePage', 'No file selected or user cancelled');
       }
