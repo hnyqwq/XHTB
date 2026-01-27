@@ -439,7 +439,7 @@ export struct HomePage {
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
     controller.show(context, {
       previewMode: systemShare.SharePreviewMode.DETAIL,
-      selectionMode: systemShare.SelectionMode.SINGLE
+      selectionMode: systemShare.SelectionMode.BATCH
     }).then(() => {
       console.info('ShareController show success.');
     }).catch((error: BusinessError) => {
@@ -473,7 +473,7 @@ export struct HomePage {
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
     controller.show(context, {
       previewMode: systemShare.SharePreviewMode.DETAIL,
-      selectionMode: systemShare.SelectionMode.SINGLE
+      selectionMode: systemShare.SelectionMode.BATCH
     }).then(() => {
       console.info('ShareController show success.');
     }).catch((error: BusinessError) => {
@@ -497,7 +497,7 @@ export struct HomePage {
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
     controller.show(context, {
       previewMode: systemShare.SharePreviewMode.DETAIL,
-      selectionMode: systemShare.SelectionMode.SINGLE
+      selectionMode: systemShare.SelectionMode.BATCH
     }).then(() => {
       console.info('ShareController show success.');
     }).catch((error: BusinessError) => {
@@ -573,7 +573,7 @@ export struct HomePage {
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
     controller.show(context, {
       previewMode: systemShare.SharePreviewMode.DETAIL,
-      selectionMode: systemShare.SelectionMode.SINGLE
+      selectionMode: systemShare.SelectionMode.BATCH
     }).then(() => {
       console.info('ShareController show success.');
     }).catch((error: BusinessError) => {
@@ -606,7 +606,7 @@ export struct HomePage {
     // 构造ShareData，配置第一条数据
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.VIDEO,
-      uri: this.shareVideoPaths[0],
+      uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
       title: '分享视频',
       description: `分享${this.shareVideoPaths.length}个视频`,
       thumbnail: buffer ? new Uint8Array(buffer) : undefined,
@@ -616,7 +616,7 @@ export struct HomePage {
     for (let i = 1; i < this.shareVideoPaths.length; i++) {
       shareData.addRecord({
         utd: utd.UniformDataType.VIDEO,
-        uri: this.shareVideoPaths[i],
+        uri: fileUri.getUriFromPath(this.shareVideoPaths[i]),
         title: `分享视频${i + 1}`,
         description: `分享视频${i + 1}`,
       });
@@ -625,7 +625,7 @@ export struct HomePage {
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
     controller.show(context, {
       previewMode: systemShare.SharePreviewMode.DETAIL,
-      selectionMode: systemShare.SelectionMode.SINGLE
+      selectionMode: systemShare.SelectionMode.BATCH
     }).then(() => {
       console.info('ShareController show success.');
     }).catch((error: BusinessError) => {
