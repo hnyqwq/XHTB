@@ -1942,14 +1942,14 @@ export struct HomePage {
                           Button($r('app.string.choosepad'))
                             .height(50)
                             .width('40%')
-                            .backgroundColor(0xb87cff)
+                            .backgroundColor(0xFF66CC)
                             .bindMenu(this.CrossDeviceShareImageMenu)
                         } else {
                           // 手机设备：使用普通按钮
                           Button($r('app.string.choose'))
                             .height(50)
                             .width('40%')
-                            .backgroundColor(0xb87cff)
+                            .backgroundColor(0xFF66CC)
                             .onClick(() => {
                               this.selectShareImage();
                             })
@@ -1991,7 +1991,7 @@ export struct HomePage {
                         Button('选择视频')
                           .height(50)
                           .width('25%')
-                          .backgroundColor(0xb87cff)
+                          .backgroundColor(0xFF66CC)
                           .onClick(async () => {
                             await this.selectVideo();
                           })
@@ -2032,7 +2032,7 @@ export struct HomePage {
                         Button('选择文件')
                           .height(50)
                           .width('40%')
-                          .backgroundColor(0xb87cff)
+                          .backgroundColor(0xFF66CC)
                           .onClick(async () => {
                             await this.selectFile();
                           })
@@ -2073,10 +2073,9 @@ export struct HomePage {
                         Text(`下载进度: ${this.downloadProgress}%`)
                           .fontSize(14)
                           .fontColor(0x66CCFF)
-                          .margin({ top: 5 })
+                          .margin({ top: 5, bottom: 5 })
                       }
                     }
-                    .margin({ bottom: 15 })
                   }
                 }
                 .width('100%')
@@ -2702,14 +2701,14 @@ export struct HomePage {
                       Button($r('app.string.choosepad'))
                         .height(50)
                         .width('40%')
-                        .backgroundColor(0xb87cff)
+                        .backgroundColor(0xFF66CC)
                         .bindMenu(this.CrossDeviceShareImageMenu)
                     } else {
                       // 手机设备：使用普通按钮
                       Button($r('app.string.choose'))
                         .height(50)
                         .width('40%')
-                        .backgroundColor(0xb87cff)
+                        .backgroundColor(0xFF66CC)
                         .onClick(() => {
                           this.selectShareImage();
                         })
@@ -2751,7 +2750,7 @@ export struct HomePage {
                     Button('选择视频')
                       .height(50)
                       .width('25%')
-                      .backgroundColor(0xb87cff)
+                      .backgroundColor(0xFF66CC)
                       .onClick(async () => {
                         await this.selectVideo();
                       })
@@ -2792,7 +2791,7 @@ export struct HomePage {
                     Button('选择文件')
                       .height(50)
                       .width('40%')
-                      .backgroundColor(0xb87cff)
+                      .backgroundColor(0xFF66CC)
                       .onClick(async () => {
                         await this.selectFile();
                       })
@@ -2833,10 +2832,9 @@ export struct HomePage {
                     Text(`下载进度: ${this.downloadProgress}%`)
                       .fontSize(14)
                       .fontColor(0x66CCFF)
-                      .margin({ top: 5 })
+                      .margin({ top: 5, bottom: 5 })
                   }
                 }
-                .margin({ bottom: 15 })
               }
             }
             .width('100%')
