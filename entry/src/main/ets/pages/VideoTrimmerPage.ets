@@ -28,6 +28,11 @@ struct VideoTrimmerPage {
       this.videoTrimmerOption.context = this.context;
       this.videoTrimmerOption.listener = this.initListener();
       this.videoTrimmerOption.loadFrameListener = this.initLoadFrameListener();
+      // 移除视频时长限制
+      this.videoTrimmerOption.video_max_time = 0;
+      this.videoTrimmerOption.video_min_time = 0;
+      // 设置一个很大的值来移除帧数限制（避免除以0）
+      this.videoTrimmerOption.max_count_range = 9999;
     }
   }
 

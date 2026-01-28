@@ -36,7 +36,7 @@ export struct VideoTrimmerView {
 
   private isLoadFrame: boolean = false;  // 是否在加载帧数据
   // 视频图片预览区选择区域相关参数
-  @State hintText?: string = '拖动选择你要发表的10秒以内片段';
+  @State hintText?: string = '拖动选择你要裁剪的片段';
   // 播放进度条位置
   private mRedProgressBarPos: number = 0;
   // 滑动条相关变量
@@ -68,6 +68,7 @@ export struct VideoTrimmerView {
   @State video_max_time: number = 8; // 8秒
   @State video_min_time: number = 3; // 最小剪辑时间3s
   @State max_count_range: number = 8; //seekBar的区域内一共有多少张图片
+  @State isPausePreview: boolean = true;
   // 小图选项
   @State mVideoThumbOption: VideoThumbOption = {
     videoThumbWidth: 0,
@@ -235,7 +236,7 @@ export struct VideoTrimmerView {
           }
         }
         // TODO: 知识点: 设置视频源及回调
-        let videoPath = this.localFilePath && this.localFilePath.length > 0 ? this.localFilePath : this.videoTrimmerOption.srcFilePath;
+        let videoPath: string = this.localFilePath && this.localFilePath.length > 0 ? this.localFilePath : this.videoTrimmerOption.srcFilePath;
         logger.info(TAG, 'MP4Parser.setDataSource: videoPath=' + videoPath + ', localFilePath=' + this.localFilePath);
         MP4Parser.setDataSource(videoPath, callBack);
       }
@@ -265,13 +266,13 @@ export struct VideoTrimmerView {
   }
 
   configUIInfo() {
-    if (this.videoTrimmerOption.video_max_time) {
+    if (this.videoTrimmerOption.video_max_time !== undefined) {
       this.video_max_time = this.videoTrimmerOption.video_max_time;
     }
-    if (this.videoTrimmerOption.video_min_time) {
+    if (this.videoTrimmerOption.video_min_time !== undefined) {
       this.video_min_time = this.videoTrimmerOption.video_min_time;
     }
-    if (this.videoTrimmerOption.max_count_range) {
+    if (this.videoTrimmerOption.max_count_range !== undefined && this.videoTrimmerOption.max_count_range > 0) {
       this.max_count_range = this.videoTrimmerOption.max_count_range;
     }
     if (this.videoTrimmerOption.thumb_width) {
@@ -283,13 +284,18 @@ export struct VideoTrimmerView {
 
     // 限制max_count_range的图片最小宽度1vp
     if (this.mSeekBarWidth > 0) {
-      let maxVp = (this.mSeekBarWidth - 2 * this.thumb_width)
+      let maxVp: number = (this.mSeekBarWidth - 2 * this.thumb_width);
       if (this.max_count_range > maxVp) {
         this.max_count_range = maxVp;
       }
       // check 限制最大截取时间不超过 max_count_range
-      if (this.video_max_time > this.max_count_range) {
-        this.video_max_time = this.max_count_range;
+      if (this.video_max_time > 0 && this.max_count_range > 0) {
+        if (this.video_max_time > this.max_count_range) {
+          this.video_max_time = this.max_count_range;
+        }
+      } else if (this.video_max_time === 0) {
+        // video_max_time = 0 表示无限制
+        // 不做任何限制，使用视频完整时长
       }
     }
     // 滑动条设置
@@ -731,7 +737,6 @@ export struct VideoTrimmerView {
   @Builder
   private bottomContent() {
     Column() {
-      // Text(`拖动选择你要发表的${this.video_max_time}秒以内片段`)
       Text(this.hintText)
         .fontColor(Color.White)
         .height(20)
@@ -742,8 +747,6 @@ export struct VideoTrimmerView {
     .width('100%')
     .height('25%')
   }
-
-  @State isPausePreview: boolean = true;
 
   @Builder
   private bottomClickContent() {
@@ -890,7 +893,7 @@ export struct VideoTrimmerView {
 
   videoPrepared() {
     // 提示语设置
-    this.hintText = `拖动选择你要发表的${this.video_max_time}秒以内片段`
+    this.hintText = this.video_max_time > 0 ? `拖动选择你要裁剪的${this.video_max_time}秒以内片段` : `拖动选择你要裁剪的片段`
     // 宽高比 设置
     if (this.avPlayer != undefined) {
       let videoWidth = this.avPlayer.width;
@@ -906,7 +909,7 @@ export struct VideoTrimmerView {
     }
     // 默认的截取时间段[0-Nath.min(video_max_time,mDuration)]
     this.startTruncationTime = 0;
-    this.endTruncationTime = Math.min(this.video_max_time * CommonConstants.MS_ONE_SECOND, this.mDuration);
+    this.endTruncationTime = this.video_max_time > 0 ? Math.min(this.video_max_time * CommonConstants.MS_ONE_SECOND, this.mDuration) : this.mDuration;
 
     if (!this.getRestoreState()) {
       this.seekTo(this.mRedProgressBarPos);
@@ -980,7 +983,8 @@ export struct VideoTrimmerView {
                     ', scaleNum = ' + this.videoTrimmerOption!.scaleNum?.toString());
               }
               // 根据SeekBar尺寸生成小图参数
-              let videoThumbWidth: number = vp2px((this.mSeekBarWidth - 2 * this.thumb_width) / this.max_count_range);
+              let actualFrameCount: number = Math.ceil(this.mDuration / CommonConstants.MS_ONE_SECOND);
+              let videoThumbWidth: number = vp2px((this.mSeekBarWidth - 2 * this.thumb_width) / actualFrameCount);
               let videoThumbHeight: number = vp2px(this.mSeekBarHeight);
               let decodingOptions: image.DecodingOptions = {
                 sampleSize: 1,
@@ -1050,24 +1054,30 @@ export struct VideoTrimmerView {
 
   // 更新小图列表
   updateList(videoThumbs: ThumbContent[]) {
+    // 使用实际加载的图片数量来计算宽度，而不是 max_count_range
+    let actualCount = videoThumbs.length > 0 ? videoThumbs.length : this.max_count_range;
     this.mVideoThumbOption = {
-      videoThumbWidth: (this.mSeekBarWidth - 2 * this.thumb_width) / this.max_count_range,
+      videoThumbWidth: (this.mSeekBarWidth - 2 * this.thumb_width) / actualCount,
       videoThumbs: videoThumbs
     }
   }
 
   // 初始视频选择区域范围
   initRangeSeekBarView() {
+    // 计算最大时间，如果 video_max_time = 0 则使用视频时长
+    let maxShootTime: number = this.video_max_time > 0 ? this.video_max_time : Math.ceil(this.mDuration / CommonConstants.MS_ONE_SECOND);
+    // 使用实际视频秒数作为最大范围
+    let actualMaxCountRange: number = Math.min(this.max_count_range, Math.ceil(this.mDuration / CommonConstants.MS_ONE_SECOND));
     this.mRangSeekBarOption = {
       mLeftProgressPos: 0,
       mRightProgressPos: this.mDuration,
       // 最小时间 比如一屏幕10张图 间隔10s, 现在最小时间是3s,那么leftThumb和rightThumb的最小间隔是3张图宽度
       mMinShootTime: this.video_min_time,
       // 最大时间 约束了右侧thumb和左侧thumb的距离
-      mMaxShootTime: this.video_max_time,
+      mMaxShootTime: maxShootTime,
       // 一屏幕展示最大图片数量, 一张图是1s,如果最大数量是20, 最大时间是10s，那么 rightThumb 距离 leftThumb 就是屏幕的10/20
       // 需要保证mMaxCountRange <= mMaxShootTime 否则右侧的thumb会出界
-      mMaxCountRange: this.max_count_range,
+      mMaxCountRange: actualMaxCountRange,
       mThumbWidth: this.thumb_width,
       mPaddingTopBottom: this.padding_line_height
     };
