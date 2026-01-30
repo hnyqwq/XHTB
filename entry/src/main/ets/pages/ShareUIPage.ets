@@ -6,9 +6,6 @@ import { image } from '@kit.ImageKit';
 import Logger from '../utils/Logger';
 import { navigationManager } from '../common/NavigationManager';
 
-//点光源效果
-import { hdsEffect } from '@kit.UIDesignKit';
-
 let logger = Logger.getLogger('[ShareUIPage]');
 
 @Entry
