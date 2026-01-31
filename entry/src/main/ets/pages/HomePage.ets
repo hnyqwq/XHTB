@@ -1112,7 +1112,7 @@ export struct HomePage {
           content: this.shareTextContent,
           thumbnailUri: fileUri.getUriFromPath(filePath),
           title: this.pengtitle,
-          description: '分享文本'
+          description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
         });
         break;
       case 2: // 图片分享
@@ -1120,8 +1120,8 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utd.UniformDataType.IMAGE,
             uri: this.shareImagePaths[0],
-            title: '分享图片',
-            description: this.shareImagePaths.length > 1 ? `分享${this.shareImagePaths.length}张图片` : '分享图片'
+            title: this.pengtitle,
+            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片' });
@@ -1134,8 +1134,8 @@ export struct HomePage {
             utd: utd.UniformDataType.VIDEO,
             uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
             thumbnailUri: fileUri.getUriFromPath(filePath),
-            title: '分享视频',
-            description: this.shareVideoPaths.length > 1 ? `分享${this.shareVideoPaths.length}个视频` : '分享视频'
+            title: this.pengtitle,
+            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频' });
@@ -1149,8 +1149,8 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utdTypeId,
             uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
-            title: '分享文件',
-            description: this.shareFilePaths.length > 1 ? `分享${this.shareFilePaths.length}个文件` : '分享文件'
+            title: this.pengtitle,
+            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件' });
@@ -1316,7 +1316,7 @@ export struct HomePage {
           content: this.shareLinkContent || this.networkVideoSrc,
           thumbnailUri: fileUri.getUriFromPath(filePath),
           title: this.pengtitle,
-          description: currentContext.resourceManager.getStringSync($r('app.string.gekong_description').id)
+          description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
         });
         break;
       case 1: // 文本分享
@@ -1325,7 +1325,7 @@ export struct HomePage {
           content: this.shareTextContent,
           thumbnailUri: fileUri.getUriFromPath(filePath),
           title: this.pengtitle,
-          description: '分享文本'
+          description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
         });
         break;
       case 2: // 图片分享
@@ -1333,8 +1333,8 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utd.UniformDataType.IMAGE,
             uri: this.shareImagePaths[0],
-            title: '分享图片',
-            description: this.shareImagePaths.length > 1 ? `分享${this.shareImagePaths.length}张图片` : '分享图片'
+            title: this.pengtitle,
+            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片' });
@@ -1347,8 +1347,8 @@ export struct HomePage {
             utd: utd.UniformDataType.VIDEO,
             uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
             thumbnailUri: fileUri.getUriFromPath(filePath),
-            title: '分享视频',
-            description: this.shareVideoPaths.length > 1 ? `分享${this.shareVideoPaths.length}个视频` : '分享视频'
+            title: this.pengtitle,
+            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频' });
@@ -1362,8 +1362,8 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utdTypeId,
             uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
-            title: '分享文件',
-            description: this.shareFilePaths.length > 1 ? `分享${this.shareFilePaths.length}个文件` : '分享文件'
+            title: this.pengtitle,
+            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件' });
