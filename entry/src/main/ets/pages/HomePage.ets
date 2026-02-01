@@ -1109,10 +1109,10 @@ export struct HomePage {
     console.log('当前断点: ' + actualBreakpoint + ', 是否大屏: ' + isLargeScreen);
 
     if (canIUse('SystemCapability.Collaboration.HarmonyShare') && !isLargeScreen) {
-      // 支持碰一碰分享的能力且非平板，默认为碰一碰分享预览
-      this.selectedShareMode = 0;
-      this.currentDescription = $r('app.string.pengyipeng_description');
-      console.log('设备支持碰一碰分享且非平板，默认选择碰一碰模式');
+      // 支持碰一碰分享的能力且非平板，但手机端默认为隔空投送分享预览
+      this.selectedShareMode = 1;
+      this.currentDescription = $r('app.string.gekong_description');
+      console.log('设备支持碰一碰分享且非平板，手机端默认选择隔空投送模式');
     } else {
       // 不支持碰一碰分享或是平板，默认为隔空投送分享预览
       this.selectedShareMode = 1;
@@ -2142,15 +2142,15 @@ export struct HomePage {
                       .onClick(() => {
                         this.shareTypeIndex = 3;
                       })
-                    Button('文件')
-                      .fontSize(14)
-                      .height(36)
-                      .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
-                      .fontColor(this.shareTypeIndex === 4 ? 0xFFFFFF : 0x000000)
-                      .borderRadius(8)
-                      .onClick(() => {
-                        this.shareTypeIndex = 4;
-                      })
+                    // Button('文件') // 暂时隐藏文件分享
+                    //   .fontSize(14)
+                    //   .height(36)
+                    //   .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
+                    //   .fontColor(this.shareTypeIndex === 4 ? 0xFFFFFF : 0x000000)
+                    //   .borderRadius(8)
+                    //   .onClick(() => {
+                    //     this.shareTypeIndex = 4;
+                    //   })
                   }
                   .width('100%')
                   .justifyContent(FlexAlign.SpaceEvenly)
@@ -2935,18 +2935,18 @@ export struct HomePage {
                     this.shareTypeIndex = 3;
                     this.updateTitleForShareType(3);
                   })
-                Button('文件')
-                  .fontSize(13)
-                  .height(32)
-                  .layoutWeight(1)
-                  .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
-                  .fontColor(this.shareTypeIndex === 4 ? 0xFFFFFF : 0x000000)
-                  .borderRadius(6)
-                  .padding({ left: 4, right: 4 })
-                  .onClick(() => {
-                    this.shareTypeIndex = 4;
-                    this.updateTitleForShareType(4);
-                  })
+                // Button('文件') // 暂时隐藏文件分享
+                //   .fontSize(13)
+                //   .height(32)
+                //   .layoutWeight(1)
+                //   .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
+                //   .fontColor(this.shareTypeIndex === 4 ? 0xFFFFFF : 0x000000)
+                //   .borderRadius(6)
+                //   .padding({ left: 4, right: 4 })
+                //   .onClick(() => {
+                //     this.shareTypeIndex = 4;
+                //     this.updateTitleForShareType(4);
+                //   })
               }
               .width('100%')
               .justifyContent(FlexAlign.SpaceBetween)
