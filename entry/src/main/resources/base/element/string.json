@@ -423,14 +423,6 @@
 		{
 			"name": "video_share",
 			"value": "视频分享"
-		},
-		{
-			"name": "image_count",
-			"value": "分享 {0} 张图片"
-		},
-		{
-			"name": "video_count",
-			"value": "分享 {0} 个视频"
 		}
 	]
 }

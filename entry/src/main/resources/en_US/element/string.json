@@ -407,6 +407,22 @@
     {
       "name": "large_device_hint",
       "value": "Tablets, PCs, and 2-in-1 devices do not support Knock Share,\nAirDrop preview has been automatically selected."
+    },
+    {
+      "name": "text_share",
+      "value": "Text Share"
+    },
+    {
+      "name": "link_share",
+      "value": "Link Share"
+    },
+    {
+      "name": "image_share",
+      "value": "Image Share"
+    },
+    {
+      "name": "video_share",
+      "value": "Video Share"
     }
   ]
 }
