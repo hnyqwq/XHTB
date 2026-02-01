@@ -69,6 +69,7 @@ export struct HomePage {
   @State backgroundImagePath: string = 'https://www.hnyqwq.cn/hvideo/share.png' // 背景图片路径(独立)
   @State backgroundPixelMap: PixelMap | undefined = undefined; // 背景图片的PixelMap(独立)
   @State backgroundImageKey: string = ''; // 背景图片key(独立)
+  @State useCustomBackground: boolean = false; // 标记是否用户手动设置了自定义背景图片
   //@State networkPreviewUri: Resource = $r('app.media.homepageback');
   @State savefileUri: string = ' ';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
@@ -230,6 +231,10 @@ export struct HomePage {
       this.backgroundPixelMap = await imageSource.createPixelMap();
       hilog.info(0x0000, 'localsharepng' , 'PixelMap created for background image');
 
+      // 更新 sharepng（第一个卡片的分享图片背景）
+      this.sharepng = 'file://' + targetPath;
+      hilog.info(0x0000, 'localsharepng' , 'sharepng updated to: ' + this.sharepng);
+
       // 只更新背景图片路径,不影响分享图片
       this.backgroundImagePath = 'file://' + targetPath;
       hilog.info(0x0000, 'localsharepng' , 'Background image path updated');
@@ -263,24 +268,25 @@ export struct HomePage {
     console.log('=== selectShareImage 开始 ===');
     console.log('选择的图片 URI: ' + uri);
 
-    // 根据选中的图片URI更新扩展名
-    if (uri.endsWith('.png')) {
-      this.imageExtension = '.png';
-    } else if (uri.endsWith('.jpg') || uri.endsWith('.jpeg')) {
-      this.imageExtension = '.jpg';
-    } else if (uri.endsWith('.webp')) {
-      this.imageExtension = '.webp';
-    } else {
-      // 默认使用.png格式
-      this.imageExtension = '.png';
-    }
-
-    console.log('更新后的 imageExtension: ' + this.imageExtension);
-
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
 
+    // 根据选中的图片URI确定扩展名，但使用独立的变量
+    let shareImageExtension = '.png';
+    if (uri.endsWith('.png')) {
+      shareImageExtension = '.png';
+    } else if (uri.endsWith('.jpg') || uri.endsWith('.jpeg')) {
+      shareImageExtension = '.jpg';
+    } else if (uri.endsWith('.webp')) {
+      shareImageExtension = '.webp';
+    } else {
+      // 默认使用.png格式
+      shareImageExtension = '.png';
+    }
+
+    console.log('分享图片扩展名: ' + shareImageExtension);
+
     // 根据当前图片扩展名设置目标路径(分享图片使用不同的文件名)
-    let targetPath = context.filesDir + '/shareimg' + this.imageExtension;
+    let targetPath = context.filesDir + '/shareimg' + shareImageExtension;
     console.log('目标完整路径 targetPath: ' + targetPath);
 
     // 使用文件描述符方式复制文件（适配图库URI）
@@ -383,6 +389,9 @@ export struct HomePage {
       // 更新背景图片(独立状态,不影响分享图片)
       this.backgroundImagePath = 'file://' + targetPath;
       hilog.info(0x0000, 'HomePage', 'Background image updated to: ' + this.backgroundImagePath);
+
+      // 标记用户已手动设置自定义背景
+      this.useCustomBackground = true;
 
       // 强制刷新背景图片显示
       this.backgroundImageKey = Date.now().toString();
@@ -529,7 +538,24 @@ export struct HomePage {
 
   // 分享链接
   private async shareLink(contextFaker: Context) {
-    let thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+    // 始终使用 sharepng 作为缩略图背景(第一个卡片的背景图片)
+    let thumbnailPath: string;
+    if (this.sharepng) {
+      if (this.sharepng.startsWith('http://') || this.sharepng.startsWith('https://')) {
+        // sharepng 是网络图片,使用本地缓存文件
+        thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+      } else if (this.sharepng.startsWith('file://')) {
+        // sharepng 是本地文件
+        thumbnailPath = this.sharepng.substring(7); // 移除 file:// 前缀
+      } else {
+        // sharepng 是其他路径
+        thumbnailPath = this.sharepng;
+      }
+    } else {
+      // sharepng 为空,使用默认pengyipeng文件
+      thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+    }
+
     let imageSource: image.ImageSource = image.createImageSource(thumbnailPath);
     let imagePacker: image.ImagePacker = image.createImagePacker();
     let buffer: ArrayBuffer = await imagePacker.packToData(imageSource, {
@@ -602,7 +628,24 @@ export struct HomePage {
 
   // 分享视频
   private async shareVideo(contextFaker: Context) {
-    let thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+    // 始终使用 sharepng 作为缩略图背景(第一个卡片的背景图片)
+    let thumbnailPath: string;
+    if (this.sharepng) {
+      if (this.sharepng.startsWith('http://') || this.sharepng.startsWith('https://')) {
+        // sharepng 是网络图片,使用本地缓存文件
+        thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+      } else if (this.sharepng.startsWith('file://')) {
+        // sharepng 是本地文件
+        thumbnailPath = this.sharepng.substring(7); // 移除 file:// 前缀
+      } else {
+        // sharepng 是其他路径
+        thumbnailPath = this.sharepng;
+      }
+    } else {
+      // sharepng 为空,使用默认pengyipeng文件
+      thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+    }
+
     let imageSource: image.ImageSource = image.createImageSource(thumbnailPath);
     let imagePacker: image.ImagePacker = image.createImagePacker();
     let buffer: ArrayBuffer | undefined = undefined;
@@ -741,8 +784,24 @@ export struct HomePage {
       return;
     }
 
-    // 获取缩略图
-    let thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+    // 始终使用 sharepng 作为缩略图背景(第一个卡片的背景图片)
+    let thumbnailPath: string;
+    if (this.sharepng) {
+      if (this.sharepng.startsWith('http://') || this.sharepng.startsWith('https://')) {
+        // sharepng 是网络图片,使用本地缓存文件
+        thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+      } else if (this.sharepng.startsWith('file://')) {
+        // sharepng 是本地文件
+        thumbnailPath = this.sharepng.substring(7); // 移除 file:// 前缀
+      } else {
+        // sharepng 是其他路径
+        thumbnailPath = this.sharepng;
+      }
+    } else {
+      // sharepng 为空,使用默认pengyipeng文件
+      thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+    }
+
     let imageSource: image.ImageSource = image.createImageSource(thumbnailPath);
     let imagePacker: image.ImagePacker = image.createImagePacker();
     let buffer: ArrayBuffer | undefined = undefined;
@@ -852,17 +911,33 @@ export struct HomePage {
         await new Promise<void>((resolve) => {
           downloadTask.on('complete', () => {
             console.log('Image downloaded successfully as ' + this.imageExtension);
-            
+
             // 下载完成后，等待文件系统同步
             setTimeout(async () => {
               console.log('下载完成，开始获取宽高比');
               await this.getImageAspectRatio();
               console.log('getImageAspectRatio 执行完成，宽高比: ' + this.imageAspectRatio);
               console.log('=== DownloadToSandbox 下载完成 ===');
+
+              // 只有当用户没有手动设置自定义背景时，才更新 backgroundPixelMap 和 backgroundImagePath
+              if (!this.useCustomBackground) {
+                let localPath = filesDir + '/pengyipeng' + this.imageExtension;
+                try {
+                  const imageSource = image.createImageSource(localPath);
+                  this.backgroundPixelMap = await imageSource.createPixelMap();
+                  this.backgroundImagePath = 'file://' + localPath;
+                  console.log('backgroundPixelMap 和 backgroundImagePath 已更新（跟随 sharepng）');
+                } catch (error) {
+                  console.error('加载 backgroundPixelMap 失败:', JSON.stringify(error));
+                }
+              } else {
+                console.log('用户已设置自定义背景，保持不变');
+              }
+
               resolve();
             }, 500);
           });
-          
+
           downloadTask.on('fail', (err: number) => {
             console.error('Download failed with error code: ' + err);
             resolve(); // 即使失败也resolve，避免卡住
@@ -1092,7 +1167,25 @@ export struct HomePage {
   // 在类成员变量区域定义箭头函数绑定回调
   private whiteCallback = async (sharableTarget: harmonyShare.SharableTarget): Promise<void> => {
     const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-    let filePath = context.filesDir + "/pengyipeng" + this.imageExtension;
+
+    // 始终使用 sharepng 作为缩略图背景(第一个卡片的背景图片)
+    let thumbnailPath: string;
+    if (this.sharepng) {
+      if (this.sharepng.startsWith('http://') || this.sharepng.startsWith('https://')) {
+        // sharepng 是网络图片,使用本地缓存文件
+        thumbnailPath = context.filesDir + "/pengyipeng" + this.imageExtension;
+      } else if (this.sharepng.startsWith('file://')) {
+        // sharepng 是本地文件
+        thumbnailPath = this.sharepng.substring(7); // 移除 file:// 前缀
+      } else {
+        // sharepng 是其他路径
+        thumbnailPath = this.sharepng;
+      }
+    } else {
+      // sharepng 为空,使用默认pengyipeng文件
+      thumbnailPath = context.filesDir + "/pengyipeng" + this.imageExtension;
+    }
+
     let shareData: systemShare.SharedData;
 
     // 根据分享类型索引构建不同的分享数据
@@ -1101,7 +1194,7 @@ export struct HomePage {
         shareData = new systemShare.SharedData({
           utd: utd.UniformDataType.HYPERLINK,
           content: this.shareLinkContent || this.networkVideoSrc,
-          thumbnailUri: fileUri.getUriFromPath(filePath),
+          thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
           title: this.pengtitle,
           description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
         });
@@ -1110,7 +1203,7 @@ export struct HomePage {
         shareData = new systemShare.SharedData({
           utd: utd.UniformDataType.TEXT,
           content: this.shareTextContent,
-          thumbnailUri: fileUri.getUriFromPath(filePath),
+          thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
           title: this.pengtitle,
           description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
         });
@@ -1120,7 +1213,7 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utd.UniformDataType.IMAGE,
             uri: this.shareImagePaths[0],
-            thumbnailUri: fileUri.getUriFromPath(filePath),
+            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
           });
@@ -1134,7 +1227,7 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utd.UniformDataType.VIDEO,
             uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
-            thumbnailUri: fileUri.getUriFromPath(filePath),
+            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
           });
@@ -1150,7 +1243,7 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utdTypeId,
             uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
-            thumbnailUri: fileUri.getUriFromPath(filePath),
+            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
           });
@@ -1290,8 +1383,9 @@ export struct HomePage {
       console.log('文件存在，状态: ' + JSON.stringify(stat));
       if (stat.isFile()) {
         this.debugFileExists = true;
-        this.sharepng = 'file://' + imagePath;
-        console.log('图片文件已找到并更新: ' + imagePath);
+        // 注释掉:不要在隔空投送时修改 sharepng,保持用户设置的背景图片
+        // this.sharepng = 'file://' + imagePath;
+        console.log('图片文件已找到: ' + imagePath);
         // 如果是横屏+隔空模式，获取主颜色
         if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
           this.extractMainColor();
@@ -1306,8 +1400,24 @@ export struct HomePage {
       console.log('==================');
     }
 
-    // 根据当前图片扩展名设置文件路径（使用相同的 currentContext）
-    let filePath = currentContext.filesDir + "/pengyipeng" + this.imageExtension;
+    // 始终使用 sharepng 作为缩略图背景(第一个卡片的背景图片)
+    let thumbnailPath: string;
+    if (this.sharepng) {
+      if (this.sharepng.startsWith('http://') || this.sharepng.startsWith('https://')) {
+        // sharepng 是网络图片,使用本地缓存文件
+        thumbnailPath = currentContext.filesDir + "/pengyipeng" + this.imageExtension;
+      } else if (this.sharepng.startsWith('file://')) {
+        // sharepng 是本地文件
+        thumbnailPath = this.sharepng.substring(7); // 移除 file:// 前缀
+      } else {
+        // sharepng 是其他路径
+        thumbnailPath = this.sharepng;
+      }
+    } else {
+      // sharepng 为空,使用默认pengyipeng文件
+      thumbnailPath = currentContext.filesDir + "/pengyipeng" + this.imageExtension;
+    }
+
     let shareData: systemShare.SharedData;
 
     // 根据分享类型索引构建不同的分享数据
@@ -1316,7 +1426,7 @@ export struct HomePage {
         shareData = new systemShare.SharedData({
           utd: utd.UniformDataType.HYPERLINK,
           content: this.shareLinkContent || this.networkVideoSrc,
-          thumbnailUri: fileUri.getUriFromPath(filePath),
+          thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
           title: this.pengtitle,
           description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
         });
@@ -1325,7 +1435,7 @@ export struct HomePage {
         shareData = new systemShare.SharedData({
           utd: utd.UniformDataType.TEXT,
           content: this.shareTextContent,
-          thumbnailUri: fileUri.getUriFromPath(filePath),
+          thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
           title: this.pengtitle,
           description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
         });
@@ -1335,7 +1445,7 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utd.UniformDataType.IMAGE,
             uri: this.shareImagePaths[0],
-            thumbnailUri: fileUri.getUriFromPath(filePath),
+            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
@@ -1349,7 +1459,7 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utd.UniformDataType.VIDEO,
             uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
-            thumbnailUri: fileUri.getUriFromPath(filePath),
+            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
@@ -1365,6 +1475,7 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utdTypeId,
             uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
+            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
