@@ -1210,13 +1210,27 @@ export struct HomePage {
         break;
       case 2: // 图片分享
         if (this.shareImagePaths.length > 0) {
+          let imagePath = this.shareImagePaths[0];
+          let extension = imagePath.substring(imagePath.lastIndexOf('.'));
+          let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.IMAGE);
+          
           shareData = new systemShare.SharedData({
-            utd: utd.UniformDataType.IMAGE,
-            uri: this.shareImagePaths[0],
+            utd: utdTypeId,
+            uri: imagePath,
             thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
           });
+          
+          // 为剩余的每张图片添加记录
+          for (let i = 1; i < this.shareImagePaths.length; i++) {
+            shareData.addRecord({
+              utd: utdTypeId,
+              uri: this.shareImagePaths[i],
+              title: `分享图片${i + 1}`,
+              description: `分享图片${i + 1}`,
+            });
+          }
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片' });
           return;
@@ -1231,6 +1245,16 @@ export struct HomePage {
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
           });
+          
+          // 为剩余的每个视频添加记录
+          for (let i = 1; i < this.shareVideoPaths.length; i++) {
+            shareData.addRecord({
+              utd: utd.UniformDataType.VIDEO,
+              uri: fileUri.getUriFromPath(this.shareVideoPaths[i]),
+              title: `分享视频${i + 1}`,
+              description: `分享视频${i + 1}`,
+            });
+          }
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频' });
           return;
@@ -1442,13 +1466,27 @@ export struct HomePage {
         break;
       case 2: // 图片分享
         if (this.shareImagePaths.length > 0) {
+          let imagePath = this.shareImagePaths[0];
+          let extension = imagePath.substring(imagePath.lastIndexOf('.'));
+          let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.IMAGE);
+          
           shareData = new systemShare.SharedData({
-            utd: utd.UniformDataType.IMAGE,
-            uri: this.shareImagePaths[0],
+            utd: utdTypeId,
+            uri: imagePath,
             thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
+          
+          // 为剩余的每张图片添加记录
+          for (let i = 1; i < this.shareImagePaths.length; i++) {
+            shareData.addRecord({
+              utd: utdTypeId,
+              uri: this.shareImagePaths[i],
+              title: `分享图片${i + 1}`,
+              description: `分享图片${i + 1}`,
+            });
+          }
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片' });
           return;
@@ -1463,6 +1501,16 @@ export struct HomePage {
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
+          
+          // 为剩余的每个视频添加记录
+          for (let i = 1; i < this.shareVideoPaths.length; i++) {
+            shareData.addRecord({
+              utd: utd.UniformDataType.VIDEO,
+              uri: fileUri.getUriFromPath(this.shareVideoPaths[i]),
+              title: `分享视频${i + 1}`,
+              description: `分享视频${i + 1}`,
+            });
+          }
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频' });
           return;
