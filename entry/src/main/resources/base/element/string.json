@@ -407,6 +407,30 @@
 		{
 			"name": "large_device_hint",
 			"value": "平板和PC/2in1设备不支持碰一碰传送，\n已为您自动选择隔空传送预览。"
+		},
+		{
+			"name": "text_share",
+			"value": "文本分享"
+		},
+		{
+			"name": "link_share",
+			"value": "链接分享"
+		},
+		{
+			"name": "image_share",
+			"value": "图片分享"
+		},
+		{
+			"name": "video_share",
+			"value": "视频分享"
+		},
+		{
+			"name": "image_count",
+			"value": "分享 {0} 张图片"
+		},
+		{
+			"name": "video_count",
+			"value": "分享 {0} 个视频"
 		}
 	]
 }

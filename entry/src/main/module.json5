@@ -130,9 +130,24 @@
 						],
 						"uris": [
 							{
-							"scheme": "file",
-							"utd": "general.text",
-							"maxFileSupported": 1
+								"scheme": "file",
+								"utd": "general.hyperlink",
+								"maxFileSupported": 1
+							},
+							{
+								"scheme": "file",
+								"utd": "general.text",
+								"maxFileSupported": 1
+							},
+							{
+								"scheme": "file",
+								"utd": "general.image",
+								"maxFileSupported": 500
+							},
+							{
+								"scheme": "file",
+								"utd": "general.video",
+								"maxFileSupported": 500
 							}
 						]
 					}
