@@ -2168,11 +2168,11 @@ export struct HomePage {
                       Row() {
                         Text('分享视频')
                           .textAlign(TextAlign.Center)
-                          .width('40%')
+                          .width('55%')
                           .margin({ right: 10 })
                         Button('选择视频')
                           .height(50)
-                          .width('25%')
+                          .width('40%')
                           .backgroundColor(0xFF66CC)
                           .onClick(async () => {
                             await this.selectVideo();
