@@ -26,7 +26,7 @@ struct SecondPageContent {
         Text($r('app.string.page_title'))
           .fontSize($r('app.float.page_title_font_size'))
           .fontWeight(FontWeight.Bold)
-          .fontColor($r('app.color.font_color_182431'))
+          .fontColor($r('app.color.font_primary'))
       }
       .margin({ top: 10, bottom: 10 })
       .justifyContent(FlexAlign.Center)
