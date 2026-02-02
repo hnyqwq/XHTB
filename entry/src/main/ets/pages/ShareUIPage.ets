@@ -3,6 +3,7 @@ import { systemShare } from '@kit.ShareKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { image } from '@kit.ImageKit';
+import { promptAction } from '@kit.ArkUI';
 import Logger from '../utils/Logger';
 import { navigationManager } from '../common/NavigationManager';
 
@@ -229,12 +230,18 @@ struct SystemShare {
             .backgroundColor(0xFF66CC)
             .margin({ left: 10 })
             .onClick(() => {
-              if (this.videoUri.length > 0) {
-                this.networkVideoSrc = this.videoUri[0];
-              } else if (this.htmlLink) {
-                this.networkVideoSrc = this.htmlLink;
+              logger.info(`onClick - imageUri: ${this.imageUri.length}, videoUri: ${this.videoUri.length}, htmlLink: ${this.htmlLink}`);
+              // 检查是否是图片或视频分享
+              if (this.imageUri.length > 0 || this.videoUri.length > 0) {
+                // 暂不支持图片、视频从分享面板跳转分享，功能正在制作中
+                promptAction.showToast({ message: '暂不支持图片、视频从分享面板跳转分享，功能正在制作中' });
+                return;
               }
-              navigationManager.pushPath('pages/Index');
+              // 只有非图片、非视频且有链接时才跳转
+              if (this.htmlLink) {
+                this.networkVideoSrc = this.htmlLink;
+                navigationManager.pushPath('pages/HomePage');
+              }
             })
         }
         .width('100%')
