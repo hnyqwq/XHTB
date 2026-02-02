@@ -2667,7 +2667,7 @@ export struct HomePage {
                     .fontFamily('HarmonyHeiTi')
                     .textAlign(TextAlign.Center)
                     .lineHeight(18)
-                    .padding({ top: 2, bottom: 20 })
+                    .padding({ top: 2 })
                 }
                 .width('100%')
               }
@@ -3598,7 +3598,7 @@ export struct HomePage {
                 .fontFamily('HarmonyHeiTi')
                 .textAlign(TextAlign.Center)
                 .lineHeight(18)
-                .padding({ top: 2, bottom: 20 })
+                .padding({ top: 2 })
             }
             .width('90%')
           }
