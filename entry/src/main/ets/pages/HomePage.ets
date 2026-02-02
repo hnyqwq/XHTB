@@ -129,7 +129,7 @@ export struct HomePage {
     {
       title: '春节放假安排',
       imageUrl: 'https://img.alicdn.com/imgextra/i3/O1CN01Z6Hv8Y1Z8ZkXJgV7b_!!6000000004684-2-tps-800-600.png',
-      jumpUrl: 'https://www.baidu.com/s?wd=2026春节放假安排'
+      jumpUrl: 'https://www.gov.cn/zhengce/content/202511/content_7047090.htm'
     },
     {
       title: '新年祝福',
@@ -137,7 +137,7 @@ export struct HomePage {
       jumpUrl: 'https://www.baidu.com/s?wd=2026新年祝福语'
     },
     {
-      title: '新年快乐',
+      title: '看春晚',
       imageUrl: 'https://img.alicdn.com/imgextra/i1/O1CN01Z6Hv8V1Z8ZkXJgV7d_!!6000000004684-2-tps-800-600.png',
       jumpUrl: 'https://www.baidu.com/s?wd=2026新年快乐图片'
     }
@@ -2797,10 +2797,11 @@ export struct HomePage {
               .padding({ left: 12, right: 12, top: 8, bottom: 8 })
               .justifyContent(FlexAlign.SpaceBetween)
 
-              // 新年按钮列表
-              Row({ space: 8 }) {
-                ForEach(this.newYearCards, (card: NewYearCard, index: number) => {
-                  Button(card.title)
+              // 新年按钮列表 - 两行,每行两个
+              Column({ space: 8 }) {
+                // 第一行
+                Row({ space: 8 }) {
+                  Button(this.newYearCards[0].title)
                     .fontSize(14)
                     .height(40)
                     .layoutWeight(1)
@@ -2809,9 +2810,48 @@ export struct HomePage {
                     .borderRadius(8)
                     .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
                     .onClick(() => {
-                      this.handleNewYearCardClick(card);
+                      this.handleNewYearCardClick(this.newYearCards[0]);
                     })
-                }, (card: NewYearCard, index: number) => `${index}`)
+                  Button(this.newYearCards[1].title)
+                    .fontSize(14)
+                    .height(40)
+                    .layoutWeight(1)
+                    .backgroundColor(0xFF6666)
+                    .fontColor(0xFFFFFF)
+                    .borderRadius(8)
+                    .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                    .onClick(() => {
+                      this.handleNewYearCardClick(this.newYearCards[1]);
+                    })
+                }
+                .width('100%')
+
+                // 第二行
+                Row({ space: 8 }) {
+                  Button(this.newYearCards[2].title)
+                    .fontSize(14)
+                    .height(40)
+                    .layoutWeight(1)
+                    .backgroundColor(0xFF6666)
+                    .fontColor(0xFFFFFF)
+                    .borderRadius(8)
+                    .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                    .onClick(() => {
+                      this.handleNewYearCardClick(this.newYearCards[2]);
+                    })
+                  Button(this.newYearCards[3].title)
+                    .fontSize(14)
+                    .height(40)
+                    .layoutWeight(1)
+                    .backgroundColor(0xFF6666)
+                    .fontColor(0xFFFFFF)
+                    .borderRadius(8)
+                    .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                    .onClick(() => {
+                      this.handleNewYearCardClick(this.newYearCards[3]);
+                    })
+                }
+                .width('100%')
               }
               .width('100%')
               .padding({ left: 12, right: 12, bottom: 8 })
@@ -3369,51 +3409,6 @@ export struct HomePage {
             .padding(12)
             .margin({ bottom: 10 })
             .border({ width: 1, color: $r('app.color.card_border_color') })
-          }
-
-          // 新年卡片区域
-          if (this.showNewYearCard) {
-            Column() {
-              Row() {
-                Text('🎉 新年精选')
-                  .fontSize(18)
-                  .fontWeight(FontWeight.Bold)
-                  .fontColor(0xCC0000)
-                  .layoutWeight(1)
-
-                // 关闭按钮
-                Text('✕')
-                  .fontSize(20)
-                  .fontColor(0x999999)
-                  .onClick(() => {
-                    this.showNewYearCard = false;
-                  })
-              }
-              .width('100%')
-              .padding({ left: 8, right: 8, top: 8 })
-              .justifyContent(FlexAlign.SpaceBetween)
-
-              // 新年卡片列表
-              Scroll() {
-                Row({ space: 8 }) {
-                  ForEach(this.newYearCards, (card: NewYearCard, index: number) => {
-                    this.NewYearCardItem(card, index)
-                  }, (card: NewYearCard, index: number) => `${index}`)
-                }
-                .padding(8)
-              }
-              .scrollable(ScrollDirection.Horizontal)
-              .scrollBar(BarState.Off)
-              .width('100%')
-            }
-            .width('100%')
-            .linearGradient({
-              direction: GradientDirection.Bottom,
-              colors: [[0xFFFEF5E5, 0.0], [0xFFFFE0E0, 1.0]]
-            })
-            .borderRadius(12)
-            .padding({ top: 8, bottom: 8 })
-            .margin({ bottom: 16 })
           }
 
           // 系统分享按钮
