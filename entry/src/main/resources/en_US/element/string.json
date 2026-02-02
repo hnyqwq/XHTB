@@ -125,6 +125,10 @@
       "value": "\uDB80\uDC28 Extract QR code"
     },
     {
+      "name":"textinput",
+      "value": "\uDB81\uDC94 Enter text to share"
+    },
+    {
       "name":"downloaded",
       "value":"\uDB80\uDCD0\uDB80\uDC13 Download request successful! After download is complete, you can view the video in Albums > Videos , and it will be categorized by the video's creation date ."
     },
@@ -217,6 +221,10 @@
       "value":"Choose local photo"
     },
     {
+      "name":"choosevideo",
+      "value":"Choose video"
+    },
+    {
       "name":"choosepad",
       "value":"Choose photo"
     },
@@ -251,6 +259,14 @@
     {
       "name":"texton",
       "value": "Set the link to be shared"
+    },
+    {
+      "name":"pictureon",
+      "value": "Set the picture to be shared"
+    },
+    {
+      "name":"videoon",
+      "value": "Set the video to be shared"
     },
     {
       "name": "local_image_selected",
@@ -423,6 +439,10 @@
     {
       "name": "video_share",
       "value": "Video Share"
+    },
+    {
+      "name": "file_share",
+      "value": "File Share"
     }
   ]
 }

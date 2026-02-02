@@ -118,15 +118,19 @@
 		},
 		{
 			"name":"testinput",
-			"value": "\uDB81\uDC94 输入链接"
-		},
-		{
-			"name":"scancodelink",
-			"value": "\uDB80\uDC28\uDB80\uDD28 从二维码提取链接"
+			"value": "\uDB81\uDC94 请输入要分享的链接"
 		},
 		{
 			"name":"scancodelinkpad",
+			"value": "\uDB80\uDC28\uDB80\uDD28 从二维码提取链接"
+		},
+		{
+			"name":"scancodelink",
 			"value": "\uDB80\uDC28 扫码提取链接"
+		},
+		{
+			"name":"textinput",
+			"value": "\uDB81\uDC94 请输入要分享的文本"
 		},
 		{
 			"name":"downloaded",
@@ -423,6 +427,18 @@
 		{
 			"name": "video_share",
 			"value": "视频分享"
+		},
+		{
+			"name": "choosevideo",
+			"value": "选择视频"
+		},
+		{
+			"name": "pictureon",
+			"value": "选择需要分享的图片"
+		},
+		{
+			"name": "videoon",
+			"value": "选择需要分享的视频"
 		}
 	]
 }

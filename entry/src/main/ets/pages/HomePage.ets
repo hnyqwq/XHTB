@@ -2291,7 +2291,7 @@ export struct HomePage {
                     // 文本分享
                     Column() {
                       Row() {
-                        TextArea({ placeholder: '请输入要分享的文本', text: this.shareTextContent })
+                        TextArea({ placeholder: $r('app.string.textinput'), text: this.shareTextContent })
                           .layoutWeight(1)
                           .onChange((value: string) => {
                             this.shareTextContent = value;
@@ -2321,7 +2321,7 @@ export struct HomePage {
                     // 图片分享
                     Column() {
                       Row() {
-                        Text('分享图片')
+                        Text($r('app.string.pictureon'))
                           .textAlign(TextAlign.Center)
                           .width('55%')
                           .margin({ right: 10 })
@@ -2372,11 +2372,11 @@ export struct HomePage {
                     // 视频分享
                     Column() {
                       Row() {
-                        Text('分享视频')
+                        Text($r('app.string.videoon'))
                           .textAlign(TextAlign.Center)
                           .width('55%')
                           .margin({ right: 10 })
-                        Button('选择视频')
+                        Button($r('app.string.choosevideo'))
                           .height(50)
                           .width('40%')
                           .backgroundColor(0xFF66CC)
@@ -3183,7 +3183,7 @@ export struct HomePage {
                 // 文本分享
                 Column() {
                   Row() {
-                    TextArea({ placeholder: '请输入要分享的文本', text: this.shareTextContent })
+                    TextArea({ placeholder: $r('app.string.textinput'), text: this.shareTextContent })
                       .layoutWeight(1)
                       .onChange((value: string) => {
                         this.shareTextContent = value;
@@ -3214,7 +3214,7 @@ export struct HomePage {
                 // 图片分享
                 Column() {
                   Row() {
-                    Text('分享图片')
+                    Text($r('app.string.pictureon'))
                       .textAlign(TextAlign.Center)
                       .width('55%')
                       .margin({ right: 10 })
@@ -3265,11 +3265,11 @@ export struct HomePage {
                 // 视频分享
                 Column() {
                   Row() {
-                    Text('分享视频')
+                    Text($r('app.string.videoon'))
                       .textAlign(TextAlign.Center)
                       .width('55%')
                       .margin({ right: 10 })
-                    Button('选择视频')
+                    Button($r('app.string.choosevideo'))
                       .height(50)
                       .width('40%')
                       .backgroundColor(0xFF66CC)
