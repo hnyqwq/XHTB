@@ -51,7 +51,7 @@ export struct TextToSpeechPage {
       .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
       
       Column({ space: 20 }) {
-        Text('朗读功能')
+        Text($r('app.string.sub_title2_value1'))
           .fontSize(24)
           .fontWeight(FontWeight.Bold)
           .margin({ top: 20 })

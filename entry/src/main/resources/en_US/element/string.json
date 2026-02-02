@@ -206,7 +206,7 @@
     },
     {
       "name":"info4",
-      "value":"Serial number"
+      "value":"Software version"
     },
     {
       "name":"info5",
@@ -326,7 +326,7 @@
     },
     {
       "name": "sub_title2_value1",
-      "value": "Read & QR code"
+      "value": "Read text"
     },
     {
       "name": "sub_title3_value1",

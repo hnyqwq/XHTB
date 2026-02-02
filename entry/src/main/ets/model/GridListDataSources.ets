@@ -22,8 +22,8 @@ export class GridData {
 
 export const featureGridData: GridData = new GridData($r('app.string.sub_title1'),
   [
-    new GridItemInfo('朗读功能', 'XHTB/TextToSpeechPage', $r('app.media.ic_swiper_grid_image2')),
-    new GridItemInfo('二维码生成', 'XHTB/QRCodePage', $r('app.media.ic_swiper_grid_image7'))/*,
+    new GridItemInfo($r('app.string.sub_title1_value1'), 'XHTB/TextToSpeechPage', $r('app.media.ic_swiper_grid_image2')),
+    new GridItemInfo($r('app.string.sub_title1_value2'), 'XHTB/QRCodePage', $r('app.media.ic_swiper_grid_image7'))/*,
     new GridItemInfo($r('app.string.sub_title1_value3'), 'pages/MinePage'),
     new GridItemInfo($r('app.string.sub_title1_value4'), 'pages/infoPage'),
     new GridItemInfo($r('app.string.sub_title1_value5'), 'XHTB/ReadQR'),

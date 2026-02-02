@@ -2654,12 +2654,12 @@ export struct HomePage {
                   .fontWeight(FontWeight.Bold)
                   .margin({ top: 12 ,bottom: 8 })
                   .blur(0) // 文字不模糊
-                  .fontColor(0xFFFFFFFF) // 竖屏+碰一碰/隔空模式下使用白色
+                  .fontColor(0xFF000000) // 横屏+碰一碰模式下使用黑色
 
                 // 描述
                 Text(this.currentDescription)
                   .fontSize(16)
-                  .fontColor(0xFFFFFFFF) // 竖屏+碰一碰/隔空模式下使用白色
+                  .fontColor(0xA3A3A3)
                   //.fontWeight(FontWeight.Medium)
                   .margin({ bottom: 5 })
                   .blur(0) // 文字不模糊

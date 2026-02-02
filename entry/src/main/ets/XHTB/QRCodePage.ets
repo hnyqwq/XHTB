@@ -29,7 +29,7 @@ export struct QRCodePage {
       .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
       
       Column({ space: 20 }) {
-        Text('二维码生成')
+        Text($r('app.string.sub_title1_value2'))
           .fontSize(24)
           .fontWeight(FontWeight.Bold)
           .margin({ top: 20 })
