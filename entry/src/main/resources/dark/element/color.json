@@ -71,6 +71,10 @@
     {
       "name": "tab_text_color_unselected",
       "value": "#CCCCCC"
+    },
+    {
+      "name": "comp_background_list_card",
+      "value": "#1C1C1E"
     }
   ]
 }

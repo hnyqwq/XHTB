@@ -2092,11 +2092,11 @@ export struct HomePage {
                   .margin({ top: 10, bottom: 10 })
                 }
                 .width('100%')
-                .backgroundColor('#FFFFFF')
+                .backgroundColor($r('app.color.comp_background_list_card'))
                 .borderRadius(8)
                 .padding(12)
                 .margin({ bottom: 10 })
-                .border({ width: 1, color: 0xE0E0E0 })
+                .border({ width: 1, color: $r('sys.color.comp_divider') })
 
                 // 区域2：分享内容
                 Column() {
@@ -2873,11 +2873,11 @@ export struct HomePage {
               .margin({ top: 10, bottom: 10 })
             }
             .width('100%')
-            .backgroundColor('#FFFFFF')
+            .backgroundColor($r('app.color.comp_background_list_card'))
             .borderRadius(8)
             .padding(12)
             .margin({ bottom: 10 })
-            .border({ width: 1, color: 0xE0E0E0 })
+            .border({ width: 1, color: $r('sys.color.comp_divider') })
 
             // 区域2：分享内容
             Column() {
