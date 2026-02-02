@@ -498,6 +498,22 @@
     {
       "name": "share_file_title",
       "value": "分享当前的文件"
+    },
+    {
+      "name": "link",
+      "value": "链接"
+    },
+    {
+      "name": "text",
+      "value": "文本"
+    },
+    {
+      "name": "image",
+      "value": "图片"
+    },
+    {
+      "name": "video",
+      "value": "视频"
     }
   ]
 }

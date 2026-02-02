@@ -3132,7 +3132,7 @@ export struct HomePage {
             Column() {
               // 分享类型选择胶囊按钮
               Row() {
-                Button('链接')
+                Button($r('app.string.link'))
                   .fontSize(13)
                   .height(32)
                   .layoutWeight(1)
@@ -3145,7 +3145,7 @@ export struct HomePage {
                     this.shareTypeIndex = 0;
                     this.updateTitleForShareType(0);
                   })
-                Button('文本')
+                Button($r('app.string.text'))
                   .fontSize(13)
                   .height(32)
                   .layoutWeight(1)
@@ -3158,7 +3158,7 @@ export struct HomePage {
                     this.shareTypeIndex = 1;
                     this.updateTitleForShareType(1);
                   })
-                Button('图片')
+                Button($r('app.string.image'))
                   .fontSize(13)
                   .height(32)
                   .layoutWeight(1)
@@ -3171,7 +3171,7 @@ export struct HomePage {
                     this.shareTypeIndex = 2;
                     this.updateTitleForShareType(2);
                   })
-                Button('视频')
+                Button($r('app.string.video'))
                   .fontSize(13)
                   .height(32)
                   .layoutWeight(1)

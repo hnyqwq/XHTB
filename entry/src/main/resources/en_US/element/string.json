@@ -499,6 +499,22 @@
     {
       "name": "video_share",
       "value": "Video Share"
+    },
+    {
+      "name": "link",
+      "value": "Link"
+    },
+    {
+      "name": "text",
+      "value": "Text"
+    },
+    {
+      "name": "image",
+      "value": "Image"
+    },
+    {
+      "name": "video",
+      "value": "Video"
     }
   ]
 }
