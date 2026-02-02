@@ -2789,6 +2789,9 @@ export struct HomePage {
                   .fontSize('20fp')
                   .fontWeight(FontWeight.Bold)
                   .fontColor(0xFFFFFFFF) // 竖屏+碰一碰/隔空模式下使用白色
+                  .maxLines(2)
+                  .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  .constraintSize({ maxWidth: 250 })
                 Text(this.currentDescription)
                   .fontWeight(400)
                   .fontSize('13vp')
