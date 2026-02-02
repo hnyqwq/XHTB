@@ -75,6 +75,10 @@
     {
       "name": "comp_background_list_card",
       "value": "#1C1C1E"
+    },
+    {
+      "name": "card_border_color",
+      "value": "#38383A"
     }
   ]
 }

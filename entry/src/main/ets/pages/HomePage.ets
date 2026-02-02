@@ -2445,11 +2445,11 @@ export struct HomePage {
                   }
                 }
                 .width('100%')
-                .backgroundColor('#FFFFFF')
+                .backgroundColor($r('app.color.comp_background_list_card'))
                 .borderRadius(8)
                 .padding(12)
                 .margin({ bottom: 10 })
-                .border({ width: 1, color: 0xE0E0E0 })
+                .border({ width: 1, color: $r('app.color.card_border_color') })
 
                 // 区域3：分享标题
                 Column() {
@@ -2491,11 +2491,11 @@ export struct HomePage {
                   .margin({ top: 5, bottom: 10 })
                 }
                 .width('100%')
-                .backgroundColor('#FFFFFF')
+                .backgroundColor($r('app.color.comp_background_list_card'))
                 .borderRadius(8)
                 .padding(12)
                 .margin({ bottom: 10 })
-                .border({ width: 1, color: 0xE0E0E0 })
+                .border({ width: 1, color: $r('app.color.card_border_color') })
 
                 // 系统分享按钮区域
                 Button($r('app.string.share'))
@@ -3248,11 +3248,11 @@ export struct HomePage {
               }
             }
             .width('100%')
-            .backgroundColor('#FFFFFF')
+            .backgroundColor($r('app.color.comp_background_list_card'))
             .borderRadius(8)
             .padding(12)
             .margin({ bottom: 10 })
-            .border({ width: 1, color: 0xE0E0E0 })
+            .border({ width: 1, color: $r('app.color.card_border_color') })
 
             // 区域3：分享标题
             Column() {
@@ -3294,11 +3294,11 @@ export struct HomePage {
               .margin({ top: 5, bottom: 10 })
             }
             .width('100%')
-            .backgroundColor('#FFFFFF')
+            .backgroundColor($r('app.color.comp_background_list_card'))
             .borderRadius(8)
             .padding(12)
             .margin({ bottom: 10 })
-            .border({ width: 1, color: 0xE0E0E0 })
+            .border({ width: 1, color: $r('app.color.card_border_color') })
           }
 
           // 系统分享按钮
