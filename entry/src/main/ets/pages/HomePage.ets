@@ -2610,6 +2610,7 @@ export struct HomePage {
                   .fontWeight(FontWeight.Bold)
                   .margin({ top: 12 ,bottom: 8 })
                   .blur(0) // 文字不模糊
+                  .fontColor($r('app.color.pengtitle'))
 
                 // 描述
                 Text(this.currentDescription)
@@ -2659,6 +2660,7 @@ export struct HomePage {
                   .fontWeight(FontWeight.Bold)
                   .margin({ top: 12 , bottom: 8 })
                   .blur(0) // 文字不模糊
+                  .fontColor($r('app.color.pengtitle'))
 
                 // 描述
                 Text(this.currentDescription)
@@ -2732,6 +2734,7 @@ export struct HomePage {
                   .fontWeight(600)
                   .fontSize('20fp')
                   .fontWeight(FontWeight.Bold)
+                  .fontColor($r('app.color.pengtitle'))
                 Text(this.currentDescription)
                   .fontWeight(400)
                   .fontSize('13vp')
