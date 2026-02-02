@@ -2778,14 +2778,14 @@ export struct HomePage {
                   .fontWeight(600)
                   .fontSize('20fp')
                   .fontWeight(FontWeight.Bold)
-                  .fontColor($r('app.color.pengtitle'))
+                  .fontColor(0xFFFFFFFF) // 竖屏+碰一碰/隔空模式下使用白色
                 Text(this.currentDescription)
                   .fontWeight(400)
                   .fontSize('13vp')
                   .margin({ top: 5, bottom: 5 })
                   .fontWeight(FontWeight.Medium)
                   .opacity(0.5)
-                  .fontColor($r('app.color.version_color_182431'))
+                  .fontColor(0xFFFFFFFF) // 竖屏+碰一碰/隔空模式下使用白色
                 Image($r('app.media.CIcon'))
                   .width(20)
                   .height(20)
