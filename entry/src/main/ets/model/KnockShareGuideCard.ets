@@ -41,14 +41,14 @@ export struct KnockShareSingleGuideCard {
       Text('可碰一碰分享')
         .fontFamily('HarmonyHeiTi')
         .textAlign(TextAlign.Start)
-        .fontColor($r('sys.color.font_primary'))
+        .fontColor($r('app.color.font_primary'))
         .fontSize($r('sys.float.Body_M'))
         .fontWeight(FontWeight.Medium)
         .lineHeight(19)
         .maxFontScale(1)
       Text() {
         Span(this.res.text)
-          .fontColor($r('sys.color.ohos_id_color_text_secondary'))
+          .fontColor($r('app.color.font_secondary'))
           .fontWeight(FontWeight.Regular)
       }
       .fontSize(12)
@@ -102,9 +102,9 @@ export struct KnockShareSingleGuideCard {
       this.animSurfaceBuilder()
     }
     .borderRadius(8)
-    .backgroundColor(this.getColor($r('sys.color.icon_primary'), 0.02))
+    .backgroundColor(this.getColor($r('app.color.icon_primary'), 0.02))
     .borderWidth(1)
-    .borderColor(this.getColor($r('sys.color.icon_primary'), 0.05))
+    .borderColor(this.getColor($r('app.color.icon_primary'), 0.05))
     .clip(true)
     .height('auto')
     .margin({ left: 16, right: 16 })

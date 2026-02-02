@@ -79,6 +79,22 @@
     {
       "name": "card_border_color",
       "value": "#38383A"
+    },
+    {
+      "name": "card_container_background",
+      "value": "#1C1C1E"
+    },
+    {
+      "name": "font_secondary",
+      "value": "#666666"
+    },
+    {
+      "name": "font_primary",
+      "value": "#000000"
+    },
+    {
+      "name": "icon_primary",
+      "value": "#007DFF"
     }
   ]
 }
