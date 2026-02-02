@@ -502,21 +502,21 @@ export struct HomePage {
     switch (this.shareTypeIndex) {
       case 0: // 链接分享
         if (!this.shareLinkContent) {
-          promptAction.showToast({ message: '请输入要分享的链接' });
+          promptAction.showToast({ message: '请输入要分享的链接 ⪩ ⪨' });
           return;
         }
         await this.shareLink(contextFaker);
         break;
       case 1: // 文本分享
         if (!this.shareTextContent) {
-          promptAction.showToast({ message: '请输入要分享的文本' });
+          promptAction.showToast({ message: '请输入要分享的文本 ⪩ ⪨' });
           return;
         }
         await this.shareText(contextFaker);
         break;
       case 2: // 图片分享
         if (!this.shareImagePath && !this.sharepng) {
-          promptAction.showToast({ message: '请选择要分享的图片' });
+          promptAction.showToast({ message: '请选择要分享的图片 ⪩ ⪨' });
           return;
         }
         // 如果选择了多个图片，使用多文件分享
@@ -528,7 +528,7 @@ export struct HomePage {
         break;
       case 3: // 视频分享
         if (!this.shareVideoPath) {
-          promptAction.showToast({ message: '请选择要分享的视频' });
+          promptAction.showToast({ message: '请选择要分享的视频 ⪩ ⪨' });
           return;
         }
         // 如果选择了多个视频，使用多文件分享
@@ -540,7 +540,7 @@ export struct HomePage {
         break;
       case 4: // 文件分享
         if (!this.shareFilePath) {
-          promptAction.showToast({ message: '请选择要分享的文件' });
+          promptAction.showToast({ message: '请选择要分享的文件 ⪩ ⪨' });
           return;
         }
         // 如果选择了多个文件，使用多文件分享
@@ -1343,31 +1343,31 @@ export struct HomePage {
         switch (this.shareTypeIndex) {
           case 0: // 链接分享
             if (!this.shareLinkContent && !this.networkVideoSrc) {
-              sharableTarget.clarifyNonShare({ message: '请输入要分享的链接' });
+              sharableTarget.clarifyNonShare({ message: '请输入要分享的链接 ⪩ ⪨' });
               return;
             }
             break;
           case 1: // 文本分享
             if (!this.shareTextContent) {
-              sharableTarget.clarifyNonShare({ message: '请输入要分享的文本' });
+              sharableTarget.clarifyNonShare({ message: '请输入要分享的文本 ⪩ ⪨' });
               return;
             }
             break;
           case 2: // 图片分享
             if (this.shareImagePaths.length === 0) {
-              sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片' });
+              sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片 ⪩ ⪨' });
               return;
             }
             break;
           case 3: // 视频分享
             if (this.shareVideoPaths.length === 0) {
-              sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频' });
+              sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频 ⪩ ⪨' });
               return;
             }
             break;
           case 4: // 文件分享
             if (this.shareFilePaths.length === 0) {
-              sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件' });
+              sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件 ⪩ ⪨' });
               return;
             }
             break;
@@ -1385,7 +1385,7 @@ export struct HomePage {
     this.whiteStatus = false;
   }
 
-  private immersiveCallback = (sharableTarget: harmonyShare.SharableTarget): void => {
+  private immersiveCallback = async (sharableTarget: harmonyShare.SharableTarget): Promise<void> => {
     // 更新显示的图片为当前缓存的图片
     // 直接获取最新的 context，而不是使用全局变量
     const currentContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
@@ -1459,6 +1459,30 @@ export struct HomePage {
       thumbnailPath = currentContext.filesDir + "/pengyipeng" + this.imageExtension;
     }
 
+    // 处理缩略图 - 转换为字节buffer
+    let thumbnailBuffer: Uint8Array | undefined = undefined;
+    try {
+      const stat = fileIo.statSync(thumbnailPath);
+      if (stat && stat.size > 0) {
+        const imageSource = image.createImageSource(thumbnailPath);
+        const pixelMap = await imageSource.createPixelMap();
+
+        const imagePacker = image.createImagePacker();
+        const buffer = await imagePacker.packToData(pixelMap, {
+          format: 'image/jpeg',
+          quality: 60
+        });
+
+        if (buffer) {
+          thumbnailBuffer = new Uint8Array(buffer);
+        }
+
+        pixelMap.release();
+      }
+    } catch (error) {
+      logger.warn(`隔空投送缩略图处理失败: ${thumbnailPath}, 错误: ${error}`);
+    }
+
     let shareData: systemShare.SharedData;
 
     // 根据分享类型索引构建不同的分享数据
@@ -1467,7 +1491,7 @@ export struct HomePage {
         shareData = new systemShare.SharedData({
           utd: utd.UniformDataType.HYPERLINK,
           content: this.shareLinkContent || this.networkVideoSrc,
-          thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
+          thumbnail: thumbnailBuffer,
           title: this.pengtitle,
           description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
         });
@@ -1476,7 +1500,7 @@ export struct HomePage {
         shareData = new systemShare.SharedData({
           utd: utd.UniformDataType.TEXT,
           content: this.shareTextContent,
-          thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
+          thumbnail: thumbnailBuffer,
           title: this.pengtitle,
           description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
         });
@@ -1486,15 +1510,15 @@ export struct HomePage {
           let imagePath = this.shareImagePaths[0];
           let extension = imagePath.substring(imagePath.lastIndexOf('.'));
           let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.IMAGE);
-          
+
           shareData = new systemShare.SharedData({
             utd: utdTypeId,
             uri: imagePath,
-            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
+            thumbnail: thumbnailBuffer,
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
-          
+
           // 为剩余的每张图片添加记录
           for (let i = 1; i < this.shareImagePaths.length; i++) {
             shareData.addRecord({
@@ -1505,7 +1529,7 @@ export struct HomePage {
             });
           }
         } else {
-          sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片' });
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片 ⪩ ⪨' });
           return;
         }
         break;
@@ -1514,11 +1538,11 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utd.UniformDataType.VIDEO,
             uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
-            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
+            thumbnail: thumbnailBuffer,
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
-          
+
           // 为剩余的每个视频添加记录
           for (let i = 1; i < this.shareVideoPaths.length; i++) {
             shareData.addRecord({
@@ -1529,7 +1553,7 @@ export struct HomePage {
             });
           }
         } else {
-          sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频' });
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频 ⪩ ⪨' });
           return;
         }
         break;
@@ -1540,17 +1564,17 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utdTypeId,
             uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
-            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
+            thumbnail: thumbnailBuffer,
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
         } else {
-          sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件' });
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件 ⪩ ⪨' });
           return;
         }
         break;
       default:
-        sharableTarget.clarifyNonShare({ message: '不支持的分享类型' });
+        sharableTarget.clarifyNonShare({ message: '不支持的分享类型 ⪩ ⪨' });
         return;
     }
     sharableTarget.share(shareData);
@@ -1830,6 +1854,7 @@ export struct HomePage {
                         .fontWeight(FontWeight.Bold)
                         .margin({ top: 12 ,bottom: 8 })
                         .blur(0) // 文字不模糊
+                        .fontColor($r('app.color.pengtitle'))
 
                       // 描述
                       Text(this.currentDescription)
@@ -1879,6 +1904,7 @@ export struct HomePage {
                         .fontWeight(FontWeight.Bold)
                         .margin({ top: 12 , bottom: 8 })
                         .blur(0) // 文字不模糊
+                        .fontColor($r('app.color.pengtitle'))
 
                       // 描述
                       Text(this.currentDescription)
@@ -1953,6 +1979,7 @@ export struct HomePage {
                         .fontWeight(FontWeight.Bold)
                         .margin({ top: 12 ,bottom: 8 })
                         .blur(0) // 文字不模糊
+                        .fontColor($r('app.color.pengtitle'))
 
                       Text(this.currentDescription)
                         .fontSize(16)
@@ -2627,12 +2654,12 @@ export struct HomePage {
                   .fontWeight(FontWeight.Bold)
                   .margin({ top: 12 ,bottom: 8 })
                   .blur(0) // 文字不模糊
-                  .fontColor($r('app.color.pengtitle'))
+                  .fontColor(0xFFFFFFFF) // 竖屏+碰一碰/隔空模式下使用白色
 
                 // 描述
                 Text(this.currentDescription)
                   .fontSize(16)
-                  .fontColor(0xA3A3A3)
+                  .fontColor(0xFFFFFFFF) // 竖屏+碰一碰/隔空模式下使用白色
                   //.fontWeight(FontWeight.Medium)
                   .margin({ bottom: 5 })
                   .blur(0) // 文字不模糊
@@ -2779,7 +2806,7 @@ export struct HomePage {
           if (this.showNewYearCard) {
             Column() {
               Row() {
-                Text('🎉 2026新年快乐！')
+                Text('🎉 2026新年快乐！点击可快速分享：')
                   .fontSize(16)
                   .fontWeight(FontWeight.Bold)
                   .fontColor(0xCC0000)
