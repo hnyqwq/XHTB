@@ -214,16 +214,19 @@ export default struct KnockShareGuideCard {
           this.swiperIndex = index;
         })
         .autoPlay(true)
-        .interval(5000)
+        .interval(7000)
         .loop(true)
-        .indicator(true)
+        .indicator(false)
         .itemSpace(12)
-        .indicator(this.indicatorController)
 
         Row() {
-          IndicatorComponent(this.indicatorController)
-            .style(new DotIndicator())
-            .responseRegion({ y: 4, height: 24 })
+          ForEach(this.cardSwiperResources, (item: CardRes, index: number) => {
+            Circle()
+              .width(6)
+              .height(6)
+              .fill(index === this.swiperIndex ? 0xFF007DFF : 0xFFCCCCCC)
+              .margin({ left: 4, right: 4 })
+          })
         }
         .height(24)
         .width('100%')
