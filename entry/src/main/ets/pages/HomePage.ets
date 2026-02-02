@@ -4,7 +4,7 @@ import { common } from '@kit.AbilityKit';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 // 导入日志模块和错误码模块
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import { BusinessError } from '@kit.BasicServicesKit';
+import { BusinessError, deviceInfo } from '@kit.BasicServicesKit';
 import { systemShare, harmonyShare } from '@kit.ShareKit';
 import { fileIo as fs } from '@kit.CoreFileKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
@@ -2321,6 +2321,7 @@ export struct HomePage {
                       .width('100%')
                       .height(50)
                       .margin({ bottom: 10 })
+                      .visibility(deviceInfo.deviceType === 'default' ? Visibility.None : Visibility.Visible)
 
                       Row() {
                         TextArea({ placeholder: $r('app.string.testinput'), text: this.shareLinkContent })
@@ -3245,6 +3246,7 @@ export struct HomePage {
                   .width('100%')
                   .height(50)
                   .margin({ bottom: 10 })
+                  .visibility(deviceInfo.deviceType === 'default' ? Visibility.None : Visibility.Visible)
 
                   Row() {
                     TextArea({ placeholder: $r('app.string.testinput'), text: this.shareLinkContent })
