@@ -90,11 +90,15 @@
     },
     {
       "name": "font_primary",
-      "value": "#000000"
+      "value": "#FFFFFF"
     },
     {
       "name": "icon_primary",
       "value": "#007DFF"
+    },
+    {
+      "name": "page_background_gradient_end",
+      "value": "#1C1C1E"
     }
   ]
 }

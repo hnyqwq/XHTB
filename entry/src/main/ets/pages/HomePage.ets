@@ -3360,7 +3360,7 @@ export struct HomePage {
     .height(CommonConstants.FULL_PARENT)
     .linearGradient({
       direction: GradientDirection.Bottom,
-      colors: [[this.topBgColor, CommonConstants.START_GRADIENT_RANGE], [Color.White, CommonConstants.END_GRADIENT_RANGE]]
+      colors: [[this.topBgColor, CommonConstants.START_GRADIENT_RANGE], [$r('app.color.page_background_gradient_end'), CommonConstants.END_GRADIENT_RANGE]]
     })
     .padding({ top: this.topSafeHeight })
   }

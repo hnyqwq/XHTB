@@ -103,6 +103,10 @@
     {
       "name": "icon_primary",
       "value": "#007DFF"
+    },
+    {
+      "name": "page_background_gradient_end",
+      "value": "#FFFFFF"
     }
   ]
 }
