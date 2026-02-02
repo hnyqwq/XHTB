@@ -1080,20 +1080,34 @@ export struct HomePage {
     this.immersiveListening();
     let context = getContext(this);
 
-    // 同步 networkVideoSrc 到 shareLinkContent，并保存到 AppStorage 供接续使用
-    this.shareLinkContent = this.networkVideoSrc;
-    if (this.shareLinkContent && this.shareLinkContent !== '') {
-      AppStorage.setOrCreate('shareLinkContent', this.shareLinkContent);
-      console.log('aboutToAppear: 保存 shareLinkContent 到 AppStorage: ' + this.shareLinkContent);
+    // 从 AppStorage 读取接续数据（由 EntryAbility 在 restoreDistributedObject 中设置）
+    const restoredPengtitle = AppStorage.get<string>('pengtitle');
+    const restoredShareLinkContent = AppStorage.get<string>('shareLinkContent');
+
+    console.log('aboutToAppear: restoredPengtitle from AppStorage = ' + (restoredPengtitle ?? 'null'));
+    console.log('aboutToAppear: restoredShareLinkContent from AppStorage = ' + (restoredShareLinkContent ?? 'null'));
+
+    // 恢复 pengtitle
+    if (restoredPengtitle && restoredPengtitle !== ' ' && restoredPengtitle !== '分享当前的链接') {
+      this.pengtitle = restoredPengtitle;
+      console.log('接续恢复 pengtitle (从 AppStorage):', restoredPengtitle);
+    } else {
+      // 如果没有接续数据，才设置默认值
+      this.pengtitle = this.context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id);
+    }
+
+    // 同步 networkVideoSrc 到 shareLinkContent（仅在非接续场景）
+    if (!restoredShareLinkContent || restoredShareLinkContent === '') {
+      this.shareLinkContent = this.networkVideoSrc;
+      if (this.shareLinkContent && this.shareLinkContent !== '') {
+        AppStorage.setOrCreate('shareLinkContent', this.shareLinkContent);
+        console.log('aboutToAppear: 保存 shareLinkContent 到 AppStorage: ' + this.shareLinkContent);
+      }
     }
 
     // 初始化 AppStorage 中的默认值（如果不存在）
     if (!AppStorage.get('sharepng')) {
       AppStorage.setOrCreate('sharepng', 'https://www.hnyqwq.cn/hvideo/share.png');
-    }
-    if (!AppStorage.get('pengtitle')) {
-      const defaultTitle = this.context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id);
-      AppStorage.setOrCreate('pengtitle', defaultTitle);
     }
 
     // 保存当前页面信息到 AppStorage,供接续功能使用
@@ -1105,9 +1119,6 @@ export struct HomePage {
       this.topSafeHeight = this.getUIContext().px2vp(windowInstance.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM).topRect.height);
       this.extractTopBgColor(); // 获取初始背景颜色
     });
-
-    // 碰一碰标题
-    this.pengtitle = this.context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id);
 
     // 初始化新年卡片
     this.newYearCards = [
@@ -1152,22 +1163,15 @@ export struct HomePage {
       console.log('设备不支持碰一碰分享或为平板设备，默认选择隔空投送模式');
     }
 
-    // 恢复接续的数据（优先级最高）- @StorageLink 会自动订阅 AppStorage 变化
+    // 恢复接续的数据（优先级最高）- 从 AppStorage 读取
     const restoredSharepng = AppStorage.get<string>('sharepng');
     if (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/hvideo/share.png') {
       console.log('接续恢复 sharepng:', restoredSharepng);
     }
-    const restoredPengtitle = AppStorage.get<string>('pengtitle');
-    if (restoredPengtitle && restoredPengtitle !== this.pengtitle) {
-      this.pengtitle = restoredPengtitle;
-      console.log('接续恢复 pengtitle:', restoredPengtitle);
-    }
 
-    // 恢复接续的分享链接/文本内容
-    const restoredShareLinkContent = AppStorage.get<string>('shareLinkContent');
-    console.log('aboutToAppear: restoredShareLinkContent = ' + (restoredShareLinkContent ?? 'null'));
+    // 从 AppStorage 恢复接续的分享链接/文本内容
     if (restoredShareLinkContent && restoredShareLinkContent !== '') {
-      console.log('接续恢复 shareLinkContent:', restoredShareLinkContent);
+      console.log('接续恢复 shareLinkContent (从 AppStorage):', restoredShareLinkContent);
       // 判断是链接还是文本内容
       if (this.isValidUrl(restoredShareLinkContent)) {
         // 是链接，填充到链接类型
@@ -1182,7 +1186,7 @@ export struct HomePage {
       }
       AppStorage.delete('shareLinkContent'); // 清除已处理的接续数据
     } else {
-      console.log('aboutToAppear: 没有接续的 shareLinkContent');
+      console.log('aboutToAppear: 没有接续的 shareLinkContent (AppStorage 为空)');
     }
 
     // 建议调整顺序确保实时参数优先

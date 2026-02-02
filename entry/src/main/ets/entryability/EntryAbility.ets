@@ -331,12 +331,14 @@ export default class EntryAbility extends UIAbility {
 
       // 恢复分享标题
       if (restoredPengtitle && restoredPengtitle !== ' ') {
+        this.storage.set('pengtitle', restoredPengtitle);
         AppStorage.setOrCreate('pengtitle', restoredPengtitle);
         hilog.info(DOMAIN_NUMBER, TAG, 'Restored pengtitle: %{public}s', restoredPengtitle);
       }
 
       // 恢复分享链接/文本内容
       if (restoredShareLinkContent && restoredShareLinkContent !== '') {
+        this.storage.set('shareLinkContent', restoredShareLinkContent);
         AppStorage.setOrCreate('shareLinkContent', restoredShareLinkContent);
         hilog.info(DOMAIN_NUMBER, TAG, 'Restored shareLinkContent: %{public}s', restoredShareLinkContent);
       } else {
@@ -411,6 +413,9 @@ export default class EntryAbility extends UIAbility {
 
     hilog.info(DOMAIN_NUMBER, TAG, 'onContinue: currentTabIndex = %{public}d, currentPageUrl = %{public}s',
       currentTabIndex ?? -1, currentPageUrl ?? 'none');
+
+    // 打印完整的 wantParam，确认数据是否被正确设置
+    hilog.info(DOMAIN_NUMBER, TAG, 'onContinue: wantParam 最终内容 = %{public}s', JSON.stringify(wantParam));
 
     return AbilityConstant.OnContinueResult.AGREE;
   }
