@@ -59,8 +59,8 @@ export struct HomePage {
   @State picture: PixelMap | undefined = undefined;
   @State localPixelMap: PixelMap | undefined = undefined; // 本地图片的PixelMap
   //@State networkPreviewUri: string = ''; // 默认网络预览图
-  @StorageLink('sharepng') sharepng: string = 'https://www.hnyqwq.cn/hvideo/share.png' // 背景图片(预览卡片显示)
-  @State backgroundImagePath: string = 'https://www.hnyqwq.cn/hvideo/share.png' // 背景图片路径(独立)
+  @StorageLink('sharepng') sharepng: string = 'https://www.hnyqwq.cn/png/sharelink.png' // 背景图片(预览卡片显示)
+  @State backgroundImagePath: string = 'https://www.hnyqwq.cn/png/sharelink.png' // 背景图片路径(独立)
   @State backgroundPixelMap: PixelMap | undefined = undefined; // 背景图片的PixelMap(独立)
   @State backgroundImageKey: string = ''; // 背景图片key(独立)
   @State useCustomBackground: boolean = false; // 标记是否用户手动设置了自定义背景图片
@@ -1107,7 +1107,7 @@ export struct HomePage {
 
     // 初始化 AppStorage 中的默认值（如果不存在）
     if (!AppStorage.get('sharepng')) {
-      AppStorage.setOrCreate('sharepng', 'https://www.hnyqwq.cn/hvideo/share.png');
+      AppStorage.setOrCreate('sharepng', 'https://www.hnyqwq.cn/png/sharelink.png');
     }
 
     // 保存当前页面信息到 AppStorage,供接续功能使用
@@ -1165,7 +1165,7 @@ export struct HomePage {
 
     // 恢复接续的数据（优先级最高）- 从 AppStorage 读取
     const restoredSharepng = AppStorage.get<string>('sharepng');
-    if (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/hvideo/share.png') {
+    if (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/png/sharelink.png') {
       console.log('接续恢复 sharepng:', restoredSharepng);
     }
 
@@ -1174,15 +1174,19 @@ export struct HomePage {
       console.log('接续恢复 shareLinkContent (从 AppStorage):', restoredShareLinkContent);
       // 判断是链接还是文本内容
       if (this.isValidUrl(restoredShareLinkContent)) {
-        // 是链接，填充到链接类型
+        // 是链接，填充到链接类型，背景图片设置为 sharelink.png
         this.shareLinkContent = restoredShareLinkContent;
         this.shareTypeIndex = 0;
-        console.log('接续内容为链接，切换到链接分享类型');
+        this.sharepng = 'https://www.hnyqwq.cn/png/sharelink.png';
+        AppStorage.setOrCreate('sharepng', this.sharepng);
+        console.log('接续内容为链接，切换到链接分享类型，设置背景图片为 sharelink.png');
       } else {
-        // 是文本内容，填充到文本类型并自动切换
+        // 是文本内容，填充到文本类型，背景图片设置为 sharetext.png
         this.shareTextContent = restoredShareLinkContent;
         this.shareTypeIndex = 1;
-        console.log('接续内容为文本，切换到文本分享类型');
+        this.sharepng = 'https://www.hnyqwq.cn/png/sharetext.png';
+        AppStorage.setOrCreate('sharepng', this.sharepng);
+        console.log('接续内容为文本，切换到文本分享类型，设置背景图片为 sharetext.png');
       }
       AppStorage.delete('shareLinkContent'); // 清除已处理的接续数据
     } else {
@@ -1665,11 +1669,30 @@ export struct HomePage {
     return this.context.resourceManager.getStringSync(resourceId.id);
   }
 
-  // 根据分享类型更新标题
+  // 根据分享类型更新标题和背景图片
   private updateTitleForShareType(typeIndex: number): void {
     this.pengtitle = this.getShareTypeTitle(typeIndex);
+    // 根据分享类型设置对应的背景图片
+    switch (typeIndex) {
+      case 0: // 链接
+        this.sharepng = 'https://www.hnyqwq.cn/png/sharelink.png';
+        break;
+      case 1: // 文本
+        this.sharepng = 'https://www.hnyqwq.cn/png/sharetext.png';
+        break;
+      case 2: // 图片
+        this.sharepng = 'https://www.hnyqwq.cn/png/sharepic.png';
+        break;
+      case 3: // 视频
+        this.sharepng = 'https://www.hnyqwq.cn/png/sharevideo.png';
+        break;
+      default:
+        this.sharepng = 'https://www.hnyqwq.cn/png/sharelink.png';
+    }
     // 同步到 AppStorage
     AppStorage.set('pengtitle', this.pengtitle);
+    AppStorage.set('sharepng', this.sharepng);
+    console.log('updateTitleForShareType: typeIndex = ' + typeIndex + ', sharepng = ' + this.sharepng);
   }
 
 
@@ -2204,6 +2227,7 @@ export struct HomePage {
                       .margin({ right: 5 })
                       .onClick(() => {
                         this.shareTypeIndex = 0;
+                        this.updateTitleForShareType(0);
                       })
                     Button('文本')
                       .fontSize(14)
@@ -2214,6 +2238,7 @@ export struct HomePage {
                       .margin({ right: 5 })
                       .onClick(() => {
                         this.shareTypeIndex = 1;
+                        this.updateTitleForShareType(1);
                       })
                     Button('图片')
                       .fontSize(14)
@@ -2224,6 +2249,7 @@ export struct HomePage {
                       .margin({ right: 5 })
                       .onClick(() => {
                         this.shareTypeIndex = 2;
+                        this.updateTitleForShareType(2);
                       })
                     Button('视频')
                       .fontSize(14)
@@ -2234,6 +2260,7 @@ export struct HomePage {
                       .margin({ right: 5 })
                       .onClick(() => {
                         this.shareTypeIndex = 3;
+                        this.updateTitleForShareType(3);
                       })
                     // Button('文件') // 暂时隐藏文件分享
                     //   .fontSize(14)

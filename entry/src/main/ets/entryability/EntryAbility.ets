@@ -324,7 +324,7 @@ export default class EntryAbility extends UIAbility {
       }
 
       // 恢复背景图片地址
-      if (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/hvideo/share.png') {
+      if (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/png/sharelink.png') {
         AppStorage.setOrCreate('sharepng', restoredSharepng);
         hilog.info(DOMAIN_NUMBER, TAG, 'Restored sharepng: %{public}s', restoredSharepng);
       }
@@ -346,7 +346,7 @@ export default class EntryAbility extends UIAbility {
       }
 
       const hasData = (restoredUrl && restoredUrl !== 'default_url') ||
-                      (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/hvideo/share.png') ||
+                      (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/png/sharelink.png') ||
                       (restoredPengtitle && restoredPengtitle !== ' ') ||
                       (restoredShareLinkContent && restoredShareLinkContent !== '');
 
