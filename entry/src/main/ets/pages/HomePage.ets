@@ -122,24 +122,24 @@ export struct HomePage {
   @State showNewYearCard: boolean = true; // 是否显示新年卡片
   @State newYearCards: NewYearCard[] = [
     {
-      title: '2026春节快乐',
-      imageUrl: 'https://img.alicdn.com/imgextra/i2/O1CN01Z6Hv8X1Z8ZkXJgV7a_!!6000000004684-2-tps-800-600.png',
-      jumpUrl: 'https://www.baidu.com/s?wd=2026春节快乐'
-    },
-    {
       title: '春节放假安排',
-      imageUrl: 'https://img.alicdn.com/imgextra/i3/O1CN01Z6Hv8Y1Z8ZkXJgV7b_!!6000000004684-2-tps-800-600.png',
+      imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fxinnian.jpg?token=36f6fb55-4114-41e3-bed3-487d27f0fdaf',
       jumpUrl: 'https://www.gov.cn/zhengce/content/202511/content_7047090.htm'
     },
     {
-      title: '新年祝福',
-      imageUrl: 'https://img.alicdn.com/imgextra/i4/O1CN01Z6Hv8W1Z8ZkXJgV7c_!!6000000004684-2-tps-800-600.png',
-      jumpUrl: 'https://www.baidu.com/s?wd=2026新年祝福语'
+      title: '了解元宵节',
+      imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2FYuanxiao.jpg?token=a22cfb28-15a1-4517-94f0-51a30c3b5c84',
+      jumpUrl: 'https://baike.baidu.com/item/%E5%85%83%E5%AE%B5%E8%8A%82/118213'
     },
     {
-      title: '看春晚',
-      imageUrl: 'https://img.alicdn.com/imgextra/i1/O1CN01Z6Hv8V1Z8ZkXJgV7d_!!6000000004684-2-tps-800-600.png',
-      jumpUrl: 'https://www.baidu.com/s?wd=2026新年快乐图片'
+      title: '回看2024春晚',
+      imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2F2024.png?token=1590f9b5-c1f4-4e1f-9829-e73f1ac852bf',
+      jumpUrl: 'https://www.bilibili.com/video/BV1j2waeUEsW'
+  },
+    {
+      title: '回看2025春晚',
+      imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2F2025.png?token=0667b71c-cd2e-4990-b118-6badc323d274',
+      jumpUrl: 'https://www.bilibili.com/video/BV1qJfHY1EYh'
     }
   ];
   @State currentNewYearCardIndex: number = 0; // 当前显示的新年卡片索引
@@ -2779,7 +2779,7 @@ export struct HomePage {
           if (this.showNewYearCard) {
             Column() {
               Row() {
-                Text('🎉 新年快捷')
+                Text('🎉 2026新年快乐！')
                   .fontSize(16)
                   .fontWeight(FontWeight.Bold)
                   .fontColor(0xCC0000)
