@@ -1247,6 +1247,30 @@ export struct HomePage {
       thumbnailPath = context.filesDir + "/pengyipeng" + this.imageExtension;
     }
 
+    // 处理缩略图 - 转换为字节buffer
+    let thumbnailBuffer: Uint8Array | undefined = undefined;
+    try {
+      const stat = fileIo.statSync(thumbnailPath);
+      if (stat && stat.size > 0) {
+        const imageSource = image.createImageSource(thumbnailPath);
+        const pixelMap = await imageSource.createPixelMap();
+
+        const imagePacker = image.createImagePacker();
+        const buffer = await imagePacker.packToData(pixelMap, {
+          format: 'image/jpeg',
+          quality: 60
+        });
+
+        if (buffer) {
+          thumbnailBuffer = new Uint8Array(buffer);
+        }
+
+        pixelMap.release();
+      }
+    } catch (error) {
+      logger.warn(`碰一碰缩略图处理失败: ${thumbnailPath}, 错误: ${error}`);
+    }
+
     let shareData: systemShare.SharedData;
 
     // 根据分享类型索引构建不同的分享数据
@@ -1255,7 +1279,7 @@ export struct HomePage {
         shareData = new systemShare.SharedData({
           utd: utd.UniformDataType.HYPERLINK,
           content: this.shareLinkContent || this.networkVideoSrc,
-          thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
+          thumbnail: thumbnailBuffer,
           title: this.pengtitle,
           description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
         });
@@ -1264,7 +1288,7 @@ export struct HomePage {
         shareData = new systemShare.SharedData({
           utd: utd.UniformDataType.TEXT,
           content: this.shareTextContent,
-          thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
+          thumbnail: thumbnailBuffer,
           title: this.pengtitle,
           description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
         });
@@ -1274,20 +1298,20 @@ export struct HomePage {
           let imagePath = this.shareImagePaths[0];
           let extension = imagePath.substring(imagePath.lastIndexOf('.'));
           let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.IMAGE);
-          
+
           shareData = new systemShare.SharedData({
             utd: utdTypeId,
-            uri: imagePath,
-            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
+            uri: fileUri.getUriFromPath(imagePath),
+            thumbnail: thumbnailBuffer,
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
           });
-          
+
           // 为剩余的每张图片添加记录
           for (let i = 1; i < this.shareImagePaths.length; i++) {
             shareData.addRecord({
               utd: utdTypeId,
-              uri: this.shareImagePaths[i],
+              uri: fileUri.getUriFromPath(this.shareImagePaths[i]),
               title: `分享图片${i + 1}`,
               description: `分享图片${i + 1}`,
             });
@@ -1302,11 +1326,11 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utd.UniformDataType.VIDEO,
             uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
-            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
+            thumbnail: thumbnailBuffer,
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
           });
-          
+
           // 为剩余的每个视频添加记录
           for (let i = 1; i < this.shareVideoPaths.length; i++) {
             shareData.addRecord({
@@ -1328,7 +1352,7 @@ export struct HomePage {
           shareData = new systemShare.SharedData({
             utd: utdTypeId,
             uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
-            thumbnailUri: fileUri.getUriFromPath(thumbnailPath),
+            thumbnail: thumbnailBuffer,
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
           });
@@ -1430,6 +1454,14 @@ export struct HomePage {
   }
 
   private immersiveCallback = async (sharableTarget: harmonyShare.SharableTarget): Promise<void> => {
+    console.log('=== 隔空投送回调开始 ===');
+    console.log('当前 shareTypeIndex: ' + this.shareTypeIndex);
+    console.log('shareLinkContent: ' + this.shareLinkContent);
+    console.log('shareTextContent: ' + this.shareTextContent);
+    console.log('shareImagePaths.length: ' + this.shareImagePaths.length);
+    console.log('shareVideoPaths.length: ' + this.shareVideoPaths.length);
+    console.log('shareFilePaths.length: ' + this.shareFilePaths.length);
+
     // 更新显示的图片为当前缓存的图片
     // 直接获取最新的 context，而不是使用全局变量
     const currentContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
@@ -1532,22 +1564,68 @@ export struct HomePage {
     // 根据分享类型索引构建不同的分享数据
     switch (this.shareTypeIndex) {
       case 0: // 链接分享
-        shareData = new systemShare.SharedData({
-          utd: utd.UniformDataType.HYPERLINK,
-          content: this.shareLinkContent || this.networkVideoSrc,
-          thumbnail: thumbnailBuffer,
-          title: this.pengtitle,
-          description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
-        });
+        console.log('=== 构建链接分享数据 ===');
+        console.log('content: ' + (this.shareLinkContent || this.networkVideoSrc));
+        console.log('thumbnailBuffer: ' + (thumbnailBuffer ? thumbnailBuffer.length + ' bytes' : 'undefined'));
+        console.log('title: ' + this.pengtitle);
+        console.log('thumbnailPath: ' + thumbnailPath);
+
+        // 尝试使用 thumbnailUri 而不是 thumbnail buffer
+        try {
+          const thumbnailUri = fileUri.getUriFromPath(thumbnailPath);
+          console.log('thumbnailUri: ' + thumbnailUri);
+
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.HYPERLINK,
+            content: this.shareLinkContent || this.networkVideoSrc,
+            thumbnailUri: thumbnailUri,
+            title: this.pengtitle,
+            description: this.shareLinkContent || this.networkVideoSrc
+          });
+          console.log('=== 链接分享数据构建完成(thumbnailUri) ===');
+        } catch (error) {
+          console.error('=== 构建链接分享数据失败(thumbnailUri): ' + JSON.stringify(error));
+          // 如果失败,尝试不使用缩略图
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.HYPERLINK,
+            content: this.shareLinkContent || this.networkVideoSrc,
+            title: this.pengtitle,
+            description: this.shareLinkContent || this.networkVideoSrc
+          });
+          console.log('=== 链接分享数据构建完成(无缩略图) ===');
+        }
         break;
       case 1: // 文本分享
-        shareData = new systemShare.SharedData({
-          utd: utd.UniformDataType.TEXT,
-          content: this.shareTextContent,
-          thumbnail: thumbnailBuffer,
-          title: this.pengtitle,
-          description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
-        });
+        console.log('=== 构建文本分享数据 ===');
+        console.log('content: ' + this.shareTextContent);
+        console.log('thumbnailBuffer: ' + (thumbnailBuffer ? thumbnailBuffer.length + ' bytes' : 'undefined'));
+        console.log('title: ' + this.pengtitle);
+        console.log('thumbnailPath: ' + thumbnailPath);
+
+        // 尝试使用 thumbnailUri 而不是 thumbnail buffer
+        try {
+          const thumbnailUri = fileUri.getUriFromPath(thumbnailPath);
+          console.log('thumbnailUri: ' + thumbnailUri);
+
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.TEXT,
+            content: this.shareTextContent,
+            thumbnailUri: thumbnailUri,
+            title: this.pengtitle,
+            description: this.shareTextContent
+          });
+          console.log('=== 文本分享数据构建完成(thumbnailUri) ===');
+        } catch (error) {
+          console.error('=== 构建文本分享数据失败(thumbnailUri): ' + JSON.stringify(error));
+          // 如果失败,尝试不使用缩略图
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.TEXT,
+            content: this.shareTextContent,
+            title: this.pengtitle,
+            description: this.shareTextContent
+          });
+          console.log('=== 文本分享数据构建完成(无缩略图) ===');
+        }
         break;
       case 2: // 图片分享
         if (this.shareImagePaths.length > 0) {
@@ -1560,7 +1638,7 @@ export struct HomePage {
             uri: fileUri.getUriFromPath(imagePath),
             thumbnail: thumbnailBuffer,
             title: this.pengtitle,
-            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
+            description: currentContext.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
 
           // 为剩余的每张图片添加记录
@@ -1584,7 +1662,7 @@ export struct HomePage {
             uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
             thumbnail: thumbnailBuffer,
             title: this.pengtitle,
-            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
+            description: currentContext.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
 
           // 为剩余的每个视频添加记录
@@ -1610,7 +1688,7 @@ export struct HomePage {
             uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
             thumbnail: thumbnailBuffer,
             title: this.pengtitle,
-            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
+            description: currentContext.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件 ⪩ ⪨' });
