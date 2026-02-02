@@ -35,8 +35,8 @@ export const
   otherGridDataList: GridData[] = [
     new GridData($r('app.string.sub_title2'),
       [
-        new GridItemInfo($r('app.string.sub_title2_value1'), 'XHTB/TextToSpeechPage', $r('app.media.ic_swiper_grid_image11')),
-        new GridItemInfo($r('app.string.sub_title2_value2'), 'XHTB/QRCodePage', $r('app.media.ic_swiper_grid_image2')),
+        new GridItemInfo($r('app.string.sub_title2_value1'), 'XHTB/TextToSpeechPage', $r('app.media.ic_swiper_grid_image2')),
+        new GridItemInfo($r('app.string.sub_title2_value2'), 'XHTB/QRCodePage', $r('app.media.ic_swiper_grid_image11')),
         new GridItemInfo($r('app.string.sub_title2_value3'), 'XHTB/DocScan/OCR', $r('app.media.ic_swiper_grid_image8')),
         /*new GridItemInfo($r('app.string.sub_title2_value4'), 'pages/infoPage'),
         new GridItemInfo($r('app.string.sub_title2_value5'), 'XHTB/ReadQR'),
