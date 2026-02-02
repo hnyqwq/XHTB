@@ -197,6 +197,10 @@
 			"value": "回看2025春晚"
 		},
 		{
+			"name": "newyear_quick_share_title",
+			"value": "🎉 2026新年快乐！点击可快速分享："
+		},
+		{
 			"name":"createqrcode",
 			"value":"\uDB80\uDD28 生成二维码"
 		},

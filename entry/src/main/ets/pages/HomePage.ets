@@ -2819,7 +2819,7 @@ export struct HomePage {
           if (this.showNewYearCard) {
             Column() {
               Row() {
-                Text('🎉 2026新年快乐！点击可快速分享：')
+                Text($r('app.string.newyear_quick_share_title'))
                   .fontSize(16)
                   .fontWeight(FontWeight.Bold)
                   .fontColor(0xCC0000)
