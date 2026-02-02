@@ -10,7 +10,6 @@
 				"startWindowIcon":"$media:app_icon",
 				"startWindowBackground":"$color:start_window_background",
 				"orientation":"auto_rotation_restricted",
-				"supportWindowMode": ["fullscreen", "split"],
 				"skills":[
 					{
 						"entities":[
@@ -116,7 +115,7 @@
 					}
 				]
 			}
-			,{
+		,{
 				"name": "ShareExtensionAbility",
 				"srcEntry": "./ets/extensionAbility/ShareExtAbility.ets",
 				"description": "$string:EntryAbility_desc",
