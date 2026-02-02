@@ -1,8 +1,7 @@
 {
   "modelVersion": "6.0.2",
   "dependencies": {
-    "@pura/harmony-utils": "^1.4.0",
-    "@ohos/mp4parser": "^2.0.7"
+    "@pura/harmony-utils": "^1.4.0"
   },
   "devDependencies": {},
   "dynamicDependencies": {}
