@@ -2280,48 +2280,49 @@ export struct HomePage {
                   if (this.shareTypeIndex === 0) {
                     // 链接分享
                     Column() {
-                      Row() {
-                        Text($r('app.string.texton'))
-                          .textAlign(TextAlign.Center)
-                          .width('55%')
-                          .margin({ right: 10 })
+                      if (deviceInfo.deviceType !== 'default') {
+                        Row() {
+                          Text($r('app.string.texton'))
+                            .textAlign(TextAlign.Center)
+                            .width('55%')
+                            .margin({ right: 10 })
 
-                        Button($r('app.string.scancodelinkpad'))
-                          .height(50)
-                          .width('40%')
-                          .backgroundColor(0xFF66CC)
-                          .onClick(async () => {
-                            try {
-                              // 定义扫码参数options
-                              let options: scanBarcode.ScanOptions = {
-                                scanTypes: [scanCore.ScanType.ALL],
-                                enableMultiMode: true,
-                                enableAlbum: true
-                              };
-                              // 调用扫码功能
-                              scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
-                                // 正确获取扫描结果的字符串值
-                                const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
-                                this.shareLinkContent = originalValue;
-                                this.networkVideoSrc = originalValue;
-                                promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
-                              }).catch((error: BusinessError) => {
+                          Button($r('app.string.scancodelinkpad'))
+                            .height(50)
+                            .width('40%')
+                            .backgroundColor(0xFF66CC)
+                            .onClick(async () => {
+                              try {
+                                // 定义扫码参数options
+                                let options: scanBarcode.ScanOptions = {
+                                  scanTypes: [scanCore.ScanType.ALL],
+                                  enableMultiMode: true,
+                                  enableAlbum: true
+                                };
+                                // 调用扫码功能
+                                scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
+                                  // 正确获取扫描结果的字符串值
+                                  const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
+                                  this.shareLinkContent = originalValue;
+                                  this.networkVideoSrc = originalValue;
+                                  promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
+                                }).catch((error: BusinessError) => {
+                                  hilog.error(0x0001, '[Scan]',
+                                    `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
+                                  promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
+                                });
+                              } catch (error) {
+                                //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
+                                promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
                                 hilog.error(0x0001, '[Scan]',
-                                  `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
-                                promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
-                              });
-                            } catch (error) {
-                              //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
-                              promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
-                              hilog.error(0x0001, '[Scan]',
-                                `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
-                            }
-                          })
+                                  `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
+                              }
+                            })
+                        }
+                        .width('100%')
+                        .height(50)
+                        .margin({ bottom: 10 })
                       }
-                      .width('100%')
-                      .height(50)
-                      .margin({ bottom: 10 })
-                      .visibility(deviceInfo.deviceType === 'default' ? Visibility.None : Visibility.Visible)
 
                       Row() {
                         TextArea({ placeholder: $r('app.string.testinput'), text: this.shareLinkContent })
@@ -3205,48 +3206,49 @@ export struct HomePage {
               if (this.shareTypeIndex === 0) {
                 // 链接分享
                 Column() {
-                  Row() {
-                    Text($r('app.string.texton'))
-                      .textAlign(TextAlign.Center)
-                      .width('55%')
-                      .margin({ right: 10 })
+                  if (deviceInfo.deviceType !== 'default') {
+                    Row() {
+                      Text($r('app.string.texton'))
+                        .textAlign(TextAlign.Center)
+                        .width('55%')
+                        .margin({ right: 10 })
 
-                    Button($r('app.string.scancodelink'))
-                      .height(50)
-                      .width('40%')
-                      .backgroundColor(0xFF66CC)
-                      .onClick(async () => {
-                        try {
-                          // 定义扫码参数options
-                          let options: scanBarcode.ScanOptions = {
-                            scanTypes: [scanCore.ScanType.ALL],
-                            enableMultiMode: true,
-                            enableAlbum: true
-                          };
-                          // 调用扫码功能
-                          scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
-                            // 正确获取扫描结果的字符串值
-                            const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
-                            this.shareLinkContent = originalValue;
-                            this.networkVideoSrc = originalValue;
-                            promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
-                          }).catch((error: BusinessError) => {
+                      Button($r('app.string.scancodelink'))
+                        .height(50)
+                        .width('40%')
+                        .backgroundColor(0xFF66CC)
+                        .onClick(async () => {
+                          try {
+                            // 定义扫码参数options
+                            let options: scanBarcode.ScanOptions = {
+                              scanTypes: [scanCore.ScanType.ALL],
+                              enableMultiMode: true,
+                              enableAlbum: true
+                            };
+                            // 调用扫码功能
+                            scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
+                              // 正确获取扫描结果的字符串值
+                              const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
+                              this.shareLinkContent = originalValue;
+                              this.networkVideoSrc = originalValue;
+                              promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
+                            }).catch((error: BusinessError) => {
+                              hilog.error(0x0001, '[Scan]',
+                                `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
+                              promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
+                            });
+                          } catch (error) {
+                            //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
+                            promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
                             hilog.error(0x0001, '[Scan]',
-                              `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
-                            promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
-                          });
-                        } catch (error) {
-                          //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
-                          promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
-                          hilog.error(0x0001, '[Scan]',
-                            `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
-                        }
-                      })
+                              `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
+                          }
+                        })
+                    }
+                    .width('100%')
+                    .height(50)
+                    .margin({ bottom: 10 })
                   }
-                  .width('100%')
-                  .height(50)
-                  .margin({ bottom: 10 })
-                  .visibility(deviceInfo.deviceType === 'default' ? Visibility.None : Visibility.Visible)
 
                   Row() {
                     TextArea({ placeholder: $r('app.string.testinput'), text: this.shareLinkContent })
