@@ -477,6 +477,8 @@ export struct HomePage {
     let uiContext: UIContext = this.getUIContext();
     let contextFaker: Context = uiContext.getHostContext() as Context;
 
+    console.log('=== share() 开始，shareTypeIndex = ' + this.shareTypeIndex + ' ===');
+
     // 根据分享类型执行不同的分享逻辑
     switch (this.shareTypeIndex) {
       case 0: // 链接分享
@@ -484,6 +486,9 @@ export struct HomePage {
           promptAction.showToast({ message: '请输入要分享的链接 ⪩ ⪨' });
           return;
         }
+        // 保存到 AppStorage 供接续使用
+        AppStorage.setOrCreate('shareLinkContent', this.shareLinkContent);
+        console.log('分享前保存 shareLinkContent 到 AppStorage: ' + this.shareLinkContent);
         await this.shareLink(contextFaker);
         break;
       case 1: // 文本分享
@@ -491,6 +496,9 @@ export struct HomePage {
           promptAction.showToast({ message: '请输入要分享的文本 ⪩ ⪨' });
           return;
         }
+        // 保存到 AppStorage 供接续使用
+        AppStorage.setOrCreate('shareLinkContent', this.shareTextContent);
+        console.log('分享前保存 shareLinkContent 到 AppStorage: ' + this.shareTextContent);
         await this.shareText(contextFaker);
         break;
       case 2: // 图片分享
@@ -1072,8 +1080,12 @@ export struct HomePage {
     this.immersiveListening();
     let context = getContext(this);
 
-    // 同步 networkVideoSrc 到 shareLinkContent
+    // 同步 networkVideoSrc 到 shareLinkContent，并保存到 AppStorage 供接续使用
     this.shareLinkContent = this.networkVideoSrc;
+    if (this.shareLinkContent && this.shareLinkContent !== '') {
+      AppStorage.setOrCreate('shareLinkContent', this.shareLinkContent);
+      console.log('aboutToAppear: 保存 shareLinkContent 到 AppStorage: ' + this.shareLinkContent);
+    }
 
     // 初始化 AppStorage 中的默认值（如果不存在）
     if (!AppStorage.get('sharepng')) {
@@ -1147,7 +1159,30 @@ export struct HomePage {
     }
     const restoredPengtitle = AppStorage.get<string>('pengtitle');
     if (restoredPengtitle && restoredPengtitle !== this.pengtitle) {
+      this.pengtitle = restoredPengtitle;
       console.log('接续恢复 pengtitle:', restoredPengtitle);
+    }
+
+    // 恢复接续的分享链接/文本内容
+    const restoredShareLinkContent = AppStorage.get<string>('shareLinkContent');
+    console.log('aboutToAppear: restoredShareLinkContent = ' + (restoredShareLinkContent ?? 'null'));
+    if (restoredShareLinkContent && restoredShareLinkContent !== '') {
+      console.log('接续恢复 shareLinkContent:', restoredShareLinkContent);
+      // 判断是链接还是文本内容
+      if (this.isValidUrl(restoredShareLinkContent)) {
+        // 是链接，填充到链接类型
+        this.shareLinkContent = restoredShareLinkContent;
+        this.shareTypeIndex = 0;
+        console.log('接续内容为链接，切换到链接分享类型');
+      } else {
+        // 是文本内容，填充到文本类型并自动切换
+        this.shareTextContent = restoredShareLinkContent;
+        this.shareTypeIndex = 1;
+        console.log('接续内容为文本，切换到文本分享类型');
+      }
+      AppStorage.delete('shareLinkContent'); // 清除已处理的接续数据
+    } else {
+      console.log('aboutToAppear: 没有接续的 shareLinkContent');
     }
 
     // 建议调整顺序确保实时参数优先
@@ -2273,6 +2308,8 @@ export struct HomePage {
                                 this.shareLinkContent = value;
                                 this.networkVideoSrc = value;
                               }
+                              // 实时保存到 AppStorage 供接续使用
+                              AppStorage.setOrCreate('shareLinkContent', this.shareLinkContent);
                             }, 300);
                           })
                         Row() {
@@ -2305,6 +2342,8 @@ export struct HomePage {
                           .layoutWeight(1)
                           .onChange((value: string) => {
                             this.shareTextContent = value;
+                            // 实时保存到 AppStorage 供接续使用
+                            AppStorage.setOrCreate('shareLinkContent', value);
                           })
                         Row() {
                           PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
@@ -3196,6 +3235,8 @@ export struct HomePage {
                             this.networkVideoSrc = value;
                             AppStorage.set('networkVideoSrc', value);
                           }
+                          // 实时保存到 AppStorage 供接续使用
+                          AppStorage.setOrCreate('shareLinkContent', this.shareLinkContent);
                         }, 300);
                       })
                     Row() {
@@ -3229,6 +3270,8 @@ export struct HomePage {
                       .layoutWeight(1)
                       .onChange((value: string) => {
                         this.shareTextContent = value;
+                        // 实时保存到 AppStorage 供接续使用
+                        AppStorage.setOrCreate('shareLinkContent', value);
                       })
                     Row() {
                       PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })

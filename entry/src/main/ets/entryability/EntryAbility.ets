@@ -20,6 +20,7 @@ interface CustomDataObject extends distributedDataObject.DataObject {
   currentTabIndex?: number; // 当前选中的 Tab 索引
   currentPageUrl?: string; // 当前页面 URL
   currentRouteParams?: string; // 当前路由参数（JSON 字符串）
+  shareLinkContent?: string; // 分享链接/文本内容
 }
 
 const TAG: string = 'EntryAbility';
@@ -313,6 +314,7 @@ export default class EntryAbility extends UIAbility {
       const restoredUrl: string = want.parameters?.['networkVideoSrc'] as string;
       const restoredSharepng: string = want.parameters?.['sharepng'] as string;
       const restoredPengtitle: string = want.parameters?.['pengtitle'] as string;
+      const restoredShareLinkContent: string = want.parameters?.['shareLinkContent'] as string;
 
       // 恢复网络视频地址
       if (restoredUrl && restoredUrl !== 'default_url') {
@@ -333,9 +335,18 @@ export default class EntryAbility extends UIAbility {
         hilog.info(DOMAIN_NUMBER, TAG, 'Restored pengtitle: %{public}s', restoredPengtitle);
       }
 
+      // 恢复分享链接/文本内容
+      if (restoredShareLinkContent && restoredShareLinkContent !== '') {
+        AppStorage.setOrCreate('shareLinkContent', restoredShareLinkContent);
+        hilog.info(DOMAIN_NUMBER, TAG, 'Restored shareLinkContent: %{public}s', restoredShareLinkContent);
+      } else {
+        hilog.info(DOMAIN_NUMBER, TAG, 'restoredShareLinkContent 为空或默认值: %{public}s', restoredShareLinkContent ?? 'undefined');
+      }
+
       const hasData = (restoredUrl && restoredUrl !== 'default_url') ||
                       (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/hvideo/share.png') ||
-                      (restoredPengtitle && restoredPengtitle !== ' ');
+                      (restoredPengtitle && restoredPengtitle !== ' ') ||
+                      (restoredShareLinkContent && restoredShareLinkContent !== '');
 
       if (!hasData) {
         hilog.warn(DOMAIN_NUMBER, TAG, 'No valid continuation data found (only default values)');
@@ -348,10 +359,19 @@ export default class EntryAbility extends UIAbility {
   }
 
   async onContinue(wantParam: Record<string, Object>): Promise<AbilityConstant.OnContinueResult> {
+    hilog.info(DOMAIN_NUMBER, TAG, '=== onContinue 开始 ===');
+
     // 从AppStorage获取三个文本框的内容
     const networkVideoSrc: string | null | undefined = AppStorage.get('networkVideoSrc');
     const sharepng: string | null | undefined = AppStorage.get('sharepng');
     const pengtitle: string | null | undefined = AppStorage.get('pengtitle');
+    const shareLinkContent: string | null | undefined = AppStorage.get('shareLinkContent');
+
+    hilog.info(DOMAIN_NUMBER, TAG, 'onContinue: networkVideoSrc = %{public}s', networkVideoSrc ?? 'undefined');
+    hilog.info(DOMAIN_NUMBER, TAG, 'onContinue: sharepng = %{public}s', sharepng ?? 'undefined');
+    hilog.info(DOMAIN_NUMBER, TAG, 'onContinue: pengtitle = %{public}s', pengtitle ?? 'undefined');
+    hilog.info(DOMAIN_NUMBER, TAG, 'onContinue: shareLinkContent = %{public}s', shareLinkContent ?? 'undefined');
+    hilog.info(DOMAIN_NUMBER, TAG, 'onContinue: wantParam = %{public}s', JSON.stringify(wantParam));
 
     // 获取当前选中的 Tab 索引
     const currentTabIndex: number | null | undefined = AppStorage.get('currentTabIndex');
@@ -369,6 +389,12 @@ export default class EntryAbility extends UIAbility {
     }
     if (pengtitle !== null && pengtitle !== undefined) {
       wantParam.pengtitle = pengtitle;
+    }
+    if (shareLinkContent !== null && shareLinkContent !== undefined) {
+      wantParam.shareLinkContent = shareLinkContent;
+      hilog.info(DOMAIN_NUMBER, TAG, 'onContinue: 设置 wantParam.shareLinkContent = %{public}s', shareLinkContent);
+    } else {
+      hilog.warn(DOMAIN_NUMBER, TAG, 'onContinue: shareLinkContent 为空，未设置到 wantParam');
     }
     // 传递当前 Tab 索引
     if (currentTabIndex !== null && currentTabIndex !== undefined) {
