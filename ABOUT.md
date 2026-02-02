@@ -4,21 +4,21 @@
 
 >> nova 14 Ultra MRT-AL10
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.125 (SP8C00E125R5P6patch08)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.130 (SP8C00E125R5P6patch08)
 
->>> API版本：6.0.1(21)
+>>> API版本：6.0.2(22)
 
 >> HUAWEI Mate 60 BRA-AL00
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.129 (SP31C00E120R4P6patch02)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.130 (SP31C00E120R4P6patch02)
 
->>> API版本：6.0.2(22) Beta1
+>>> API版本：6.0.2(22)
 
 >> HUAWEI MatePad Pro 12.2" MRO-W00
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.125 (SP8C00E125R1P5patch08)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.130 (SP8C00E125R1P5patch08)
 
->>> API版本：6.0.1(21)
+>>> API版本：6.0.2(22)
 
 > 可运行环境：
 
