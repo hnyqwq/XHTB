@@ -2792,6 +2792,7 @@ export struct HomePage {
                   .maxLines(2)
                   .textOverflow({ overflow: TextOverflow.Ellipsis })
                   .constraintSize({ maxWidth: 250 })
+                  .textAlign(TextAlign.Center)
                 Text(this.currentDescription)
                   .fontWeight(400)
                   .fontSize('13vp')
