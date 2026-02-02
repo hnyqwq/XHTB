@@ -49,6 +49,22 @@
 			"value": "分享当前的链接"
 		},
 		{
+			"name": "share_text_title",
+			"value": "分享当前的文本"
+		},
+		{
+			"name": "share_image_title",
+			"value": "分享当前的图片"
+		},
+		{
+			"name": "share_video_title",
+			"value": "分享当前的视频"
+		},
+		{
+			"name": "share_file_title",
+			"value": "分享当前的文件"
+		},
+		{
 			"name": "pengyipeng_description",
 			"value": "星河工具盒 · 碰一碰分享"
 		},

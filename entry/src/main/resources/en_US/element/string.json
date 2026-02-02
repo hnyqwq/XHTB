@@ -49,6 +49,22 @@
       "value": "Share Link"
     },
     {
+      "name": "share_text_title",
+      "value": "Share current text"
+    },
+    {
+      "name": "share_image_title",
+      "value": "Share current image"
+    },
+    {
+      "name": "share_video_title",
+      "value": "Share current video"
+    },
+    {
+      "name": "share_file_title",
+      "value": "Share current file"
+    },
+    {
       "name": "pengyipeng_description",
       "value": "星河工具盒 · Tap to Transfer"
     },
@@ -439,10 +455,6 @@
     {
       "name": "video_share",
       "value": "Video Share"
-    },
-    {
-      "name": "file_share",
-      "value": "File Share"
     }
   ]
 }

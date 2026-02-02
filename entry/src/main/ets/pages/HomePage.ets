@@ -1600,20 +1600,27 @@ export struct HomePage {
 
   // 根据分享类型获取对应的标题字符串
   private getShareTypeTitle(typeIndex: number): string {
+    let resourceId: Resource;
     switch (typeIndex) {
       case 0:
-        return '分享当前的链接';
+        resourceId = $r('app.string.pengyipeng_title');
+        break;
       case 1:
-        return '分享当前的文本';
+        resourceId = $r('app.string.share_text_title');
+        break;
       case 2:
-        return '分享当前的图片';
+        resourceId = $r('app.string.share_image_title');
+        break;
       case 3:
-        return '分享当前的视频';
+        resourceId = $r('app.string.share_video_title');
+        break;
       case 4:
-        return '分享当前的文件';
+        resourceId = $r('app.string.share_file_title');
+        break;
       default:
-        return '分享当前的链接';
+        resourceId = $r('app.string.pengyipeng_title');
     }
+    return this.context.resourceManager.getStringSync(resourceId.id);
   }
 
   // 根据分享类型更新标题
