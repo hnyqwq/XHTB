@@ -1,7 +1,6 @@
 import { promptAction } from '@kit.ArkUI';
 import window from '@ohos.window';
 import { common } from '@kit.AbilityKit';
-import router from '@ohos.router';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 // 导入日志模块和错误码模块
 import { hilog } from '@kit.PerformanceAnalysisKit';
@@ -37,21 +36,16 @@ import {
   CollaborationServiceFilter
 } from '@kit.ServiceCollaborationKit';
 
-//点光源效果
-/*import { hdsEffect } from '@kit.UIDesignKit';*/
-
 let logger = Logger.getLogger('[KnockShare]');
 let context = getContext(this) as common.UIAbilityContext;
 let filesDir = context.filesDir;
 
-/*
-@Extend(Button) function globalButtonStyle() {
-  .width('60%')
-  .height(80)
-  //.background (0x99CCFF)  // 白色背景
-  .borderRadius(15)           // 圆角半径
-  .margin({ top: 10 })         // 顶部间距
-}*/
+// 新年卡片接口定义
+interface NewYearCard {
+  title: string;
+  imageUrl: string;
+  jumpUrl: string;
+}
 
 @Entry
 @Component
@@ -82,9 +76,6 @@ export struct HomePage {
   @State isLocalImageSelected: boolean = false; // 是否已选择本地图片
   //碰一碰
   @State whiteStatus: boolean = false;
-  //点光源效果
-  /*@State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();
-  @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;*/
 
   // 添加一个状态来存储图片的宽高比
   @State imageAspectRatio: number = 1; // 默认为1:1
@@ -126,6 +117,32 @@ export struct HomePage {
   // 顶部背景渐变相关
   @State topBgColor: string = '#FFFFFF'; // 顶部背景颜色
   @State topSafeHeight: number = 0; // 顶部安全区域高度
+
+  // 新年卡片相关
+  @State showNewYearCard: boolean = true; // 是否显示新年卡片
+  @State newYearCards: NewYearCard[] = [
+    {
+      title: '2026春节快乐',
+      imageUrl: 'https://img.alicdn.com/imgextra/i2/O1CN01Z6Hv8X1Z8ZkXJgV7a_!!6000000004684-2-tps-800-600.png',
+      jumpUrl: 'https://www.baidu.com/s?wd=2026春节快乐'
+    },
+    {
+      title: '春节放假安排',
+      imageUrl: 'https://img.alicdn.com/imgextra/i3/O1CN01Z6Hv8Y1Z8ZkXJgV7b_!!6000000004684-2-tps-800-600.png',
+      jumpUrl: 'https://www.baidu.com/s?wd=2026春节放假安排'
+    },
+    {
+      title: '新年祝福',
+      imageUrl: 'https://img.alicdn.com/imgextra/i4/O1CN01Z6Hv8W1Z8ZkXJgV7c_!!6000000004684-2-tps-800-600.png',
+      jumpUrl: 'https://www.baidu.com/s?wd=2026新年祝福语'
+    },
+    {
+      title: '新年快乐',
+      imageUrl: 'https://img.alicdn.com/imgextra/i1/O1CN01Z6Hv8V1Z8ZkXJgV7d_!!6000000004684-2-tps-800-600.png',
+      jumpUrl: 'https://www.baidu.com/s?wd=2026新年快乐图片'
+    }
+  ];
+  @State currentNewYearCardIndex: number = 0; // 当前显示的新年卡片索引
 
   // 断点相关
   @StorageProp('currentWidthBreakpoint') currentBreakpoint: string = 'md';
@@ -2758,6 +2775,56 @@ export struct HomePage {
           .alignContent(Alignment.Bottom)
           .margin({ bottom: 20 })
 
+          // 新年快捷按钮区域
+          if (this.showNewYearCard) {
+            Column() {
+              Row() {
+                Text('🎉 新年快捷')
+                  .fontSize(16)
+                  .fontWeight(FontWeight.Bold)
+                  .fontColor(0xCC0000)
+                  .layoutWeight(1)
+
+                // 关闭按钮
+                Text('✕')
+                  .fontSize(18)
+                  .fontColor(0x999999)
+                  .onClick(() => {
+                    this.showNewYearCard = false;
+                  })
+              }
+              .width('100%')
+              .padding({ left: 12, right: 12, top: 8, bottom: 8 })
+              .justifyContent(FlexAlign.SpaceBetween)
+
+              // 新年按钮列表
+              Row({ space: 8 }) {
+                ForEach(this.newYearCards, (card: NewYearCard, index: number) => {
+                  Button(card.title)
+                    .fontSize(14)
+                    .height(40)
+                    .layoutWeight(1)
+                    .backgroundColor(0xFF6666)
+                    .fontColor(0xFFFFFF)
+                    .borderRadius(8)
+                    .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                    .onClick(() => {
+                      this.handleNewYearCardClick(card);
+                    })
+                }, (card: NewYearCard, index: number) => `${index}`)
+              }
+              .width('100%')
+              .padding({ left: 12, right: 12, bottom: 8 })
+            }
+            .width('100%')
+            .linearGradient({
+              direction: GradientDirection.Bottom,
+              colors: [[0xFFFEF5E5, 0.0], [0xFFFFE0E0, 1.0]]
+            })
+            .borderRadius(12)
+            .margin({ bottom: 16 })
+          }
+
           // 卡片容器：包含从图片组件往下到碰一碰引导提示组件以上的所有内容
           Column() {
             // 调试数据显示区域
@@ -3304,6 +3371,51 @@ export struct HomePage {
             .border({ width: 1, color: $r('app.color.card_border_color') })
           }
 
+          // 新年卡片区域
+          if (this.showNewYearCard) {
+            Column() {
+              Row() {
+                Text('🎉 新年精选')
+                  .fontSize(18)
+                  .fontWeight(FontWeight.Bold)
+                  .fontColor(0xCC0000)
+                  .layoutWeight(1)
+
+                // 关闭按钮
+                Text('✕')
+                  .fontSize(20)
+                  .fontColor(0x999999)
+                  .onClick(() => {
+                    this.showNewYearCard = false;
+                  })
+              }
+              .width('100%')
+              .padding({ left: 8, right: 8, top: 8 })
+              .justifyContent(FlexAlign.SpaceBetween)
+
+              // 新年卡片列表
+              Scroll() {
+                Row({ space: 8 }) {
+                  ForEach(this.newYearCards, (card: NewYearCard, index: number) => {
+                    this.NewYearCardItem(card, index)
+                  }, (card: NewYearCard, index: number) => `${index}`)
+                }
+                .padding(8)
+              }
+              .scrollable(ScrollDirection.Horizontal)
+              .scrollBar(BarState.Off)
+              .width('100%')
+            }
+            .width('100%')
+            .linearGradient({
+              direction: GradientDirection.Bottom,
+              colors: [[0xFFFEF5E5, 0.0], [0xFFFFE0E0, 1.0]]
+            })
+            .borderRadius(12)
+            .padding({ top: 8, bottom: 8 })
+            .margin({ bottom: 16 })
+          }
+
           // 系统分享按钮
           Button($r('app.string.share'))
             .width('90%')
@@ -3383,6 +3495,33 @@ export struct HomePage {
       // 碰一碰模式
       this.currentDescription = $r('app.string.pengyipeng_description');
     }
+  }
+
+  // 处理新年卡片点击 - 快速设置分享内容
+  private handleNewYearCardClick(card: NewYearCard) {
+    // 更新分享标题
+    this.pengtitle = card.title;
+    AppStorage.set('pengtitle', card.title);
+
+    // 更新分享链接内容
+    this.shareLinkContent = card.jumpUrl;
+
+    // 更新背景图片
+    this.sharepng = card.imageUrl;
+    this.backgroundImagePath = card.imageUrl;
+    AppStorage.set('sharepng', card.imageUrl);
+
+    // 触发图片更新
+    this.handleImageUpdate();
+
+    // 提示用户
+    promptAction.showToast({ message: `已切换到: ${card.title}` });
+  }
+
+  // 新年卡片Builder - 已废弃,现在直接使用按钮
+  @Builder
+  NewYearCardItem(card: NewYearCard, index: number) {
+    // 此Builder已废弃,新年卡片现在直接显示为按钮
   }
 
   // 跨设备协作菜单 Builder
@@ -3592,23 +3731,6 @@ export struct HomePage {
     } catch (error) {
       let err: BusinessError = error as BusinessError;
       console.error(`Invoke downloadTask downloadFile failed, code is ${err.code}, message is ${err.message}`);
-    }
-  }
-
-  // 视频剪辑相关方法
-  private openVideoTrimmer() {
-    if (this.shareVideoPath) {
-      // 将视频路径保存到AppStorage
-      AppStorage.setOrCreate('videoPath', this.shareVideoPath);
-      // 跳转到视频剪辑页面
-      router.pushUrl({
-        url: 'pages/VideoTrimmerPage'
-      }).then(() => {
-        logger.info('跳转到视频剪辑页面成功');
-      }).catch((err: Error) => {
-        logger.error('跳转到视频剪辑页面失败: ' + err.message);
-        promptAction.showToast({ message: '跳转失败' });
-      });
     }
   }
 }
