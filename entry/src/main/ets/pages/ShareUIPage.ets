@@ -143,7 +143,7 @@ struct SystemShare {
       Text(`图片数量: ${this.imageUri.length}`)
         .fontSize(16)
         .fontColor('#666666')
-        .margin({ top: 10 })
+        .margin({ top: 10 , bottom : 5 })
       Grid() {
         ForEach(this.imageUri, (uri: string, index: number) => {
           GridItem() {
@@ -167,7 +167,7 @@ struct SystemShare {
       Text(`视频数量: ${this.videoUri.length}`)
         .fontSize(16)
         .fontColor('#666666')
-        .margin({ top: 10 })
+        .margin({ top: 10 , bottom : 5 })
       List({ space: 8 }) {
         ForEach(this.videoUri, (uri: string, index: number) => {
           ListItem() {
