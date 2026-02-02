@@ -120,28 +120,7 @@ export struct HomePage {
 
   // 新年卡片相关
   @State showNewYearCard: boolean = true; // 是否显示新年卡片
-  @State newYearCards: NewYearCard[] = [
-    {
-      title: '春节放假安排',
-      imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fxinnian.jpg?token=36f6fb55-4114-41e3-bed3-487d27f0fdaf',
-      jumpUrl: 'https://www.gov.cn/zhengce/content/202511/content_7047090.htm'
-    },
-    {
-      title: '了解元宵节',
-      imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2FYuanxiao.jpg?token=a22cfb28-15a1-4517-94f0-51a30c3b5c84',
-      jumpUrl: 'https://baike.baidu.com/item/%E5%85%83%E5%AE%B5%E8%8A%82/118213'
-    },
-    {
-      title: '回看2024春晚',
-      imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2F2024.png?token=1590f9b5-c1f4-4e1f-9829-e73f1ac852bf',
-      jumpUrl: 'https://www.bilibili.com/video/BV1j2waeUEsW'
-  },
-    {
-      title: '回看2025春晚',
-      imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2F2025.png?token=0667b71c-cd2e-4990-b118-6badc323d274',
-      jumpUrl: 'https://www.bilibili.com/video/BV1qJfHY1EYh'
-    }
-  ];
+  @State newYearCards: NewYearCard[] = [];
   @State currentNewYearCardIndex: number = 0; // 当前显示的新年卡片索引
 
   // 断点相关
@@ -1117,6 +1096,30 @@ export struct HomePage {
 
     // 碰一碰标题
     this.pengtitle = this.context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id);
+
+    // 初始化新年卡片
+    this.newYearCards = [
+      {
+        title: this.context.resourceManager.getStringSync($r('app.string.newyear_card_spring_festival').id),
+        imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fxinnian.jpg?token=36f6fb55-4114-41e3-bed3-487d27f0fdaf',
+        jumpUrl: 'https://www.gov.cn/zhengce/content/202511/content_7047090.htm'
+      },
+      {
+        title: this.context.resourceManager.getStringSync($r('app.string.newyear_card_lantern_festival').id),
+        imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2FYuanxiao.jpg?token=a22cfb28-15a1-4517-94f0-51a30c3b5c84',
+        jumpUrl: 'https://baike.baidu.com/item/%E5%85%83%E5%AE%B5%E8%8A%82/118213'
+      },
+      {
+        title: this.context.resourceManager.getStringSync($r('app.string.newyear_card_2024_gala').id),
+        imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2F2024.png?token=1590f9b5-c1f4-4e1f-9829-e73f1ac852bf',
+        jumpUrl: 'https://www.bilibili.com/video/BV1j2waeUEsW'
+      },
+      {
+        title: this.context.resourceManager.getStringSync($r('app.string.newyear_card_2025_gala').id),
+        imageUrl: 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2F2025.png?token=0667b71c-cd2e-4990-b118-6badc323d274',
+        jumpUrl: 'https://www.bilibili.com/video/BV1qJfHY1EYh'
+      }
+    ];
 
     // 根据设备能力设置默认分享模式
     // 判断是否为大屏设备（平板），平板不支持碰一碰分享
@@ -2835,55 +2838,83 @@ export struct HomePage {
               Column({ space: 8 }) {
                 // 第一行
                 Row({ space: 8 }) {
-                  Button(this.newYearCards[0].title)
-                    .fontSize(14)
-                    .height(40)
-                    .layoutWeight(1)
-                    .backgroundColor(0xFF6666)
-                    .fontColor(0xFFFFFF)
-                    .borderRadius(8)
-                    .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
-                    .onClick(() => {
-                      this.handleNewYearCardClick(this.newYearCards[0]);
-                    })
-                  Button(this.newYearCards[1].title)
-                    .fontSize(14)
-                    .height(40)
-                    .layoutWeight(1)
-                    .backgroundColor(0xFF6666)
-                    .fontColor(0xFFFFFF)
-                    .borderRadius(8)
-                    .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
-                    .onClick(() => {
-                      this.handleNewYearCardClick(this.newYearCards[1]);
-                    })
+                  Column() {
+                    Text(this.newYearCards[0].title)
+                      .fontSize(14)
+                      .fontColor(0xFFFFFF)
+                      .maxLines(1)
+                      .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  }
+                  .width('100%')
+                  .height(40)
+                  .layoutWeight(1)
+                  .backgroundColor(0xFF6666)
+                  .borderRadius(8)
+                  .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                  .justifyContent(FlexAlign.Center)
+                  .padding({ left: 8, right: 8 })
+                  .onClick(() => {
+                    this.handleNewYearCardClick(this.newYearCards[0]);
+                  })
+                  Column() {
+                    Text(this.newYearCards[1].title)
+                      .fontSize(14)
+                      .fontColor(0xFFFFFF)
+                      .maxLines(1)
+                      .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  }
+                  .width('100%')
+                  .height(40)
+                  .layoutWeight(1)
+                  .backgroundColor(0xFF6666)
+                  .borderRadius(8)
+                  .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                  .justifyContent(FlexAlign.Center)
+                  .padding({ left: 8, right: 8 })
+                  .onClick(() => {
+                    this.handleNewYearCardClick(this.newYearCards[1]);
+                  })
                 }
                 .width('100%')
 
                 // 第二行
                 Row({ space: 8 }) {
-                  Button(this.newYearCards[2].title)
-                    .fontSize(14)
-                    .height(40)
-                    .layoutWeight(1)
-                    .backgroundColor(0xFF6666)
-                    .fontColor(0xFFFFFF)
-                    .borderRadius(8)
-                    .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
-                    .onClick(() => {
-                      this.handleNewYearCardClick(this.newYearCards[2]);
-                    })
-                  Button(this.newYearCards[3].title)
-                    .fontSize(14)
-                    .height(40)
-                    .layoutWeight(1)
-                    .backgroundColor(0xFF6666)
-                    .fontColor(0xFFFFFF)
-                    .borderRadius(8)
-                    .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
-                    .onClick(() => {
-                      this.handleNewYearCardClick(this.newYearCards[3]);
-                    })
+                  Column() {
+                    Text(this.newYearCards[2].title)
+                      .fontSize(14)
+                      .fontColor(0xFFFFFF)
+                      .maxLines(1)
+                      .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  }
+                  .width('100%')
+                  .height(40)
+                  .layoutWeight(1)
+                  .backgroundColor(0xFF6666)
+                  .borderRadius(8)
+                  .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                  .justifyContent(FlexAlign.Center)
+                  .padding({ left: 8, right: 8 })
+                  .onClick(() => {
+                    this.handleNewYearCardClick(this.newYearCards[2]);
+                  })
+                  Column() {
+                    Text(this.newYearCards[3].title)
+                      .fontSize(14)
+                      .fontColor(0xFFFFFF)
+                      .maxLines(1)
+                      .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  }
+                  .width('100%')
+                  .height(40)
+                  .layoutWeight(1)
+                  .backgroundColor(0xFF6666)
+                  .borderRadius(8)
+                  .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                  .justifyContent(FlexAlign.Center)
+                  .padding({ left: 8, right: 8 })
+                  .onClick(() => {
+                    this.handleNewYearCardClick(this.newYearCards[3]);
+                  })
                 }
                 .width('100%')
               }

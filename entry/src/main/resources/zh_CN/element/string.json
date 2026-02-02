@@ -161,6 +161,22 @@
       "value": "对方手机需 HarmonyOS 6 及以上版本。"
     },
     {
+      "name": "newyear_card_spring_festival",
+      "value": "春节放假安排"
+    },
+    {
+      "name": "newyear_card_lantern_festival",
+      "value": "了解元宵节"
+    },
+    {
+      "name": "newyear_card_2024_gala",
+      "value": "回看2024春晚"
+    },
+    {
+      "name": "newyear_card_2025_gala",
+      "value": "回看2025春晚"
+    },
+    {
       "name":"pick",
       "value": "\uDB81\uDCE5 选图"
     },

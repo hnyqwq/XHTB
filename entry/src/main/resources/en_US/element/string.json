@@ -177,6 +177,22 @@
       "value": "Recipient's phone needs HarmonyOS 6 or above."
     },
     {
+      "name": "newyear_card_spring_festival",
+      "value": "Spring Festival Holiday Schedule"
+    },
+    {
+      "name": "newyear_card_lantern_festival",
+      "value": "Learn About Lantern Festival"
+    },
+    {
+      "name": "newyear_card_2024_gala",
+      "value": "Rewatch 2024 Spring Gala"
+    },
+    {
+      "name": "newyear_card_2025_gala",
+      "value": "Rewatch 2025 Spring Gala"
+    },
+    {
       "name":"pick",
       "value": "\uDB81\uDCE5 Pick"
     },
