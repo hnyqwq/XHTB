@@ -161,6 +161,22 @@
       "value":"Tap to Transfer is available"
     },
     {
+      "name": "can_knock_share",
+      "value": "Tap to Transfer available"
+    },
+    {
+      "name": "knock_guide_phone_hos5",
+      "value": "Recipient's phone needs HarmonyOS 5 or above."
+    },
+    {
+      "name": "knock_guide_pc_hos6",
+      "value": "Recipient's PC needs HarmonyOS 6 or above."
+    },
+    {
+      "name": "knock_guide_phone_hos6",
+      "value": "Recipient's phone needs HarmonyOS 6 or above."
+    },
+    {
       "name":"pick",
       "value": "\uDB81\uDCE5 Pick"
     },

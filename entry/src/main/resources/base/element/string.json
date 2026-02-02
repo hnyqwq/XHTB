@@ -165,6 +165,22 @@
           "value": "可碰一碰分享至 HarmonyOS 5 及以上版本手机&PC/2in1"
 		},
 		{
+			"name": "can_knock_share",
+			"value": "可碰一碰分享"
+		},
+		{
+			"name": "knock_guide_phone_hos5",
+			"value": "对方手机需 HarmonyOS 5 及以上版本。"
+		},
+		{
+			"name": "knock_guide_pc_hos6",
+			"value": "对方电脑需 HarmonyOS 6 及以上版本。"
+		},
+		{
+			"name": "knock_guide_phone_hos6",
+			"value": "对方手机需 HarmonyOS 6 及以上版本。"
+		},
+		{
 			"name":"createqrcode",
 			"value":"\uDB80\uDD28 生成二维码"
 		},

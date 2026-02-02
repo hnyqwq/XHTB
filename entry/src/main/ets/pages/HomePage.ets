@@ -865,21 +865,21 @@ export struct HomePage {
   //碰一碰分享
   private readonly cardSwiperResources: CardRes[] = [
     {
-      text: '对方手机需 HarmonyOS 5 及以上版本。',
+      text: $r('app.string.knock_guide_phone_hos5'),
       urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
       framesCount: 128,
       startDelay: 50,
       stopDelay: 500,
     },
     {
-      text: '对方电脑需 HarmonyOS 6 及以上版本。',
+      text: $r('app.string.knock_guide_pc_hos6'),
       urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
       framesCount: 104,
       startDelay: 50,
       stopDelay: 50,
     },
     {
-      text: '对方手机需 HarmonyOS 6 及以上版本。',
+      text: $r('app.string.knock_guide_phone_hos6'),
       urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
       framesCount: 150,
       startDelay: 500,

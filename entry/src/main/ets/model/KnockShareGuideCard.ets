@@ -38,7 +38,7 @@ export struct KnockShareSingleGuideCard {
   @Builder
   tipTextsBuilder() {
     Column({ space: 2 }) {
-      Text('可碰一碰分享')
+      Text($r('app.string.can_knock_share'))
         .fontFamily('HarmonyHeiTi')
         .textAlign(TextAlign.Start)
         .fontColor($r('app.color.font_primary'))
