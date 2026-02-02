@@ -266,46 +266,45 @@ export struct HomePage {
 
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
 
-    // 根据选中的图片URI确定扩展名，但使用独立的变量
-    let shareImageExtension = '.png';
-    if (uri.endsWith('.png')) {
-      shareImageExtension = '.png';
-    } else if (uri.endsWith('.jpg') || uri.endsWith('.jpeg')) {
-      shareImageExtension = '.jpg';
-    } else if (uri.endsWith('.webp')) {
-      shareImageExtension = '.webp';
-    } else {
-      // 默认使用.png格式
-      shareImageExtension = '.png';
-    }
-
-    console.log('分享图片扩展名: ' + shareImageExtension);
-
-    // 根据当前图片扩展名设置目标路径(分享图片使用不同的文件名)
-    let targetPath = context.filesDir + '/shareimg' + shareImageExtension;
-    console.log('目标完整路径 targetPath: ' + targetPath);
-
-    // 使用文件描述符方式复制文件（适配图库URI）
+    // 复制所有选中的图片到本地
+    let localImagePaths: string[] = [];
     try {
-      // 打开源文件（图库URI）
-      let sourceFile = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
-      // 创建目标文件
-      let targetFile = fileIo.openSync(targetPath, fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+      for (let i = 0; i < this.shareImagePaths.length; i++) {
+        let originalUri = this.shareImagePaths[i];
+        let shareImageExtension = '.png';
 
-      // 读取并写入文件
-      let bufferSize = 1024 * 1024; // 1MB 缓冲区
-      let buffer = new ArrayBuffer(bufferSize);
-      let readLen: number = 0;
+        if (originalUri.endsWith('.png')) {
+          shareImageExtension = '.png';
+        } else if (originalUri.endsWith('.jpg') || originalUri.endsWith('.jpeg')) {
+          shareImageExtension = '.jpg';
+        } else if (originalUri.endsWith('.webp')) {
+          shareImageExtension = '.webp';
+        }
 
-      while ((readLen = fileIo.readSync(sourceFile.fd, buffer)) > 0) {
-        fileIo.writeSync(targetFile.fd, buffer, { length: readLen });
+        // 为每张图片生成唯一的目标路径
+        let targetPath = context.filesDir + '/shareimg_' + i + shareImageExtension;
+
+        // 打开源文件（图库URI）
+        let sourceFile = fileIo.openSync(originalUri, fileIo.OpenMode.READ_ONLY);
+        // 创建目标文件
+        let targetFile = fileIo.openSync(targetPath, fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+
+        // 读取并写入文件
+        let bufferSize = 1024 * 1024; // 1MB 缓冲区
+        let buffer = new ArrayBuffer(bufferSize);
+        let readLen: number = 0;
+
+        while ((readLen = fileIo.readSync(sourceFile.fd, buffer)) > 0) {
+          fileIo.writeSync(targetFile.fd, buffer, { length: readLen });
+        }
+
+        // 关闭文件
+        fileIo.closeSync(sourceFile);
+        fileIo.closeSync(targetFile);
+
+        localImagePaths.push(targetPath);
+        hilog.info(0x0000, 'localsharepng', `Copy completed for image ${i}: ${targetPath}`);
       }
-
-      // 关闭文件
-      fileIo.closeSync(sourceFile);
-      fileIo.closeSync(targetFile);
-
-      hilog.info(0x0000, 'localsharepng', 'Copy completed: ' + targetPath);
 
       // 等待文件系统同步
       await new Promise<void>((resolve) => {
@@ -314,14 +313,13 @@ export struct HomePage {
         }, 100);
       });
 
-      // 验证文件是否真的存在
-      const stat = fileIo.statSync(targetPath);
-      hilog.info(0x0000, 'localsharepng', 'File verified, size: ' + stat.size);
+      // 更新 shareImagePaths 为本地文件路径
+      this.shareImagePaths = localImagePaths;
 
-      // 只更新单张分享图片路径,不影响多图数组(shareImagePaths已在openPhoto中设置)
-      this.shareImagePath = targetPath;
-      hilog.info(0x0000, 'localsharepng', 'Share image path updated');
-      hilog.info(0x0000, 'localsharepng', 'Total images: ' + this.shareImagePaths.length);
+      // 更新第一张图片的路径
+      this.shareImagePath = this.shareImagePaths[0];
+      hilog.info(0x0000, 'localsharepng', 'Share image path updated: ' + this.shareImagePath);
+      hilog.info(0x0000, 'localsharepng', 'Total images copied: ' + this.shareImagePaths.length);
     } catch (error) {
       hilog.error(0x0000, 'localsharepng', 'Copy failed: ' + JSON.stringify(error));
       return;
@@ -1559,7 +1557,7 @@ export struct HomePage {
 
           shareData = new systemShare.SharedData({
             utd: utdTypeId,
-            uri: imagePath,
+            uri: fileUri.getUriFromPath(imagePath),
             thumbnail: thumbnailBuffer,
             title: this.pengtitle,
             description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
@@ -1569,7 +1567,7 @@ export struct HomePage {
           for (let i = 1; i < this.shareImagePaths.length; i++) {
             shareData.addRecord({
               utd: utdTypeId,
-              uri: this.shareImagePaths[i],
+              uri: fileUri.getUriFromPath(this.shareImagePaths[i]),
               title: `分享图片${i + 1}`,
               description: `分享图片${i + 1}`,
             });
