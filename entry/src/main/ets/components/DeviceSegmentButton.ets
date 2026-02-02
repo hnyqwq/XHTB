@@ -1,4 +1,5 @@
 import { CapsuleSegmentButtonV2, SegmentButtonV2Items } from '@kit.ArkUI';
+import { common } from '@kit.AbilityKit';
 
 class CustomSegmentButtonItems extends SegmentButtonV2Items {
   get hasHybrid(): boolean {
@@ -28,6 +29,7 @@ export struct DeviceSegmentButton {
   @Local selectedIndex: number = 0;
   @Param initialIndex: number = 0;
   @Param onIndexChange: (index: number) => void = () => {};
+  private context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
 
   aboutToAppear(): void {
     // 使用传入的初始索引
@@ -37,8 +39,8 @@ export struct DeviceSegmentButton {
   build() {
     CapsuleSegmentButtonV2({
       items: new CustomSegmentButtonItems([
-        new SegmentButtonItem('碰一碰传送预览', true),
-        new SegmentButtonItem('隔空传送预览', true),
+        new SegmentButtonItem(this.context.resourceManager.getStringSync($r('app.string.segment_knock_preview').id), true),
+        new SegmentButtonItem(this.context.resourceManager.getStringSync($r('app.string.segment_air_preview').id), true),
       ]),
       selectedIndex: this.selectedIndex,
       onItemClicked: (index: number) => {

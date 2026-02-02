@@ -197,6 +197,14 @@
       "value": "🎉 Happy 2026 New Year! Click to quickly share:"
     },
     {
+      "name": "segment_knock_preview",
+      "value": "Tap to Transfer Preview"
+    },
+    {
+      "name": "segment_air_preview",
+      "value": "Air Transfer Preview"
+    },
+    {
       "name":"pick",
       "value": "\uDB81\uDCE5 Pick"
     },

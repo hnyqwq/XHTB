@@ -201,6 +201,14 @@
 			"value": "🎉 2026新年快乐！点击可快速分享："
 		},
 		{
+			"name": "segment_knock_preview",
+			"value": "碰一碰传送预览"
+		},
+		{
+			"name": "segment_air_preview",
+			"value": "隔空传送预览"
+		},
+		{
 			"name":"createqrcode",
 			"value":"\uDB80\uDD28 生成二维码"
 		},
