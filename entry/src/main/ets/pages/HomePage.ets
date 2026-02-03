@@ -1580,7 +1580,7 @@ export struct HomePage {
             content: this.shareLinkContent || this.networkVideoSrc,
             thumbnailUri: thumbnailUri,
             title: this.pengtitle,
-            description: this.shareLinkContent || this.networkVideoSrc
+            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
           console.log('=== 链接分享数据构建完成(thumbnailUri) ===');
         } catch (error) {
