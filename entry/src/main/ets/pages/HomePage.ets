@@ -2151,6 +2151,124 @@ export struct HomePage {
                 .width('100%')
                 .height('auto')
                 .alignContent(Alignment.Bottom)
+
+                // 新年卡片区域
+                if (this.showNewYearCard) {
+                  Column() {
+                    Row() {
+                      Text($r('app.string.newyear_quick_share_title'))
+                        .fontSize(16)
+                        .fontWeight(FontWeight.Bold)
+                        .fontColor(0xCC0000)
+                        .layoutWeight(1)
+
+                      // 关闭按钮
+                      Text('✕')
+                        .fontSize(18)
+                        .fontColor(0x999999)
+                        .onClick(() => {
+                          this.showNewYearCard = false;
+                        })
+                    }
+                    .width('100%')
+                    .padding({ left: 12, right: 12, top: 8, bottom: 8 })
+                    .justifyContent(FlexAlign.SpaceBetween)
+
+                    // 新年按钮列表 - 两行,每行两个
+                    Column({ space: 8 }) {
+                      // 第一行
+                      Row({ space: 8 }) {
+                        Column() {
+                          Text(this.newYearCards[0].title)
+                            .fontSize(14)
+                            .fontColor(0xFFFFFF)
+                            .maxLines(1)
+                            .textOverflow({ overflow: TextOverflow.Ellipsis })
+                        }
+                        .width('100%')
+                        .height(40)
+                        .layoutWeight(1)
+                        .backgroundColor(0xFF6666)
+                        .borderRadius(8)
+                        .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                        .justifyContent(FlexAlign.Center)
+                        .padding({ left: 8, right: 8 })
+                        .onClick(() => {
+                          this.handleNewYearCardClick(this.newYearCards[0]);
+                        })
+                        Column() {
+                          Text(this.newYearCards[1].title)
+                            .fontSize(14)
+                            .fontColor(0xFFFFFF)
+                            .maxLines(1)
+                            .textOverflow({ overflow: TextOverflow.Ellipsis })
+                        }
+                        .width('100%')
+                        .height(40)
+                        .layoutWeight(1)
+                        .backgroundColor(0xFF6666)
+                        .borderRadius(8)
+                        .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                        .justifyContent(FlexAlign.Center)
+                        .padding({ left: 8, right: 8 })
+                        .onClick(() => {
+                          this.handleNewYearCardClick(this.newYearCards[1]);
+                        })
+                      }
+                      .width('100%')
+
+                      // 第二行
+                      Row({ space: 8 }) {
+                        Column() {
+                          Text(this.newYearCards[2].title)
+                            .fontSize(14)
+                            .fontColor(0xFFFFFF)
+                            .maxLines(1)
+                            .textOverflow({ overflow: TextOverflow.Ellipsis })
+                        }
+                        .width('100%')
+                        .height(40)
+                        .layoutWeight(1)
+                        .backgroundColor(0xFF6666)
+                        .borderRadius(8)
+                        .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                        .justifyContent(FlexAlign.Center)
+                        .padding({ left: 8, right: 8 })
+                        .onClick(() => {
+                          this.handleNewYearCardClick(this.newYearCards[2]);
+                        })
+                        Column() {
+                          Text(this.newYearCards[3].title)
+                            .fontSize(14)
+                            .fontColor(0xFFFFFF)
+                            .maxLines(1)
+                            .textOverflow({ overflow: TextOverflow.Ellipsis })
+                        }
+                        .width('100%')
+                        .height(40)
+                        .layoutWeight(1)
+                        .backgroundColor(0xFF6666)
+                        .borderRadius(8)
+                        .shadow({ radius: 4, color: 0x1A000000, offsetX: 0, offsetY: 2 })
+                        .justifyContent(FlexAlign.Center)
+                        .padding({ left: 8, right: 8 })
+                        .onClick(() => {
+                          this.handleNewYearCardClick(this.newYearCards[3]);
+                        })
+                      }
+                      .width('100%')
+                    }
+                    .width('100%')
+                    .padding({ left: 12, right: 12, bottom: 8 })
+                  }
+                  .width('100%')
+                  .linearGradient({
+                    direction: GradientDirection.Bottom,
+                    colors: [[0xFFFEF5E5, 0.0], [0xFFFFE0E0, 1.0]]
+                  })
+                  .borderRadius(12)
+                  .margin({ top: 16, bottom: 16 })
+                }
               }
               .width('100%')
               .alignItems(HorizontalAlign.Center)
