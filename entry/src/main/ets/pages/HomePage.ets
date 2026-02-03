@@ -1247,25 +1247,29 @@ export struct HomePage {
       thumbnailPath = context.filesDir + "/pengyipeng" + this.imageExtension;
     }
 
-    // 处理缩略图 - 转换为字节buffer
-    let thumbnailBuffer: Uint8Array | undefined = undefined;
+    // 处理缩略图 - 保存到沙箱并获取URI
+    let thumbnailUri: string | undefined = undefined;
     try {
       const stat = fileIo.statSync(thumbnailPath);
       if (stat && stat.size > 0) {
-        const imageSource = image.createImageSource(thumbnailPath);
-        const pixelMap = await imageSource.createPixelMap();
+        // 将缩略图保存到沙箱目录
+        const thumbnailFileName = 'share_thumbnail_' + Date.now() + '.jpg';
+        const thumbnailSandboxPath = context.filesDir + '/' + thumbnailFileName;
 
-        const imagePacker = image.createImagePacker();
-        const buffer = await imagePacker.packToData(pixelMap, {
-          format: 'image/jpeg',
-          quality: 60
-        });
+        // 读取原文件
+        const sourceFile = fileIo.openSync(thumbnailPath, fileIo.OpenMode.READ_ONLY);
+        const sourceBuffer = new ArrayBuffer(stat.size);
+        fileIo.readSync(sourceFile.fd, sourceBuffer);
+        fileIo.closeSync(sourceFile);
 
-        if (buffer) {
-          thumbnailBuffer = new Uint8Array(buffer);
-        }
+        // 写入沙箱
+        const destFile = fileIo.openSync(thumbnailSandboxPath,
+          fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+        fileIo.writeSync(destFile.fd, sourceBuffer);
+        fileIo.closeSync(destFile);
 
-        pixelMap.release();
+        // 获取沙箱URI
+        thumbnailUri = fileUri.getUriFromPath(thumbnailSandboxPath);
       }
     } catch (error) {
       logger.warn(`碰一碰缩略图处理失败: ${thumbnailPath}, 错误: ${error}`);
@@ -1276,22 +1280,40 @@ export struct HomePage {
     // 根据分享类型索引构建不同的分享数据
     switch (this.shareTypeIndex) {
       case 0: // 链接分享
-        shareData = new systemShare.SharedData({
-          utd: utd.UniformDataType.HYPERLINK,
-          content: this.shareLinkContent || this.networkVideoSrc,
-          thumbnail: thumbnailBuffer,
-          title: this.pengtitle,
-          description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
-        });
+        if (thumbnailUri) {
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.HYPERLINK,
+            content: this.shareLinkContent || this.networkVideoSrc,
+            thumbnailUri: thumbnailUri,
+            title: this.pengtitle,
+            description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+          });
+        } else {
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.HYPERLINK,
+            content: this.shareLinkContent || this.networkVideoSrc,
+            title: this.pengtitle,
+            description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+          });
+        }
         break;
       case 1: // 文本分享
-        shareData = new systemShare.SharedData({
-          utd: utd.UniformDataType.TEXT,
-          content: this.shareTextContent,
-          thumbnail: thumbnailBuffer,
-          title: this.pengtitle,
-          description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
-        });
+        if (thumbnailUri) {
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.TEXT,
+            content: this.shareTextContent,
+            thumbnailUri: thumbnailUri,
+            title: this.pengtitle,
+            description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+          });
+        } else {
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.TEXT,
+            content: this.shareTextContent,
+            title: this.pengtitle,
+            description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+          });
+        }
         break;
       case 2: // 图片分享
         if (this.shareImagePaths.length > 0) {
@@ -1299,13 +1321,22 @@ export struct HomePage {
           let extension = imagePath.substring(imagePath.lastIndexOf('.'));
           let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.IMAGE);
 
-          shareData = new systemShare.SharedData({
-            utd: utdTypeId,
-            uri: fileUri.getUriFromPath(imagePath),
-            thumbnail: thumbnailBuffer,
-            title: this.pengtitle,
-            description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
-          });
+          if (thumbnailUri) {
+            shareData = new systemShare.SharedData({
+              utd: utdTypeId,
+              uri: fileUri.getUriFromPath(imagePath),
+              thumbnailUri: thumbnailUri,
+              title: this.pengtitle,
+              description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+            });
+          } else {
+            shareData = new systemShare.SharedData({
+              utd: utdTypeId,
+              uri: fileUri.getUriFromPath(imagePath),
+              title: this.pengtitle,
+              description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+            });
+          }
 
           // 为剩余的每张图片添加记录
           for (let i = 1; i < this.shareImagePaths.length; i++) {
@@ -1323,13 +1354,22 @@ export struct HomePage {
         break;
       case 3: // 视频分享
         if (this.shareVideoPaths.length > 0) {
-          shareData = new systemShare.SharedData({
-            utd: utd.UniformDataType.VIDEO,
-            uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
-            thumbnail: thumbnailBuffer,
-            title: this.pengtitle,
-            description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
-          });
+          if (thumbnailUri) {
+            shareData = new systemShare.SharedData({
+              utd: utd.UniformDataType.VIDEO,
+              uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
+              thumbnailUri: thumbnailUri,
+              title: this.pengtitle,
+              description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+            });
+          } else {
+            shareData = new systemShare.SharedData({
+              utd: utd.UniformDataType.VIDEO,
+              uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
+              title: this.pengtitle,
+              description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+            });
+          }
 
           // 为剩余的每个视频添加记录
           for (let i = 1; i < this.shareVideoPaths.length; i++) {
@@ -1349,13 +1389,23 @@ export struct HomePage {
         if (this.shareFilePaths.length > 0) {
           let extension = this.shareFilePaths[0].substring(this.shareFilePaths[0].lastIndexOf('.'));
           let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.FILE);
-          shareData = new systemShare.SharedData({
-            utd: utdTypeId,
-            uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
-            thumbnail: thumbnailBuffer,
-            title: this.pengtitle,
-            description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
-          });
+
+          if (thumbnailUri) {
+            shareData = new systemShare.SharedData({
+              utd: utdTypeId,
+              uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
+              thumbnailUri: thumbnailUri,
+              title: this.pengtitle,
+              description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+            });
+          } else {
+            shareData = new systemShare.SharedData({
+              utd: utdTypeId,
+              uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
+              title: this.pengtitle,
+              description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+            });
+          }
         } else {
           sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件' });
           return;
