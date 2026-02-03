@@ -569,7 +569,7 @@ export struct HomePage {
       utd: utd.UniformDataType.HYPERLINK,
       content: this.shareLinkContent,
       title: this.pengtitle,
-      description: this.shareLinkContent,
+      description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id),
       thumbnail: new Uint8Array(buffer),
     });
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
@@ -1590,7 +1590,7 @@ export struct HomePage {
             utd: utd.UniformDataType.HYPERLINK,
             content: this.shareLinkContent || this.networkVideoSrc,
             title: this.pengtitle,
-            description: this.shareLinkContent || this.networkVideoSrc
+            description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
           });
           console.log('=== 链接分享数据构建完成(无缩略图) ===');
         }
