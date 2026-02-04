@@ -514,6 +514,10 @@
     {
       "name": "video",
       "value": "视频"
+    },
+    {
+      "name": "ai_core_speech_support",
+      "value": "功能由 AI 支持，使用 Core Speech Kit"
     }
   ]
 }

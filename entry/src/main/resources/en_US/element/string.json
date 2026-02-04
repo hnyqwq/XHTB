@@ -515,6 +515,10 @@
     {
       "name": "video",
       "value": "Video"
+    },
+    {
+      "name": "ai_core_speech_support",
+      "value": "AI powered, using Core Speech Kit"
     }
   ]
 }

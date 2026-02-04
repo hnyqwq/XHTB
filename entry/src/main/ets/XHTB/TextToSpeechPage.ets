@@ -65,7 +65,14 @@ export struct TextToSpeechPage {
             this.networkVideoSrc = networkVideoSrc;
             AppStorage.set('networkVideoSrc', networkVideoSrc);
           })
-
+        Text($r('app.string.ai_core_speech_support'))
+          .padding({ top: 2 , left: 24, right: 24 })
+          .fontSize(11)
+          .maxFontScale(1.75)
+          .width('100%')
+          .fontColor($r('app.color.font_secondary'))
+          .fontFamily('HarmonyHeiTi')
+          .textAlign(TextAlign.Center)
         Row({ space: 40 }) {
           Button('', { type: ButtonType.Circle, stateEffect: true })
             .margin({ top: 10 })
