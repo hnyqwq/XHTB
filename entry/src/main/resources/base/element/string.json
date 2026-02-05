@@ -499,6 +499,26 @@
 		{
 			"name": "videoon",
 			"value": "选择需要分享的视频"
+		},
+      {
+        "name": "ai_core_speech_support",
+		  "value": "内容由 AI 生成，使用 Core Speech Kit"
+      },
+		{
+			"name": "link",
+			"value": "链接"
+		},
+		{
+			"name": "text",
+			"value": "文本"
+		},
+		{
+			"name": "image",
+			"value": "图片"
+		},
+		{
+			"name": "video",
+			"value": "视频"
 		}
 	]
 }
