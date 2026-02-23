@@ -32,6 +32,8 @@ export struct OCR {
   @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
   @State initialOrientation: window.Orientation = window.Orientation.PORTRAIT; // 记录初始方向
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
   @State isShortcutKeyEnabled: boolean = false
@@ -275,6 +277,7 @@ export struct OCR {
         .layoutWeight(1) // 添加layoutWeight确保padding生效
       }
     }
+    .padding({ bottom: px2vp(this.bottomRectHeight) })
   }
 
   // 处理跨设备协作传来的图片

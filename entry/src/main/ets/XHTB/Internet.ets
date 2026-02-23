@@ -26,6 +26,8 @@ export struct Internet {
   @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
   @State tabArray: Array<TabItem> = initTabData();
   @State focusIndex: number = 0;
   @State index: number = 0;
@@ -241,7 +243,7 @@ export struct Internet {
       })
     }
     .height('100%')
-    .padding({ top: px2vp(this.topRectHeight) })
+    .padding({ top: px2vp(this.topRectHeight), bottom: px2vp(this.bottomRectHeight) })
   }
 }
 

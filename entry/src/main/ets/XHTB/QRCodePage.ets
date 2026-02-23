@@ -13,6 +13,8 @@ export struct QRCodePage {
   @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
   @State pixelMap: image.PixelMap | undefined = undefined
 
   aboutToAppear() {
@@ -80,5 +82,6 @@ export struct QRCodePage {
       .layoutWeight(1)
     }
     .height('100%')
+    .padding({ bottom: px2vp(this.bottomRectHeight) })
   }
 }

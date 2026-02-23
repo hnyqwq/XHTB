@@ -13,6 +13,8 @@ export struct TextToSpeechPage {
   @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
   @State originalText: string = ''; //语音
   @State createCount: number = 0;
   @State result: boolean = false;
@@ -115,6 +117,7 @@ export struct TextToSpeechPage {
       .layoutWeight(1)
     }
     .height('100%')
+    .padding({ bottom: px2vp(this.bottomRectHeight) })
   }
 
   createByCallback() {
