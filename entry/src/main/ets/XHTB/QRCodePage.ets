@@ -11,6 +11,8 @@ import { GlobalInfoModel } from '../common/GlobalInfoModel';
 export struct QRCodePage {
   @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
   @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
   @State pixelMap: image.PixelMap | undefined = undefined
 
   aboutToAppear() {
@@ -26,7 +28,7 @@ export struct QRCodePage {
       }
       .width('100%')
       .height(56)
-      .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
+      .padding({ top: px2vp(this.topRectHeight) })
       
       Column({ space: 20 }) {
         Text($r('app.string.sub_title1_value2'))

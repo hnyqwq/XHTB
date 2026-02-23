@@ -28,6 +28,10 @@ export struct MinePage {
   private customDialogComponentId: number = 0
   @State isDialogActive: boolean = false
   @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
 
   aboutToDisappear(): void {  // 显式声明返回类型
     if (this.isDialogActive) {
@@ -268,7 +272,7 @@ export struct MinePage {
     }
     .width('100%')
     .height('100%')
-    .padding({ top: 30 + this.globalInfoModel.statusBarHeight, bottom: this.globalInfoModel.naviIndicatorHeight })
+    .padding({ top: 30 + px2vp(this.topRectHeight), bottom: px2vp(this.bottomRectHeight) })
     .scrollable(ScrollDirection.Vertical)
     .scrollBar(BarState.Auto)
     .edgeEffect(EdgeEffect.Spring)
