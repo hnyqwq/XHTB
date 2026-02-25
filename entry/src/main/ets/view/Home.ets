@@ -1,13 +1,11 @@
 import { TabDataModel } from '../model/TabDataModel';
 import { TabViewModel } from '../viewmodel/TabViewModel';
-import { SideBarView } from './SideBarView';
-import { TopTabView } from './TopTabView';
-import { VideoInfoView } from './VideoInfoView';
 import { HomePage } from '../pages/HomePage';
 import { SecondPage } from '../pages/SecondPage';
 import { MinePage } from '../pages/MinePage';
-import { navigationManager } from '../common/NavigationManager';
 import { router } from '@kit.ArkUI';
+import { hdsMaterial } from '@hms.hds.hdsMaterial'
+import { HdsTabs, HdsTabsController } from '@kit.UIDesignKit';
 
 @Component
 export struct Home {
@@ -16,6 +14,7 @@ export struct Home {
   @State secondLevelIndex: number = 0;
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
+  private controller: HdsTabsController = new HdsTabsController();
 
   aboutToAppear(): void {
     // 如果设置了初始 Tab 索引,则使用该索引
