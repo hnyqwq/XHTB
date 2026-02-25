@@ -14,6 +14,8 @@ export struct Home {
   @StorageLink('currentWidthBreakpoint') currentWidthBreakpoint: string = 'sm';
   @State firstLevelIndex: number = 0;
   @State secondLevelIndex: number = 0;
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
 
@@ -183,6 +185,10 @@ export struct Home {
       .scrollable(false)
       .height('100%')
       .width('100%')
+      // 为底部导航条添加避让
+      .padding({
+        bottom: this.currentWidthBreakpoint === 'lg' ? 0 : px2vp(this.bottomRectHeight)
+      })
       // [EndExclude diff_device_container]
       // [End diff_device_container]
   }

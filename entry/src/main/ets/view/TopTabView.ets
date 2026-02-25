@@ -8,7 +8,8 @@ export struct TopTabView {
   @State secondLevelIndex: number = 0;
   @Link firstLevelIndex: number;
   @Link tabData: TabDataModel;
-  @State statusBarHeight: number = 0;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
   private firstLevel: string = this.getFirstLevel();
 
   aboutToAppear(): void {
@@ -16,14 +17,14 @@ export struct TopTabView {
     try {
       window.getLastWindow(getContext(this)).then((windowClass: window.Window) => {
         const avoidArea = windowClass.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
-        this.statusBarHeight = px2vp(avoidArea.topRect.height);
+        this.topRectHeight = avoidArea.topRect.height;
       }).catch((error: Error) => {
         hilog.error(0x0000, 'testTag', 'Failed to get status bar height: %{public}s', JSON.stringify(error) ?? '');
-        this.statusBarHeight = 32; // 默认值
+        this.topRectHeight = 0; // 默认值
       });
     } catch (error) {
       hilog.error(0x0000, 'testTag', 'Failed to get status bar height: %{public}s', JSON.stringify(error) ?? '');
-      this.statusBarHeight = 32; // 默认值
+      this.topRectHeight = 0; // 默认值
     }
   }
 
@@ -83,7 +84,7 @@ export struct TopTabView {
     .height('100%')
     .width('100%')
     .padding({
-      top: this.statusBarHeight + 30
+      top: px2vp(this.topRectHeight) + 30
     })
     // [End top_tab_view]
   }

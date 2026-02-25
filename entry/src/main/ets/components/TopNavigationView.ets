@@ -18,6 +18,8 @@ export struct TopNavigationView {
   @Prop topNavigationData: TopNavigationData = new TopNavigationData();
   @BuilderParam menuView?: () => void;
   @State fontSize: number = 20;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
   @State backIconBgColor: ResourceColor =
     this.globalInfoModel.currentBreakpoint === BreakpointTypeEnum.XL ? Color.Transparent :
       $r('sys.color.comp_background_tertiary');
@@ -103,7 +105,7 @@ export struct TopNavigationView {
     }
     .backgroundBlurStyle(this.topNavigationData.isBlur ? BlurStyle.COMPONENT_THICK : undefined)
     .renderGroup(!this.blurRenderGroup && this.globalInfoModel.currentBreakpoint !== BreakpointTypeEnum.XL)
-    .padding({ top: this.topNavigationData.isFullScreen ? this.globalInfoModel.statusBarHeight : 0 })
+    .padding({ top: this.topNavigationData.isFullScreen ? px2vp(this.topRectHeight) : 0 })
     .width('100%')
     .backgroundColor(this.topNavigationData.bgColor)
   }

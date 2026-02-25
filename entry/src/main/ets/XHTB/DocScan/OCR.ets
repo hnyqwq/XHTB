@@ -30,6 +30,10 @@ import {
 export struct OCR {
   context: common.Context = getContext(this);
   @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
   @State initialOrientation: window.Orientation = window.Orientation.PORTRAIT; // 记录初始方向
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
   @State isShortcutKeyEnabled: boolean = false
@@ -196,7 +200,7 @@ export struct OCR {
       }
       .width('100%')
       .height(56)
-      .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
+      .padding({ top: px2vp(this.topRectHeight) })
 
       Row() {
         // 跨设备协作状态对话框（用于接收其他设备的图片）
@@ -273,6 +277,7 @@ export struct OCR {
         .layoutWeight(1) // 添加layoutWeight确保padding生效
       }
     }
+    .padding({ bottom: px2vp(this.bottomRectHeight) })
   }
 
   // 处理跨设备协作传来的图片
