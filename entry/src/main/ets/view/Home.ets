@@ -81,25 +81,6 @@ export struct Home {
     }
   }
 
-  @Builder
-  tabBuilder(name: string, index: number) {
-    Column() {
-      Image(this.getTabIcon(index, index === this.firstLevelIndex))
-        .width(24)
-        .height(24)
-        .fillColor(index === this.firstLevelIndex ? '#0A59F7' : '#999999')
-      Text(name)
-        .fontSize(10)
-        .fontWeight(500)
-        .fontColor(index === this.firstLevelIndex ? '#0A59F7' : '#999999')
-        .margin({ top: 4 })
-    }
-    .padding({ bottom: 24 })
-    .height(this.currentWidthBreakpoint === 'lg' ? 100 : '100%')
-    .width('100%')
-    .justifyContent(FlexAlign.Center)
-  }
-
   build() {
     // [Start diff_device_container]
     // entry/src/main/ets/view/Home.ets
@@ -144,36 +125,40 @@ export struct Home {
     //   .maxSideBarWidth(240)
     // } else {
       // [StartExclude diff_device_container]
-      // Use Tabs and List at other breakpoints.
+      // Use HdsTabs and List at other breakpoints.
       // [Start tab_to_page]
       // entry/src/main/ets/view/Home.ets
-      Tabs({
-        barPosition: this.currentWidthBreakpoint === 'lg' ? BarPosition.Start : BarPosition.End,
-        index: this.firstLevelIndex
-      }) {
+      HdsTabs({ controller: this.controller }) {
         TabContent() {
           HomePage()
         }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+        .tabBar(new BottomTabBarStyle(this.getTabIcon(0, false), this.tabData.getFirstList()[0]))
 
         TabContent() {
           SecondPage()
         }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+        .tabBar(new BottomTabBarStyle(this.getTabIcon(1, false), this.tabData.getFirstList()[1]))
 
         TabContent() {
           MinePage()
         }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+        .tabBar(new BottomTabBarStyle(this.getTabIcon(2, false), this.tabData.getFirstList()[2]))
       }
+      // 设置页签栏基本属性
+      .barOverlap(true)
+      .barPosition(BarPosition.End)
+      .vertical(false)
+      // 设置页签栏悬浮样式
+      .barFloatingStyle({
+        barWidth: { smallWidth: 200, mediumWidth: 300, largeWidth: 400 },
+        barBottomMargin: 28,
+        gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
+        systemMaterialEffect: {
+          materialType: hdsMaterial.MaterialType.IMMERSIVE,
+          materialLevel: hdsMaterial.MaterialLevel.EXQUISITE
+        },
+      })
       // [StartExclude tab_to_page]
-      .barBackgroundColor($r('app.color.barBackgroundColor'))
-      .barWidth(this.currentWidthBreakpoint === 'lg' ? 96 : '100%')
-      .barHeight(this.currentWidthBreakpoint === 'lg' ? '100%' : 76)
-      .barMode(this.currentWidthBreakpoint === 'lg' ? BarMode.Scrollable : BarMode.Fixed,
-        { nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER })
-      .barBackgroundBlurStyle(BlurStyle.COMPONENT_THICK)
-      // [EndExclude tab_to_page]
       .vertical(this.currentWidthBreakpoint === 'lg')
       .onChange((index: number) => {
         this.firstLevelIndex = index;
@@ -184,10 +169,6 @@ export struct Home {
       .scrollable(false)
       .height('100%')
       .width('100%')
-      // 为底部导航条添加避让
-      .padding({
-        bottom: this.currentWidthBreakpoint === 'lg' ? 0 : px2vp(this.bottomRectHeight)
-      })
       // [EndExclude diff_device_container]
       // [End diff_device_container]
   }
