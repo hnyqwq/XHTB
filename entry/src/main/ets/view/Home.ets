@@ -150,7 +150,7 @@ export struct Home {
       .vertical(false)
       // 设置页签栏悬浮样式
       .barFloatingStyle({
-        barWidth: { smallWidth: 200, mediumWidth: 300, largeWidth: 400 },
+        //barWidth: { smallWidth: 200, mediumWidth: 300, largeWidth: 400 },
         barBottomMargin: 28,
         gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
         systemMaterialEffect: {
