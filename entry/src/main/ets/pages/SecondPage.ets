@@ -16,6 +16,8 @@ struct SecondPageContent {
   //0 for scrolling to the top of page, 1 for middle value, and 2 for scrolling to the bottom of page.
   @State scrollPosition: number = ScrollPosition.start;
   @State currentIndex: number = 0;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
   private scrollerForScroll: Scroller = new Scroller();
   private scrollerForList: Scroller = new Scroller();
   private scrollerForTitle: Scroller = new Scroller();
@@ -32,7 +34,7 @@ struct SecondPageContent {
       .justifyContent(FlexAlign.Center)
       .width(CommonConstants.FULL_PERCENT)
       .height($r('app.float.page_title_height'))
-      .padding({ top: (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 24) + 8 })
+      .padding({ top: px2vp(this.topRectHeight) + 8 })
 
       Stack({ alignContent: Alignment.Top }) {
         Scroll(this.scrollerForScroll) {

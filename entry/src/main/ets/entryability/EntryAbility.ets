@@ -182,14 +182,36 @@ export default class EntryAbility extends UIAbility {
         const windowProperties = data.getWindowProperties();
         const globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel') || new GlobalInfoModel();
 
+        // 2. 获取布局避让遮挡的区域
+        let type = window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR; // 以导航条避让为例
+        let avoidAreaNav = data.getWindowAvoidArea(type);
+        let bottomRectHeight = avoidAreaNav.bottomRect.height; // 获取到导航条区域的高度
+        AppStorage.setOrCreate('bottomRectHeight', bottomRectHeight);
+
+        type = window.AvoidAreaType.TYPE_SYSTEM; // 以状态栏避让为例
+        let avoidAreaSystem = data.getWindowAvoidArea(type);
+        let topRectHeight = avoidAreaSystem.topRect.height; // 获取状态栏区域高度
+        AppStorage.setOrCreate('topRectHeight', topRectHeight);
+
         globalInfoModel.statusBarHeight = px2vp(avoidArea.topRect.height);
-        globalInfoModel.naviIndicatorHeight = px2vp(avoidArea.bottomRect.height);
+        globalInfoModel.naviIndicatorHeight = px2vp(avoidAreaNav.bottomRect.height);
         globalInfoModel.decorHeight = windowProperties.windowRect.height;
         globalInfoModel.deviceHeight = px2vp(windowProperties.windowRect.height);
         globalInfoModel.deviceWidth = px2vp(windowProperties.windowRect.width);
 
         AppStorage.setOrCreate('GlobalInfoModel', globalInfoModel);
         hilog.info(0x0000, 'testTag', 'StatusBar height: %{public}d', globalInfoModel.statusBarHeight);
+
+        // 3. 注册监听函数，动态获取避让区域数据
+        data.on('avoidAreaChange', (dataAvoidArea) => {
+          if (dataAvoidArea.type === window.AvoidAreaType.TYPE_SYSTEM) {
+            let topRectHeight = dataAvoidArea.area.topRect.height;
+            AppStorage.setOrCreate('topRectHeight', topRectHeight);
+          } else if (dataAvoidArea.type === window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR) {
+            let bottomRectHeight = dataAvoidArea.area.bottomRect.height;
+            AppStorage.setOrCreate('bottomRectHeight', bottomRectHeight);
+          }
+        });
 
         // 初始化断点系统
         BreakpointSystem.getInstance().updateWidthBp(data);
@@ -271,14 +293,36 @@ export default class EntryAbility extends UIAbility {
         const windowProperties = data.getWindowProperties();
         const globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel') || new GlobalInfoModel();
 
+        // 2. 获取布局避让遮挡的区域
+        let type = window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR; // 以导航条避让为例
+        let avoidAreaNav = data.getWindowAvoidArea(type);
+        let bottomRectHeight = avoidAreaNav.bottomRect.height; // 获取到导航条区域的高度
+        AppStorage.setOrCreate('bottomRectHeight', bottomRectHeight);
+
+        type = window.AvoidAreaType.TYPE_SYSTEM; // 以状态栏避让为例
+        let avoidAreaSystem = data.getWindowAvoidArea(type);
+        let topRectHeight = avoidAreaSystem.topRect.height; // 获取状态栏区域高度
+        AppStorage.setOrCreate('topRectHeight', topRectHeight);
+
         globalInfoModel.statusBarHeight = px2vp(avoidArea.topRect.height);
-        globalInfoModel.naviIndicatorHeight = px2vp(avoidArea.bottomRect.height);
+        globalInfoModel.naviIndicatorHeight = px2vp(avoidAreaNav.bottomRect.height);
         globalInfoModel.decorHeight = windowProperties.windowRect.height;
         globalInfoModel.deviceHeight = px2vp(windowProperties.windowRect.height);
         globalInfoModel.deviceWidth = px2vp(windowProperties.windowRect.width);
 
         AppStorage.setOrCreate('GlobalInfoModel', globalInfoModel);
         hilog.info(0x0000, 'testTag', 'StatusBar height: %{public}d', globalInfoModel.statusBarHeight);
+
+        // 3. 注册监听函数，动态获取避让区域数据
+        data.on('avoidAreaChange', (dataAvoidArea) => {
+          if (dataAvoidArea.type === window.AvoidAreaType.TYPE_SYSTEM) {
+            let topRectHeight = dataAvoidArea.area.topRect.height;
+            AppStorage.setOrCreate('topRectHeight', topRectHeight);
+          } else if (dataAvoidArea.type === window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR) {
+            let bottomRectHeight = dataAvoidArea.area.bottomRect.height;
+            AppStorage.setOrCreate('bottomRectHeight', bottomRectHeight);
+          }
+        });
 
         // 初始化断点系统
         BreakpointSystem.getInstance().updateWidthBp(data);

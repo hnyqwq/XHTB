@@ -116,7 +116,9 @@ export struct HomePage {
 
   // 顶部背景渐变相关
   @State topBgColor: string = '#FFFFFF'; // 顶部背景颜色
-  @State topSafeHeight: number = 0; // 顶部安全区域高度
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
+  @State topSafeHeight: number = 0; // 顶部安全区域高度（已废弃，保留兼容性）
 
   // 新年卡片相关
   @State showNewYearCard: boolean = true; // 是否显示新年卡片
@@ -1114,7 +1116,7 @@ export struct HomePage {
 
     // 获取顶部安全区域高度
     window.getLastWindow(this.getUIContext().getHostContext() as common.UIAbilityContext).then((windowInstance) => {
-      this.topSafeHeight = this.getUIContext().px2vp(windowInstance.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM).topRect.height);
+      this.topSafeHeight = px2vp(this.topRectHeight);
       this.extractTopBgColor(); // 获取初始背景颜色
     });
 
@@ -3861,7 +3863,7 @@ export struct HomePage {
       direction: GradientDirection.Bottom,
       colors: [[this.topBgColor, CommonConstants.START_GRADIENT_RANGE], [$r('app.color.page_background_gradient_end'), CommonConstants.END_GRADIENT_RANGE]]
     })
-    .padding({ top: this.topSafeHeight })
+    .padding({ top: px2vp(this.topRectHeight) })
   }
 
   private isNoListening() {

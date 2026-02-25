@@ -237,13 +237,13 @@ export struct infoPage {
           .width('100%')
           .height(60)
           .alignItems(HorizontalAlign.Center)
-          .padding({ bottom: this.globalInfoModel.naviIndicatorHeight })
+          .padding({ bottom: px2vp(this.bottomRectHeight) })
         }
         .padding({ bottom: 20 })
       }
       .width('100%')
       .layoutWeight(1)
-      .padding({ top: this.topRectHeight })
+      .padding({ top: px2vp(this.topRectHeight) })
       .scrollable(ScrollDirection.Vertical)
       .scrollBar(BarState.Auto)
       .edgeEffect(EdgeEffect.Spring)
