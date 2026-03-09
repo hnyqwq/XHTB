@@ -162,43 +162,9 @@ export struct Home {
   build() {
     // [Start diff_device_container]
     // entry/src/main/ets/view/Home.ets
-    // 平板模式（lg breakpoint）：使用左侧垂直Tab栏（之前的状态）
-    if (this.currentWidthBreakpoint === 'lg') {
-      Tabs({
-        barPosition: BarPosition.Start,
-        index: this.firstLevelIndex
-      }) {
-        TabContent() {
-          HomePage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
-
-        TabContent() {
-          SecondPage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
-
-        TabContent() {
-          MinePage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
-      }
-      .barBackgroundColor($r('app.color.barBackgroundColor'))
-      .barWidth(96)
-      .barHeight('100%')
-      .barMode(BarMode.Scrollable, { nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER })
-      .barBackgroundBlurStyle(BlurStyle.COMPONENT_THICK)
-      .vertical(true)
-      .onChange((index: number) => {
-        this.firstLevelIndex = index;
-        // 保存当前 Tab 索引到 AppStorage,供接续功能使用
-        AppStorage.setOrCreate('currentTabIndex', index);
-      })
-      .scrollable(false)
-      .height('100%')
-      .width('100%')
-    } else if (this.isImmersiveTab) {
-      // 沉浸式底部Tab栏样式（当前样式）
+    // 根据沉浸式Tab栏开关决定布局样式
+    if (this.isImmersiveTab) {
+      // 沉浸式底部Tab栏样式（悬浮+材质效果）
       HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
         TabContent() {
           HomePage()
@@ -241,35 +207,73 @@ export struct Home {
       .height('100%')
       .width('100%')
     } else {
-      // 传统式底部Tab栏样式（无悬浮效果）
-      HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
-        TabContent() {
-          HomePage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+      // 传统式Tab栏样式
+      if (this.currentWidthBreakpoint === 'lg') {
+        // 平板模式（lg breakpoint）：使用左侧垂直Tab栏
+        Tabs({
+          barPosition: BarPosition.Start,
+          index: this.firstLevelIndex
+        }) {
+          TabContent() {
+            HomePage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
 
-        TabContent() {
-          SecondPage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+          TabContent() {
+            SecondPage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
 
-        TabContent() {
-          MinePage()
+          TabContent() {
+            MinePage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
         }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+        .barBackgroundColor($r('app.color.barBackgroundColor'))
+        .barWidth(96)
+        .barHeight('100%')
+        .barMode(BarMode.Scrollable, { nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER })
+        .barBackgroundBlurStyle(BlurStyle.COMPONENT_THICK)
+        .vertical(true)
+        .onChange((index: number) => {
+          this.firstLevelIndex = index;
+          // 保存当前 Tab 索引到 AppStorage,供接续功能使用
+          AppStorage.setOrCreate('currentTabIndex', index);
+        })
+        .scrollable(false)
+        .height('100%')
+        .width('100%')
+      } else {
+        // 手机模式：使用传统式底部Tab栏（无悬浮效果）
+        HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
+          TabContent() {
+            HomePage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+
+          TabContent() {
+            SecondPage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+
+          TabContent() {
+            MinePage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+        }
+        .barPosition(BarPosition.End)
+        .vertical(false)
+        .onChange((index: number) => {
+          this.firstLevelIndex = index;
+          // 保存当前 Tab 索引到 AppStorage,供接续功能使用
+          AppStorage.setOrCreate('currentTabIndex', index);
+        })
+        .scrollable(false)
+        .height('100%')
+        .width('100%')
+        // 为底部Tab栏添加安全区避让
+        .padding({ bottom: px2vp(this.bottomRectHeight) })
       }
-      .barPosition(BarPosition.End)
-      .vertical(false)
-      .onChange((index: number) => {
-        this.firstLevelIndex = index;
-        // 保存当前 Tab 索引到 AppStorage,供接续功能使用
-        AppStorage.setOrCreate('currentTabIndex', index);
-      })
-      .scrollable(false)
-      .height('100%')
-      .width('100%')
-      // 为底部Tab栏添加安全区避让
-      .padding({ bottom: px2vp(this.bottomRectHeight) })
     }
     // [EndExclude diff_device_container]
     // [End diff_device_container]
