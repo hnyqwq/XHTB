@@ -523,6 +523,18 @@
 		{
 			"name": "23_only_support",
 			"value": "仅 API>23 设备支持"
+		},
+		{
+			"name": "api_name",
+			"value": "API版本名称"
+		},
+		{
+			"name": "api_version",
+			"value": "API版本号"
+		},
+		{
+			"name": "performance_level",
+			"value": "设备能力定级"
 		}
 	]
 }

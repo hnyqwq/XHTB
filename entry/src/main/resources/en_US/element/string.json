@@ -523,6 +523,18 @@
     {
       "name": "23_only_support",
       "value": "API > 23 is required"
+    },
+    {
+      "name": "api_name",
+      "value": "API version name"
+    },
+    {
+      "name": "api_version",
+      "value": "API version"
+    },
+    {
+      "name": "performance_level",
+      "value": "PerformanceClassLevel"
     }
   ]
 }

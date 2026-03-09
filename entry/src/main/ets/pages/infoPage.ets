@@ -34,6 +34,9 @@ let distributionOSVersion: string = deviceInfo.distributionOSVersion
 // 输出结果：the value of the distributionOSVersion is :5.0.0
 console.info('the value of the deviceInfo distributionOSVersion is :' + distributionOSVersion);
 
+let distributionOSApiName: string = deviceInfo.distributionOSApiName
+console.info('the value of the deviceInfo distributionOSApiName is :' + distributionOSApiName);
+
 let performanceClass = deviceInfo.performanceClass;
 // 输出结果：the value of the deviceInfo performanceClass is :0
 console.info('the value of the deviceInfo performanceClass is :' + performanceClass);
@@ -41,6 +44,10 @@ console.info('the value of the deviceInfo performanceClass is :' + performanceCl
 let chipType: string = deviceInfo.chipType;
 // 输出结果：the value of the deviceInfo chipType is :kirin9000s
 console.info('the value of the deviceInfo chipType is :' + chipType);
+
+let sdkApiVersion: number = deviceInfo.sdkApiVersion;
+// 输出结果：the value of the deviceInfo sdkApiVersion is :12
+console.info('the value of the deviceInfo sdkApiVersion is :' + sdkApiVersion);
 
 let bbh = displayVersionInfo.match(/0\s([\d.]+)/);
 let bbhsr = (bbh && bbh[1]) || '';//6.0.0.35
@@ -86,11 +93,32 @@ export struct infoPage {
     new FirstMenu('two', $r('app.string.info2'), productModelInfo, $r('app.string.void')),
     new FirstMenu('three',$r('app.string.info3'),distributionOSVersion, $r('app.string.void')),
     new FirstMenu('four',$r('app.string.info4'),fullVersionsr, $r('app.string.void')),
-    new FirstMenu('five',$r('app.string.info6') ,chipType, $r('app.string.void')),
     new FirstMenu('six',$r('app.string.info5') ,versionSegsr, $r('app.string.void'))
   ];
 
+  // 系统能力信息数组
+  @State SystemCapabilityMenuGroup: FirstMenu[] = [
+    new FirstMenu('api_name', $r('app.string.api_name'), distributionOSApiName, $r('app.string.void')),
+    new FirstMenu('api_version', $r('app.string.api_version'), sdkApiVersion.toString(), $r('app.string.void')),
+    new FirstMenu('cpu_model', $r('app.string.info6'), chipType, $r('app.string.void')),
+    new FirstMenu('performance_level', $r('app.string.performance_level'), this.getPerformanceLevelText(), $r('app.string.void'))
+  ];
+
   private topNavData: TopNavigationData = new TopNavigationData();
+
+  // 获取设备能力定级文本
+  private getPerformanceLevelText(): string {
+    switch (deviceInfo.performanceClass) {
+      case 0:
+        return 'CLASS_LEVEL_HIGH';
+      case 1:
+        return 'CLASS_LEVEL_MEDIUM';
+      case 2:
+        return 'CLASS_LEVEL_LOW';
+      default:
+        return 'UNKNOWN';
+    }
+  }
 
   aboutToAppear(): void {
     this.topNavData.title = $r('app.string.infopagetitle');
@@ -266,6 +294,35 @@ export struct infoPage {
           })
           .borderRadius($r('app.integer.layout_size_24'))
           .backgroundColor($r('app.color.info'));
+
+          // 系统能力信息
+          Column() {
+            Row() {
+              List() {
+                ForEach(this.SystemCapabilityMenuGroup, (item: FirstMenu) => {
+                  ListItem() {
+                    SettingItemView({ text: item.title, des: item.text });
+                  }
+                  .width('100%')
+                },
+                  (item: FirstMenu) => item.id.toString());
+              }
+              .divider({
+                strokeWidth: $r('app.float.stroke_width'),
+                color: $r('app.color.font_color_00000'),
+                startMargin: $r('app.integer.layout_size_24'),
+                endMargin: $r('app.integer.layout_size_24')
+              });
+            }
+            .padding({ bottom: $r('app.integer.layout_size_5'), top: $r('app.integer.layout_size_5') })
+            .width('90%')
+            .borderRadius($r('app.integer.layout_size_24'))
+            .alignItems(VerticalAlign.Center)
+            .margin({
+              bottom: $r('app.integer.layout_size_12')
+            })
+            .backgroundColor($r('app.color.info'));
+          }
 
           Column() {
             Row() {
