@@ -87,8 +87,6 @@ export struct infoPage {
   topRectHeight: number = 0;
   @State isImmersiveTab: boolean = false; // 沉浸式Tab栏样式状态（包含底部Tab栏和顶部材质效果）
   @State showNewYearCard: boolean = false; // 春节卡片开关状态，默认关闭
-  @State materialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
-  @State materialType: hdsMaterial.MaterialType = hdsMaterial.MaterialType.NONE;
   private preferences: dataPreferences.Preferences | null = null;
   private scroller: Scroller = new Scroller();
   //设置条目信息数组
@@ -157,17 +155,8 @@ export struct infoPage {
       this.isImmersiveTab = await this.preferences.get('isImmersiveTab', false) as boolean;
       // 同步到AppStorage，供Home页面使用
       AppStorage.setOrCreate('isImmersiveTab', this.isImmersiveTab);
-
-      // 根据开关状态设置材质效果
-      if (this.isImmersiveTab) {
-        this.materialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
-        this.materialType = hdsMaterial.MaterialType.IMMERSIVE;
-      } else {
-        this.materialLevel = hdsMaterial.MaterialLevel.SMOOTH;
-        this.materialType = hdsMaterial.MaterialType.NONE;
-      }
     } catch (err) {
-      console.error('Failed to load immersive tab setting:', err);
+      console.error('Failed to load loadImmersiveTabSetting setting:', err);
     }
   }
 
@@ -202,17 +191,6 @@ export struct infoPage {
         this.isImmersiveTab = value;
         // 同步到AppStorage，供Home页面使用
         AppStorage.setOrCreate('isImmersiveTab', value);
-
-        // 根据开关状态设置材质效果
-        if (value) {
-          this.materialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
-          this.materialType = hdsMaterial.MaterialType.IMMERSIVE;
-        } else {
-          this.materialLevel = hdsMaterial.MaterialLevel.SMOOTH;
-          this.materialType = hdsMaterial.MaterialType.NONE;
-        }
-
-        console.info('Saved immersive tab setting:', value);
       }
     } catch (err) {
       console.error('Failed to save immersive tab setting:', err);
@@ -297,8 +275,8 @@ export struct infoPage {
           }
         },
         systemMaterialEffect: {
-          materialType: this.materialType,
-          materialLevel: this.materialLevel
+          materialLevel : hdsMaterial.MaterialLevel.EXQUISITE,
+          materialType : hdsMaterial.MaterialType.IMMERSIVE,
         }
       },
       enableHoverMode: true,
@@ -350,7 +328,7 @@ export struct infoPage {
   @Builder
   pageContent() {
       Column() {
-          Blank().height(100).width('100%')
+          Blank().height(120).width('100%')
           Stack() {
             Row() {
               Image($r('app.media.harmonyos'))
