@@ -535,6 +535,14 @@
 		{
 			"name": "performance_level",
 			"value": "设备能力定级"
+		},
+		{
+			"name": "show_newyear_card",
+			"value": "春节卡片"
+		},
+		{
+			"name": "newyear_card_description",
+			"value": "显示春节特色卡片"
 		}
 	]
 }

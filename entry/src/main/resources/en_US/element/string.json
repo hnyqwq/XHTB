@@ -535,6 +535,14 @@
     {
       "name": "performance_level",
       "value": "PerformanceClassLevel"
+    },
+    {
+      "name": "show_newyear_card",
+      "value": "New Year Card"
+    },
+    {
+      "name": "newyear_card_description",
+      "value": "Show New Year Card"
     }
   ]
 }
