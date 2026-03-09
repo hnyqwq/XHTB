@@ -2,8 +2,8 @@
   "app": {
     "bundleName": "yylx.hny.qwq",
     "vendor": "",
-    "versionCode": 10701000,
-    "versionName": "1.7.1.0",
+    "versionCode": 10800000,
+    "versionName": "1.8.0.0",
     "icon": "$media:app_icon",
     "label": "$string:app_name",
     /*"description": "$string:description_application",

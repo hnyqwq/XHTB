@@ -96,12 +96,12 @@ export struct infoPage {
     new FirstMenu('one', $r('app.string.info1'), marketNameInfo, $r('app.string.void')),
     new FirstMenu('two', $r('app.string.info2'), productModelInfo, $r('app.string.void')),
     new FirstMenu('three',$r('app.string.info3'),distributionOSVersion, $r('app.string.void')),
-    new FirstMenu('four',$r('app.string.info4'),fullVersionsr, $r('app.string.void')),
-    new FirstMenu('six',$r('app.string.info5') ,versionSegsr, $r('app.string.void'))
+    new FirstMenu('four',$r('app.string.info4'),fullVersionsr, $r('app.string.void'))
   ];
 
   // 系统能力信息数组
   @State SystemCapabilityMenuGroup: FirstMenu[] = [
+    new FirstMenu('six',$r('app.string.info5') ,versionSegsr, $r('app.string.void')),
     new FirstMenu('api_name', $r('app.string.api_name'), distributionOSApiName, $r('app.string.void')),
     new FirstMenu('api_version', $r('app.string.api_version'), sdkApiVersion.toString(), $r('app.string.void')),
     new FirstMenu('cpu_model', $r('app.string.info6'), chipType, $r('app.string.void')),

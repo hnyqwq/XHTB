@@ -3850,6 +3850,8 @@ export struct HomePage {
             }
             .width('90%')
           }
+            // 底部避让空白区域(用于沉浸tab模式下的手机端)
+            Blank().height(100).width('100%')
         }
         .width('90%')
         .alignItems(HorizontalAlign.Center) // 内容水平居中
