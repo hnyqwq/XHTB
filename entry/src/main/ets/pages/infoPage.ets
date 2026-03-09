@@ -3,6 +3,7 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import type { common } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { navigationManager } from '../common/NavigationManager';
+import dataPreferences from '@ohos.data.preferences';
 
 import { deviceInfo } from '@kit.BasicServicesKit';
 
@@ -77,6 +78,8 @@ export struct infoPage {
   bottomRectHeight: number = 0;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
+  @State isImmersiveTab: boolean = false; // 沉浸式底部Tab栏开关状态
+  private preferences: dataPreferences.Preferences | null = null;
   //设置条目信息数组
   @State FirstMenuGroup: FirstMenu[] = [
     new FirstMenu('one', $r('app.string.info1'), marketNameInfo, $r('app.string.void')),
@@ -98,6 +101,49 @@ export struct infoPage {
     // 保存当前页面信息到 AppStorage,供接续功能使用
     AppStorage.setOrCreate('currentPageUrl', 'pages/infoPage');
     AppStorage.delete('currentRouteParams');
+
+    // 加载沉浸式tab栏设置
+    this.loadImmersiveTabSetting();
+  }
+
+  async loadImmersiveTabSetting() {
+    try {
+      const context = getContext(this) as common.UIAbilityContext;
+      this.preferences = await dataPreferences.getPreferences(context, 'app_settings');
+
+      // 检查是否已经设置过,如果没有则设置默认值为false
+      const hasKey = await this.preferences.has('isImmersiveTab');
+      if (!hasKey) {
+        await this.preferences.put('isImmersiveTab', false);
+        await this.preferences.flush();
+      }
+
+      // 读取保存的值
+      this.isImmersiveTab = await this.preferences.get('isImmersiveTab', false) as boolean;
+      // 同步到AppStorage，供Home页面使用
+      AppStorage.setOrCreate('isImmersiveTab', this.isImmersiveTab);
+    } catch (err) {
+      console.error('Failed to load immersive tab setting:', err);
+    }
+  }
+
+  async saveImmersiveTabSetting(value: boolean) {
+    try {
+      if (this.preferences) {
+        await this.preferences.put('isImmersiveTab', value);
+        await this.preferences.flush();
+        this.isImmersiveTab = value;
+        // 同步到AppStorage，供Home页面使用
+        AppStorage.setOrCreate('isImmersiveTab', value);
+        console.info('Saved immersive tab setting:', value);
+      }
+    } catch (err) {
+      console.error('Failed to save immersive tab setting:', err);
+    }
+  }
+
+  getTabStyleDescription(): string {
+    return this.isImmersiveTab ? '沉浸式（悬浮效果）' : '传统式（分离效果）';
   }
 
   build() {
@@ -200,6 +246,45 @@ export struct infoPage {
               top: $r('app.integer.layout_size_12'), // 增加顶部间距
               bottom: $r('app.integer.layout_size_12')
             })
+            .backgroundColor($r('app.color.info'));
+
+            // 沉浸式Tab栏开关
+            Row() {
+              Row() {
+                Text('底部Tab栏样式')
+                  .fontSize($r('app.integer.layout_size_16'))
+                  .fontWeight(400)
+                  .fontFamily('HarmonyOS Sans')
+                  .fontColor($r('app.color.font_color_info'))
+                  .layoutWeight(1)
+                  .lineHeight($r('app.integer.layout_size_22'));
+                Text(this.getTabStyleDescription())
+                  .fontSize($r('app.integer.layout_size_14'))
+                  .fontColor($r('app.float.opacity'))
+                  .opacity(0.6)
+                  .margin({ right: 8 });
+                Toggle({ type: ToggleType.Switch, isOn: this.isImmersiveTab })
+                  .selectedColor('#0A59F7')
+                  .onChange((isOn: boolean) => {
+                    this.saveImmersiveTabSetting(isOn);
+                  })
+              }
+              .width('100%')
+              .height($r('app.integer.tabbar_height'))
+              .padding({
+                left: $r('app.integer.layout_size_22'),
+                right: $r('app.integer.layout_size_12')
+              })
+              .alignItems(VerticalAlign.Center);
+            }
+            .width('90%')
+            .height($r('app.integer.layout_size_48'))
+            .alignSelf(ItemAlign.Center)
+            .margin({
+              top: $r('app.integer.layout_size_12'),
+              bottom: $r('app.integer.layout_size_12')
+            })
+            .borderRadius($r('app.integer.layout_size_24'))
             .backgroundColor($r('app.color.info'));
 
             /*Row() {

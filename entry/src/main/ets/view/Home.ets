@@ -5,27 +5,36 @@ import { SecondPage } from '../pages/SecondPage';
 import { MinePage } from '../pages/MinePage';
 import { router } from '@kit.ArkUI';
 import { hdsMaterial } from '@hms.hds.hdsMaterial'
-import { HdsTabs, HdsTabsController } from '@kit.UIDesignKit';
+import { HdsTabs, HdsTabsController, HdsTabsAttribute } from '@kit.UIDesignKit';
+import { preferences } from '@kit.ArkData';
+import type { common } from '@kit.AbilityKit';
 
 @Component
 export struct Home {
   @StorageLink('currentWidthBreakpoint') currentWidthBreakpoint: string = 'sm';
-  @State firstLevelIndex: number = 0;
+  @StorageLink('isImmersiveTab') isImmersiveTab: boolean = false; // 沉浸式Tab栏设置
+  @StorageLink('currentTabIndex') firstLevelIndex: number = 0; // 从AppStorage读取当前Tab索引
+  @StorageProp('bottomRectHeight') bottomRectHeight: number = 0;
   @State secondLevelIndex: number = 0;
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
   private controller: HdsTabsController = new HdsTabsController();
+  private preferences: preferences.Preferences | null = null;
 
   aboutToAppear(): void {
+    // 从Preferences加载沉浸式Tab栏设置
+    this.loadImmersiveTabSetting();
+
+    // 初始化当前Tab索引为0(首页),不保存上次的位置
+    AppStorage.setOrCreate('currentTabIndex', 0);
+
     // 如果设置了初始 Tab 索引,则使用该索引
     const initialTabIndex = AppStorage.get<number>('initialTabIndex');
     if (initialTabIndex !== undefined && initialTabIndex !== null) {
-      this.firstLevelIndex = initialTabIndex;
+      AppStorage.setOrCreate('currentTabIndex', initialTabIndex);
       // 清除标记,避免影响后续导航
       AppStorage.delete('initialTabIndex');
     }
-    // 保存初始的 Tab 索引到 AppStorage
-    AppStorage.setOrCreate('currentTabIndex', this.firstLevelIndex);
 
     // 检查是否有接续的页面需要跳转
     const continuationPageUrl = AppStorage.get<string>('continuationPageUrl');
@@ -66,6 +75,58 @@ export struct Home {
     }
   }
 
+  async loadImmersiveTabSetting() {
+    try {
+      const context = getContext(this) as common.UIAbilityContext;
+      this.preferences = await preferences.getPreferences(context, 'app_settings');
+
+      // 读取保存的值
+      if (this.preferences) {
+        const savedValue = await this.preferences.get('isImmersiveTab', false) as boolean;
+        // 同步到AppStorage
+        AppStorage.setOrCreate('isImmersiveTab', savedValue);
+      }
+    } catch (err) {
+      console.error('Failed to load immersive tab setting:', err);
+      // 出错时使用默认值
+      AppStorage.setOrCreate('isImmersiveTab', false);
+    }
+  }
+
+  // Tab 索引持久化相关方法(已禁用)
+  /*
+  async loadCurrentTabIndex() {
+    try {
+      const context = getContext(this) as common.UIAbilityContext;
+      if (!this.preferences) {
+        this.preferences = await preferences.getPreferences(context, 'app_settings');
+      }
+
+      // 读取保存的Tab索引
+      if (this.preferences) {
+        const savedIndex = await this.preferences.get('currentTabIndex', 0) as number;
+        // 同步到AppStorage
+        AppStorage.setOrCreate('currentTabIndex', savedIndex);
+      }
+    } catch (err) {
+      console.error('Failed to load current tab index:', err);
+      // 出错时使用默认值
+      AppStorage.setOrCreate('currentTabIndex', 0);
+    }
+  }
+
+  async saveCurrentTabIndex(index: number) {
+    try {
+      if (this.preferences) {
+        await this.preferences.put('currentTabIndex', index);
+        await this.preferences.flush();
+      }
+    } catch (err) {
+      console.error('Failed to save current tab index:', err);
+    }
+  }
+  */
+
   getTabIcon(index: number, isSelected: boolean): Resource {
     switch (index) {
       case 0:
@@ -92,7 +153,7 @@ export struct Home {
         .fontColor(index === this.firstLevelIndex ? '#0A59F7' : '#999999')
         .margin({ top: 4 })
     }
-    .padding({ bottom: 24 })
+    .padding({ bottom: this.currentWidthBreakpoint === 'lg' ? 24 : 0 })
     .height(this.currentWidthBreakpoint === 'lg' ? 100 : '100%')
     .width('100%')
     .justifyContent(FlexAlign.Center)
@@ -101,87 +162,115 @@ export struct Home {
   build() {
     // [Start diff_device_container]
     // entry/src/main/ets/view/Home.ets
-    // PC使用平板布局：注释掉PC特殊适配，保留接口
-    // if (this.currentWidthBreakpoint === 'xl') {
-    //   // Use SideBarContainer at XL breakpoint.
-    //   SideBarContainer(SideBarContainerType.Embed) {
-    //     SideBarView({
-    //       firstLevelIndex: this.firstLevelIndex,
-    //       secondLevelIndex: this.secondLevelIndex,
-    //       tabViewModel: this.tabViewModel,
-    //       tabData: this.tabData
-    //     })
-    //
-    //     Column() {
-    //       Text(this.tabViewModel.getTabNameOfSecondLevel(this.tabViewModel.getTabNameOfFirstLevel(this.firstLevelIndex),
-    //         this.secondLevelIndex))
-    //         .fontSize('20fp')
-    //         .fontWeight(700)
-    //         .margin({
-    //           left: 32,
-    //           top: 16,  // 进一步减少顶部间距
-    //           bottom: 4  // 进一步减少底部间距
-    //         })
-    //
-    //       // 根据不同的firstLevelIndex显示对应的页面内容
-    //       if (this.firstLevelIndex === 0) {
-    //         HomePage()
-    //       } else if (this.firstLevelIndex === 1) {
-    //         SencondPage()
-    //       } else if (this.firstLevelIndex === 2) {
-    //         MinePage()
-    //       }
-    //     }
-    //     .alignItems(HorizontalAlign.Start)
-    //   }
-    //   .autoHide(false)
-    //   .divider({ strokeWidth: 0.3 })
-    //   .showControlButton(false)
-    //   .sideBarWidth(240)
-    //   .minSideBarWidth(240)
-    //   .maxSideBarWidth(240)
-    // } else {
-    // [StartExclude diff_device_container]
-    // Use Tabs and List at other breakpoints.
-    // [Start tab_to_page]
-    // entry/src/main/ets/view/Home.ets
-    Tabs({
-      barPosition: this.currentWidthBreakpoint === 'lg' ? BarPosition.Start : BarPosition.End,
-      index: this.firstLevelIndex
-    }) {
-      TabContent() {
-        HomePage()
-      }
-      .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+    // 平板模式（lg breakpoint）：使用左侧垂直Tab栏（之前的状态）
+    if (this.currentWidthBreakpoint === 'lg') {
+      Tabs({
+        barPosition: BarPosition.Start,
+        index: this.firstLevelIndex
+      }) {
+        TabContent() {
+          HomePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
 
-      TabContent() {
-        SecondPage()
-      }
-      .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+        TabContent() {
+          SecondPage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
 
-      TabContent() {
-        MinePage()
+        TabContent() {
+          MinePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
       }
-      .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+      .barBackgroundColor($r('app.color.barBackgroundColor'))
+      .barWidth(96)
+      .barHeight('100%')
+      .barMode(BarMode.Scrollable, { nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER })
+      .barBackgroundBlurStyle(BlurStyle.COMPONENT_THICK)
+      .vertical(true)
+      .onChange((index: number) => {
+        this.firstLevelIndex = index;
+        // 保存当前 Tab 索引到 AppStorage,供接续功能使用
+        AppStorage.setOrCreate('currentTabIndex', index);
+      })
+      .scrollable(false)
+      .height('100%')
+      .width('100%')
+    } else if (this.isImmersiveTab) {
+      // 沉浸式底部Tab栏样式（当前样式）
+      HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
+        TabContent() {
+          HomePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+
+        TabContent() {
+          SecondPage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+
+        TabContent() {
+          MinePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+      }
+      // [StartExclude tab_to_page]
+      // 设置barOverlap为true，vertical为false，barPosition为BarPosition.End，可实现页签栏的悬浮样式
+      .barOverlap(true)
+      .barPosition(BarPosition.End)
+      .vertical(false)
+      // 设置页签栏悬浮样式
+      .barFloatingStyle({
+        //barWidth: { smallWidth: 200, mediumWidth: 300, largeWidth: 400 },
+        barBottomMargin: 28,
+        gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
+        systemMaterialEffect: {
+          materialType: hdsMaterial.MaterialType.IMMERSIVE,
+          materialLevel: hdsMaterial.MaterialLevel.EXQUISITE
+        }
+      })
+      // [EndExclude tab_to_page]
+      .onChange((index: number) => {
+        this.firstLevelIndex = index;
+        // 保存当前 Tab 索引到 AppStorage,供接续功能使用
+        AppStorage.setOrCreate('currentTabIndex', index);
+      })
+      // [End tab_to_page]
+      .scrollable(false)
+      .height('100%')
+      .width('100%')
+    } else {
+      // 传统式底部Tab栏样式（无悬浮效果）
+      HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
+        TabContent() {
+          HomePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+
+        TabContent() {
+          SecondPage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+
+        TabContent() {
+          MinePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+      }
+      .barPosition(BarPosition.End)
+      .vertical(false)
+      .onChange((index: number) => {
+        this.firstLevelIndex = index;
+        // 保存当前 Tab 索引到 AppStorage,供接续功能使用
+        AppStorage.setOrCreate('currentTabIndex', index);
+      })
+      .scrollable(false)
+      .height('100%')
+      .width('100%')
+      // 为底部Tab栏添加安全区避让
+      .padding({ bottom: px2vp(this.bottomRectHeight) })
     }
-    // [StartExclude tab_to_page]
-    .barBackgroundColor($r('app.color.barBackgroundColor'))
-    .barWidth(this.currentWidthBreakpoint === 'lg' ? 96 : '100%')
-    .barHeight(this.currentWidthBreakpoint === 'lg' ? '100%' : 76)
-    .barMode(this.currentWidthBreakpoint === 'lg' ? BarMode.Scrollable : BarMode.Fixed,
-      { nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER })
-    .barBackgroundBlurStyle(BlurStyle.COMPONENT_THICK)
-    // [EndExclude tab_to_page]
-    .vertical(this.currentWidthBreakpoint === 'lg')
-    .onChange((index: number) => {
-      this.firstLevelIndex = index;
-      // 保存当前 Tab 索引到 AppStorage,供接续功能使用
-      AppStorage.setOrCreate('currentTabIndex', index);
-    })
-    // [End tab_to_page]
-    .scrollable(false)
-    .height('100%')
-    .width('100%')
     // [EndExclude diff_device_container]
     // [End diff_device_container]
   }
