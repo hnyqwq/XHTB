@@ -328,7 +328,6 @@ export struct infoPage {
       }
       .width('100%')
       .layoutWeight(1)
-      .padding({ top: px2vp(this.topRectHeight) })
       .scrollable(ScrollDirection.Vertical)
       .scrollBar(BarState.Auto)
       .edgeEffect(EdgeEffect.Spring)
