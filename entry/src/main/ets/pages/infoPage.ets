@@ -220,6 +220,45 @@ export struct infoPage {
           .width('100%')
           .height(300)
 
+          // 沉浸式Tab栏开关
+          Row() {
+            Row() {
+              Text('底部Tab栏样式')
+                .fontSize($r('app.integer.layout_size_16'))
+                .fontWeight(400)
+                .fontFamily('HarmonyOS Sans')
+                .fontColor($r('app.color.font_color_info'))
+                .layoutWeight(1)
+                .lineHeight($r('app.integer.layout_size_22'));
+              Text(this.getTabStyleDescription())
+                .fontSize($r('app.integer.layout_size_14'))
+                .fontColor($r('app.float.opacity'))
+                .opacity(0.6)
+                .margin({ right: 8 });
+              Toggle({ type: ToggleType.Switch, isOn: this.isImmersiveTab })
+                .selectedColor('#0A59F7')
+                .onChange((isOn: boolean) => {
+                  this.saveImmersiveTabSetting(isOn);
+                })
+            }
+            .width('100%')
+            .height($r('app.integer.tabbar_height'))
+            .padding({
+              left: $r('app.integer.layout_size_22'),
+              right: $r('app.integer.layout_size_12')
+            })
+            .alignItems(VerticalAlign.Center);
+          }
+          .width('90%')
+          .height($r('app.integer.layout_size_48'))
+          .alignSelf(ItemAlign.Center)
+          .margin({
+            top: $r('app.integer.layout_size_12'),
+            bottom: $r('app.integer.layout_size_12')
+          })
+          .borderRadius($r('app.integer.layout_size_24'))
+          .backgroundColor($r('app.color.info'));
+
           Column() {
             Row() {
               List() {
@@ -243,48 +282,8 @@ export struct infoPage {
             .borderRadius($r('app.integer.layout_size_24'))
             .alignItems(VerticalAlign.Center)
             .margin({
-              top: $r('app.integer.layout_size_12'), // 增加顶部间距
               bottom: $r('app.integer.layout_size_12')
             })
-            .backgroundColor($r('app.color.info'));
-
-            // 沉浸式Tab栏开关
-            Row() {
-              Row() {
-                Text('底部Tab栏样式')
-                  .fontSize($r('app.integer.layout_size_16'))
-                  .fontWeight(400)
-                  .fontFamily('HarmonyOS Sans')
-                  .fontColor($r('app.color.font_color_info'))
-                  .layoutWeight(1)
-                  .lineHeight($r('app.integer.layout_size_22'));
-                Text(this.getTabStyleDescription())
-                  .fontSize($r('app.integer.layout_size_14'))
-                  .fontColor($r('app.float.opacity'))
-                  .opacity(0.6)
-                  .margin({ right: 8 });
-                Toggle({ type: ToggleType.Switch, isOn: this.isImmersiveTab })
-                  .selectedColor('#0A59F7')
-                  .onChange((isOn: boolean) => {
-                    this.saveImmersiveTabSetting(isOn);
-                  })
-              }
-              .width('100%')
-              .height($r('app.integer.tabbar_height'))
-              .padding({
-                left: $r('app.integer.layout_size_22'),
-                right: $r('app.integer.layout_size_12')
-              })
-              .alignItems(VerticalAlign.Center);
-            }
-            .width('90%')
-            .height($r('app.integer.layout_size_48'))
-            .alignSelf(ItemAlign.Center)
-            .margin({
-              top: $r('app.integer.layout_size_12'),
-              bottom: $r('app.integer.layout_size_12')
-            })
-            .borderRadius($r('app.integer.layout_size_24'))
             .backgroundColor($r('app.color.info'));
 
             /*Row() {
@@ -322,6 +321,7 @@ export struct infoPage {
           .width('100%')
           .height(60)
           .alignItems(HorizontalAlign.Center)
+          .margin({ top: $r('app.integer.layout_size_12') })
           .padding({ bottom: px2vp(this.bottomRectHeight) })
         }
         .padding({ bottom: 20 })
