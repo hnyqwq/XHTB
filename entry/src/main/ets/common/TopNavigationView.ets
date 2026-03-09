@@ -20,6 +20,7 @@ export struct TopNavigationView {
   @State fontSize: number = 20;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
+  @StorageProp('isImmersiveTab') isImmersiveTab: boolean = false;
   @State backIconBgColor: ResourceColor =
     this.globalInfoModel.currentBreakpoint === BreakpointTypeEnum.XL ? Color.Transparent :
     $r('sys.color.comp_background_tertiary');
@@ -107,7 +108,7 @@ export struct TopNavigationView {
         .color($r('sys.color.comp_divider'))
         .visibility(this.topNavigationData.isBlur ? Visibility.Visible : Visibility.Hidden)
     }
-    .backgroundBlurStyle(this.topNavigationData.isBlur ? BlurStyle.COMPONENT_THICK : undefined)
+    .backgroundBlurStyle(this.isImmersiveTab ? BlurStyle.COMPONENT_ULTRA_THICK : (this.topNavigationData.isBlur ? BlurStyle.COMPONENT_THICK : undefined))
     .renderGroup(!this.blurRenderGroup && this.globalInfoModel.currentBreakpoint !== BreakpointTypeEnum.XL)
     .padding({ top: (this.topNavigationData.isFullScreen && this.globalInfoModel.currentBreakpoint !== BreakpointTypeEnum.MD) ? px2vp(this.topRectHeight) : 0 })
     .width('100%')

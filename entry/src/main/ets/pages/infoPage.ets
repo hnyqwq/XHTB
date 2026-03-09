@@ -4,13 +4,13 @@ import type { common } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { navigationManager } from '../common/NavigationManager';
 import dataPreferences from '@ohos.data.preferences';
+import { hdsMaterial, HdsNavigation, HdsNavigationTitleMode, ScrollEffectType } from '@kit.UIDesignKit';
 
 import { deviceInfo } from '@kit.BasicServicesKit';
 
 import { AppUtil } from '@pura/harmony-utils';
 import { promptAction } from '@kit.ArkUI';
 import { GlobalInfoModel } from '../common/GlobalInfoModel';
-import { TopNavigationView, TopNavigationData } from '../common/TopNavigationView';
 
 let bundleName = AppUtil.getBundleName();
 let versionCode = AppUtil.getVersionCode();
@@ -85,9 +85,12 @@ export struct infoPage {
   bottomRectHeight: number = 0;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
-  @State isImmersiveTab: boolean = false; // 沉浸式底部Tab栏开关状态
+  @State isImmersiveTab: boolean = false; // 沉浸式Tab栏样式状态（包含底部Tab栏和顶部材质效果）
   @State showNewYearCard: boolean = false; // 春节卡片开关状态，默认关闭
+  @State materialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.ADAPTIVE;
+  @State materialType: hdsMaterial.MaterialType = hdsMaterial.MaterialType.ADAPTIVE;
   private preferences: dataPreferences.Preferences | null = null;
+  private scroller: Scroller = new Scroller();
   //设置条目信息数组
   @State FirstMenuGroup: FirstMenu[] = [
     new FirstMenu('one', $r('app.string.info1'), marketNameInfo, $r('app.string.void')),
@@ -105,8 +108,6 @@ export struct infoPage {
     new FirstMenu('performance_level', $r('app.string.performance_level'), this.getPerformanceLevelText(), $r('app.string.void'))
   ];
 
-  private topNavData: TopNavigationData = new TopNavigationData();
-
   // 获取设备能力定级文本
   private getPerformanceLevelText(): string {
     switch (deviceInfo.performanceClass) {
@@ -122,14 +123,17 @@ export struct infoPage {
   }
 
   aboutToAppear(): void {
-    this.topNavData.title = $r('app.string.infopagetitle');
-    this.topNavData.titleColor = $r('app.color.font_color_info');
-    this.topNavData.onBackClick = () => {
-      navigationManager.pop();
-    };
     // 保存当前页面信息到 AppStorage,供接续功能使用
     AppStorage.setOrCreate('currentPageUrl', 'pages/infoPage');
     AppStorage.delete('currentRouteParams');
+
+    // 检查系统支持的材质类型
+    try {
+      let materialTypes: Array<hdsMaterial.MaterialType> = hdsMaterial.getSystemMaterialTypes();
+      console.info(`getSystemMaterialTypes successed, types: ${materialTypes}`);
+    } catch (err) {
+      console.error(`getSystemMaterialTypes failed, error: ${err}`);
+    }
 
     // 加载沉浸式tab栏设置
     this.loadImmersiveTabSetting();
@@ -153,6 +157,15 @@ export struct infoPage {
       this.isImmersiveTab = await this.preferences.get('isImmersiveTab', false) as boolean;
       // 同步到AppStorage，供Home页面使用
       AppStorage.setOrCreate('isImmersiveTab', this.isImmersiveTab);
+
+      // 根据开关状态设置材质效果
+      if (this.isImmersiveTab) {
+        this.materialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+        this.materialType = hdsMaterial.MaterialType.IMMERSIVE;
+      } else {
+        this.materialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+        this.materialType = hdsMaterial.MaterialType.NONE;
+      }
     } catch (err) {
       console.error('Failed to load immersive tab setting:', err);
     }
@@ -189,6 +202,16 @@ export struct infoPage {
         this.isImmersiveTab = value;
         // 同步到AppStorage，供Home页面使用
         AppStorage.setOrCreate('isImmersiveTab', value);
+
+        // 根据开关状态设置材质效果
+        if (value) {
+          this.materialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+          this.materialType = hdsMaterial.MaterialType.IMMERSIVE;
+        } else {
+          this.materialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+          this.materialType = hdsMaterial.MaterialType.NONE;
+        }
+
         console.info('Saved immersive tab setting:', value);
       }
     } catch (err) {
@@ -212,7 +235,7 @@ export struct infoPage {
   }
 
   getTabStyleDescription(): string {
-    return this.isImmersiveTab ? '沉浸式（悬浮效果）' : '传统式（分离效果）';
+    return this.isImmersiveTab ? '沉浸式（悬浮+材质）' : '传统式（分离效果）';
   }
 
   getNewYearCardDescription(): string {
@@ -220,12 +243,8 @@ export struct infoPage {
   }
 
   build() {
-    Column() {
-      TopNavigationView({
-        topNavigationData: this.topNavData
-      })
-
-      Scroll() {
+    HdsNavigation() {
+      Scroll(this.scroller) {
         Column() {
           Stack() {
             Row() {
@@ -293,10 +312,10 @@ export struct infoPage {
           .width('100%')
           .height(300)
 
-          // 沉浸式Tab栏开关
+          // 沉浸式Tab栏样式开关（包含底部Tab栏和顶部材质效果）
           Row() {
             Row() {
-              Text('底部Tab栏样式')
+              Text('沉浸式界面样式')
                 .fontSize($r('app.integer.layout_size_16'))
                 .fontWeight(400)
                 .fontFamily('HarmonyOS Sans')
@@ -304,23 +323,16 @@ export struct infoPage {
                 .margin({ left: $r('app.integer.layout_size_5') })
                 .layoutWeight(1)
                 .lineHeight($r('app.integer.layout_size_22'));
-              if (deviceInfo.sdkApiVersion >= 23) {
-                Text(this.getTabStyleDescription())
-                  .fontSize($r('app.integer.layout_size_14'))
-                  .fontColor($r('app.float.opacity'))
-                  .opacity(0.6)
-                  .margin({ right: 8 });
-                Toggle({ type: ToggleType.Switch, isOn: this.isImmersiveTab })
-                  .selectedColor('#0A59F7')
-                  .onChange((isOn: boolean) => {
-                    this.saveImmersiveTabSetting(isOn);
-                  })
-              } else {
-                Text($r('app.string.23_only_support'))
-                  .fontSize(14)
-                  .fontColor($r('sys.color.font_tertiary'))
-                  .margin({ right: 8 })
-              }
+              Text(this.getTabStyleDescription())
+                .fontSize($r('app.integer.layout_size_14'))
+                .fontColor($r('app.float.opacity'))
+                .opacity(0.6)
+                .margin({ right: 8 });
+              Toggle({ type: ToggleType.Switch, isOn: this.isImmersiveTab })
+                .selectedColor('#0A59F7')
+                .onChange((isOn: boolean) => {
+                  this.saveImmersiveTabSetting(isOn);
+                })
             }
             .width('100%')
             .height($r('app.integer.tabbar_height'))
@@ -346,7 +358,7 @@ export struct infoPage {
               List() {
                 ForEach(this.SystemCapabilityMenuGroup, (item: FirstMenu) => {
                   ListItem() {
-                    SettingItemView({ text: item.title, des: item.text });
+                    SettingItemView({ text: item.title, des: item.text })
                   }
                   .width('100%')
                 },
@@ -374,7 +386,7 @@ export struct infoPage {
               List() {
                 ForEach(this.FirstMenuGroup, (item: FirstMenu) => {
                   ListItem() {
-                    SettingItemView({ text: item.title, des: item.text });
+                    SettingItemView({ text: item.title, des: item.text })
                   }
                   .width('100%')
                 },
@@ -400,7 +412,7 @@ export struct infoPage {
               List() {
                 ForEach(this.FirstMenuGroup, (item: FirstMenu) => {
                   ListItem() {
-                    SettingItemView({ text: item.title, des: item.text });
+                    SettingItemView({ text: item.title, des: item.text })
                   }
                   .width('100%')
                 },
@@ -481,17 +493,33 @@ export struct infoPage {
       .scrollBar(BarState.Auto)
       .edgeEffect(EdgeEffect.Spring)
     }
-    .width('100%')
-    .height('100%')
+    .titleBar({
+      content: {
+        title: {
+          mainTitle: $r('app.string.infopagetitle'),
+        },
+      },
+      style: {
+        scrollEffectOpts: {
+          scrollEffectType: ScrollEffectType.IMMERSIVE_GRADIENT_BLUR,
+        },
+        systemMaterialEffect: {
+          materialType: this.materialType,
+          materialLevel: this.materialLevel
+        }
+      },
+    })
+    .bindToScrollable([this.scroller])
+    .hideBackButton(false)
+    .titleMode(HdsNavigationTitleMode.MINI)
   }
 }
 
-
 @Component
-  //设置条目布局
-export struct SettingItemView {
-  private text: string | Resource = ''; // 设置名称
-  private des: string | Resource = ''; //后面的文本
+//设置条目布局
+struct SettingItemView {
+  @Prop text: string | Resource = ''; // 设置名称
+  @Prop des: string | Resource = ''; //后面的文本
 
   build() {
     Row() {
