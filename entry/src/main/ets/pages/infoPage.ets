@@ -246,6 +246,7 @@ export struct infoPage {
     HdsNavigation() {
       Scroll(this.scroller) {
         Column() {
+          Blank().height(100).width('100%')
           Stack() {
             Row() {
               Image($r('app.media.harmonyos'))
@@ -485,6 +486,7 @@ export struct infoPage {
           .margin({ top: $r('app.integer.layout_size_12') })
           .padding({ bottom: px2vp(this.bottomRectHeight) })
         }
+        .width('100%')
         .padding({ bottom: 20 })
       }
       .width('100%')
@@ -503,6 +505,26 @@ export struct infoPage {
         scrollEffectOpts: {
           scrollEffectType: ScrollEffectType.IMMERSIVE_GRADIENT_BLUR,
         },
+        originalStyle: {
+          backgroundStyle: {
+            backgroundColor: $r('sys.color.ohos_id_color_background'),
+          },
+          contentStyle: {
+            titleStyle: { mainTitleColor: $r('sys.color.font_primary') },
+            menuStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') },
+            backIconStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') }
+          }
+        },
+        scrollEffectStyle: {
+          backgroundStyle: {
+            backgroundColor: $r('sys.color.ohos_id_color_background_transparent'),
+          },
+          contentStyle: {
+            titleStyle: { mainTitleColor: $r('sys.color.font_primary') },
+            menuStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') },
+            backIconStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') }
+          }
+        },
         systemMaterialEffect: {
           materialType: this.materialType,
           materialLevel: this.materialLevel
@@ -515,7 +537,6 @@ export struct infoPage {
     .bindToScrollable([this.scroller])
     .hideBackButton(false)
     .titleMode(HdsNavigationTitleMode.MINI)
-    //.ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
   }
 }
 
