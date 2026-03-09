@@ -86,6 +86,7 @@ export struct infoPage {
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
   @State isImmersiveTab: boolean = false; // 沉浸式底部Tab栏开关状态
+  @State showNewYearCard: boolean = false; // 春节卡片开关状态，默认关闭
   private preferences: dataPreferences.Preferences | null = null;
   //设置条目信息数组
   @State FirstMenuGroup: FirstMenu[] = [
@@ -132,6 +133,8 @@ export struct infoPage {
 
     // 加载沉浸式tab栏设置
     this.loadImmersiveTabSetting();
+    // 加载春节卡片设置
+    this.loadNewYearCardSetting();
   }
 
   async loadImmersiveTabSetting() {
@@ -155,6 +158,29 @@ export struct infoPage {
     }
   }
 
+  async loadNewYearCardSetting() {
+    try {
+      if (!this.preferences) {
+        const context = getContext(this) as common.UIAbilityContext;
+        this.preferences = await dataPreferences.getPreferences(context, 'app_settings');
+      }
+
+      // 检查是否已经设置过,如果没有则设置默认值为false
+      const hasKey = await this.preferences.has('showNewYearCard');
+      if (!hasKey) {
+        await this.preferences.put('showNewYearCard', false);
+        await this.preferences.flush();
+      }
+
+      // 读取保存的值
+      this.showNewYearCard = await this.preferences.get('showNewYearCard', false) as boolean;
+      // 同步到AppStorage，供Home页面使用
+      AppStorage.setOrCreate('showNewYearCard', this.showNewYearCard);
+    } catch (err) {
+      console.error('Failed to load new year card setting:', err);
+    }
+  }
+
   async saveImmersiveTabSetting(value: boolean) {
     try {
       if (this.preferences) {
@@ -170,8 +196,27 @@ export struct infoPage {
     }
   }
 
+  async saveNewYearCardSetting(value: boolean) {
+    try {
+      if (this.preferences) {
+        await this.preferences.put('showNewYearCard', value);
+        await this.preferences.flush();
+        this.showNewYearCard = value;
+        // 同步到AppStorage，供Home页面使用
+        AppStorage.setOrCreate('showNewYearCard', value);
+        console.info('Saved new year card setting:', value);
+      }
+    } catch (err) {
+      console.error('Failed to save new year card setting:', err);
+    }
+  }
+
   getTabStyleDescription(): string {
     return this.isImmersiveTab ? '沉浸式（悬浮效果）' : '传统式（分离效果）';
+  }
+
+  getNewYearCardDescription(): string {
+    return this.showNewYearCard ? '显示' : '隐藏';
   }
 
   build() {
@@ -376,6 +421,45 @@ export struct infoPage {
             .backgroundColor($r('app.color.font_color_FFFFFF'));*/
           }
           .width('100%');
+
+          // 春节卡片开关
+          Row() {
+            Row() {
+              Text($r('app.string.show_newyear_card'))
+                .fontSize($r('app.integer.layout_size_16'))
+                .fontWeight(400)
+                .fontFamily('HarmonyOS Sans')
+                .fontColor($r('app.color.font_color_info'))
+                .margin({ left: $r('app.integer.layout_size_5') })
+                .layoutWeight(1)
+                .lineHeight($r('app.integer.layout_size_22'));
+              Text(this.getNewYearCardDescription())
+                .fontSize($r('app.integer.layout_size_14'))
+                .fontColor($r('app.float.opacity'))
+                .opacity(0.6)
+                .margin({ right: 8 });
+              Toggle({ type: ToggleType.Switch, isOn: this.showNewYearCard })
+                .selectedColor('#0A59F7')
+                .onChange((isOn: boolean) => {
+                  this.saveNewYearCardSetting(isOn);
+                })
+            }
+            .width('100%')
+            .height($r('app.integer.tabbar_height'))
+            .padding({
+              left: $r('app.integer.layout_size_22'),
+              right: $r('app.integer.layout_size_12')
+            })
+            .alignItems(VerticalAlign.Center);
+          }
+          .width('90%')
+          .height($r('app.integer.layout_size_48'))
+          .alignSelf(ItemAlign.Center)
+          .margin({
+            bottom: $r('app.integer.layout_size_12')
+          })
+          .borderRadius($r('app.integer.layout_size_24'))
+          .backgroundColor($r('app.color.info'));
 
           Column() {
             Text($r('app.string.appname'))

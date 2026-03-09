@@ -121,7 +121,7 @@ export struct HomePage {
   @State topSafeHeight: number = 0; // 顶部安全区域高度（已废弃，保留兼容性）
 
   // 新年卡片相关
-  @State showNewYearCard: boolean = true; // 是否显示新年卡片
+  @StorageLink('showNewYearCard') showNewYearCard: boolean = false; // 是否显示新年卡片，从AppStorage读取
   @State newYearCards: NewYearCard[] = [];
   @State currentNewYearCardIndex: number = 0; // 当前显示的新年卡片索引
 
