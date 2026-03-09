@@ -246,7 +246,7 @@
 		},
 		{
 			"name":"mine1",
-			"value":"软件信息"
+			"value": "软件设置与信息"
 		},
 		{
 			"name":"mine2",
@@ -519,6 +519,10 @@
 		{
 			"name": "video",
 			"value": "视频"
+		},
+		{
+			"name": "23_only_support",
+			"value": "仅 API>23 设备支持"
 		}
 	]
 }

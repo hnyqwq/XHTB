@@ -234,11 +234,11 @@
     },
     {
       "name":"infopagetitle",
-      "value":"APP Info > < "
+      "value": "Settings & Info > < "
     },
     {
       "name":"mine1",
-      "value":"APP info"
+      "value": "Settings & Info"
     },
     {
       "name":"mine2",
@@ -519,6 +519,10 @@
     {
       "name": "ai_core_speech_support",
       "value": "AI powered, using Core Speech Kit"
+    },
+    {
+      "name": "23_only_support",
+      "value": "API > 23 is required"
     }
   ]
 }

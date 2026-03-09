@@ -218,11 +218,11 @@
     },
     {
       "name":"infopagetitle",
-      "value":"软件信息 > < "
+      "value": "软件设置与信息 > < "
     },
     {
       "name":"mine1",
-      "value":"软件信息"
+      "value": "软件设置与信息"
     },
     {
       "name":"mine2",
@@ -518,6 +518,10 @@
     {
       "name": "ai_core_speech_support",
       "value": "内容由 AI 生成，使用 Core Speech Kit"
+    },
+    {
+      "name": "23_only_support",
+      "value": "仅 API > 23 设备支持"
     }
   ]
 }

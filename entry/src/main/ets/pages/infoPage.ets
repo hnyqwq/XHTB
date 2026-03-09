@@ -228,18 +228,26 @@ export struct infoPage {
                 .fontWeight(400)
                 .fontFamily('HarmonyOS Sans')
                 .fontColor($r('app.color.font_color_info'))
+                .margin({ left: $r('app.integer.layout_size_5') })
                 .layoutWeight(1)
                 .lineHeight($r('app.integer.layout_size_22'));
-              Text(this.getTabStyleDescription())
-                .fontSize($r('app.integer.layout_size_14'))
-                .fontColor($r('app.float.opacity'))
-                .opacity(0.6)
-                .margin({ right: 8 });
-              Toggle({ type: ToggleType.Switch, isOn: this.isImmersiveTab })
-                .selectedColor('#0A59F7')
-                .onChange((isOn: boolean) => {
-                  this.saveImmersiveTabSetting(isOn);
-                })
+              if (deviceInfo.sdkApiVersion > 23) {
+                Text(this.getTabStyleDescription())
+                  .fontSize($r('app.integer.layout_size_14'))
+                  .fontColor($r('app.float.opacity'))
+                  .opacity(0.6)
+                  .margin({ right: 8 });
+                Toggle({ type: ToggleType.Switch, isOn: this.isImmersiveTab })
+                  .selectedColor('#0A59F7')
+                  .onChange((isOn: boolean) => {
+                    this.saveImmersiveTabSetting(isOn);
+                  })
+              } else {
+                Text($r('app.string.23_only_support'))
+                  .fontSize(14)
+                  .fontColor($r('sys.color.font_tertiary'))
+                  .margin({ right: 8 })
+              }
             }
             .width('100%')
             .height($r('app.integer.tabbar_height'))
