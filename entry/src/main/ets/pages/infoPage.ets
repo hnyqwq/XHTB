@@ -304,7 +304,7 @@ export struct infoPage {
                 .margin({ left: $r('app.integer.layout_size_5') })
                 .layoutWeight(1)
                 .lineHeight($r('app.integer.layout_size_22'));
-              if (deviceInfo.sdkApiVersion > 23) {
+              if (deviceInfo.sdkApiVersion >= 23) {
                 Text(this.getTabStyleDescription())
                   .fontSize($r('app.integer.layout_size_14'))
                   .fontColor($r('app.float.opacity'))
