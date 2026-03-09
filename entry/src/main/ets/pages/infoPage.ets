@@ -508,10 +508,14 @@ export struct infoPage {
           materialLevel: this.materialLevel
         }
       },
+      enableHoverMode: true,
+      avoidLayoutSafeArea: true,
+      //enableComponentSafeArea: true,
     })
     .bindToScrollable([this.scroller])
     .hideBackButton(false)
     .titleMode(HdsNavigationTitleMode.MINI)
+    //.ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
   }
 }
 
