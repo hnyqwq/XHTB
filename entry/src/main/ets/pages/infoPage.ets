@@ -87,8 +87,8 @@ export struct infoPage {
   topRectHeight: number = 0;
   @State isImmersiveTab: boolean = false; // 沉浸式Tab栏样式状态（包含底部Tab栏和顶部材质效果）
   @State showNewYearCard: boolean = false; // 春节卡片开关状态，默认关闭
-  @State materialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
-  @State materialType: hdsMaterial.MaterialType = hdsMaterial.MaterialType.IMMERSIVE;
+  @State materialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+  @State materialType: hdsMaterial.MaterialType = hdsMaterial.MaterialType.NONE;
   private preferences: dataPreferences.Preferences | null = null;
   private scroller: Scroller = new Scroller();
   //设置条目信息数组
@@ -243,9 +243,113 @@ export struct infoPage {
   }
 
   build() {
+    Column() {
+      if (this.isImmersiveTab) {
+        // 沉浸式模式：使用高版本 Material Design 3 API
+        this.immersiveNavigation()
+      } else {
+        // 传统模式：不使用高版本 API
+        this.traditionalNavigation()
+      }
+    }
+  }
+
+  @Builder
+  immersiveNavigation() {
     HdsNavigation() {
       Scroll(this.scroller) {
-        Column() {
+        this.pageContent()
+      }
+      .width('100%')
+      .layoutWeight(1)
+      .scrollable(ScrollDirection.Vertical)
+      .scrollBar(BarState.Auto)
+      .edgeEffect(EdgeEffect.Spring)
+    }
+    .titleBar({
+      content: {
+        title: {
+          mainTitle: $r('app.string.infopagetitle'),
+        },
+      },
+      style: {
+        scrollEffectOpts: {
+          scrollEffectType: ScrollEffectType.IMMERSIVE_GRADIENT_BLUR,
+        },
+        originalStyle: {
+          backgroundStyle: {
+            backgroundColor: $r('sys.color.ohos_id_color_background'),
+          },
+          contentStyle: {
+            titleStyle: { mainTitleColor: $r('sys.color.font_primary') },
+            menuStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') },
+            backIconStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') }
+          }
+        },
+        scrollEffectStyle: {
+          backgroundStyle: {
+            backgroundColor: $r('sys.color.ohos_id_color_background_transparent'),
+          },
+          contentStyle: {
+            titleStyle: { mainTitleColor: $r('sys.color.font_primary') },
+            menuStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') },
+            backIconStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') }
+          }
+        },
+        systemMaterialEffect: {
+          materialType: this.materialType,
+          materialLevel: this.materialLevel
+        }
+      },
+      enableHoverMode: true,
+      avoidLayoutSafeArea: true,
+    })
+    .bindToScrollable([this.scroller])
+    .hideBackButton(false)
+    .titleMode(HdsNavigationTitleMode.MINI)
+  }
+
+  @Builder
+  traditionalNavigation() {
+    HdsNavigation() {
+      Scroll(this.scroller) {
+        this.pageContent()
+      }
+      .width('100%')
+      .layoutWeight(1)
+      .scrollable(ScrollDirection.Vertical)
+      .scrollBar(BarState.Auto)
+      .edgeEffect(EdgeEffect.Spring)
+    }
+    .titleBar({
+      content: {
+        title: {
+          mainTitle: $r('app.string.infopagetitle'),
+        },
+      },
+      style: {
+        originalStyle: {
+          backgroundStyle: {
+            backgroundColor: $r('sys.color.ohos_id_color_background'),
+          },
+          contentStyle: {
+            titleStyle: { mainTitleColor: $r('sys.color.font_primary') },
+            menuStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') },
+            backIconStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') }
+          }
+        }
+      },
+      enableHoverMode: true,
+      avoidLayoutSafeArea: true,
+    })
+    .bindToScrollable([this.scroller])
+    .hideBackButton(false)
+    .titleMode(HdsNavigationTitleMode.MINI)
+  }
+
+  @Builder
+  pageContent() {
+      Column() {
           Blank().height(100).width('100%')
           Stack() {
             Row() {
@@ -488,54 +592,6 @@ export struct infoPage {
         }
         .width('100%')
         .padding({ bottom: 20 })
-      }
-      .width('100%')
-      .layoutWeight(1)
-      .scrollable(ScrollDirection.Vertical)
-      .scrollBar(BarState.Auto)
-      .edgeEffect(EdgeEffect.Spring)
-    }
-    .titleBar({
-      content: {
-        title: {
-          mainTitle: $r('app.string.infopagetitle'),
-        },
-      },
-      style: {
-        scrollEffectOpts: {
-          scrollEffectType: ScrollEffectType.IMMERSIVE_GRADIENT_BLUR,
-        },
-        originalStyle: {
-          backgroundStyle: {
-            backgroundColor: $r('sys.color.ohos_id_color_background'),
-          },
-          contentStyle: {
-            titleStyle: { mainTitleColor: $r('sys.color.font_primary') },
-            menuStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') },
-            backIconStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') }
-          }
-        },
-        scrollEffectStyle: {
-          backgroundStyle: {
-            backgroundColor: $r('sys.color.ohos_id_color_background_transparent'),
-          },
-          contentStyle: {
-            titleStyle: { mainTitleColor: $r('sys.color.font_primary') },
-            menuStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') },
-            backIconStyle: { backgroundColor: $r('sys.color.comp_background_tertiary'), iconColor: $r('sys.color.icon_primary') }
-          }
-        },
-        systemMaterialEffect: {
-          materialType: this.materialType,
-          materialLevel: this.materialLevel
-        }
-      },
-      enableHoverMode: true,
-      avoidLayoutSafeArea: true,
-    })
-    .bindToScrollable([this.scroller])
-    .hideBackButton(false)
-    .titleMode(HdsNavigationTitleMode.MINI)
   }
 }
 
