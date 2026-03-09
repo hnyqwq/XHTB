@@ -87,8 +87,8 @@ export struct infoPage {
   topRectHeight: number = 0;
   @State isImmersiveTab: boolean = false; // 沉浸式Tab栏样式状态（包含底部Tab栏和顶部材质效果）
   @State showNewYearCard: boolean = false; // 春节卡片开关状态，默认关闭
-  @State materialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.ADAPTIVE;
-  @State materialType: hdsMaterial.MaterialType = hdsMaterial.MaterialType.ADAPTIVE;
+  @State materialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+  @State materialType: hdsMaterial.MaterialType = hdsMaterial.MaterialType.IMMERSIVE;
   private preferences: dataPreferences.Preferences | null = null;
   private scroller: Scroller = new Scroller();
   //设置条目信息数组
@@ -532,7 +532,6 @@ export struct infoPage {
       },
       enableHoverMode: true,
       avoidLayoutSafeArea: true,
-      //enableComponentSafeArea: true,
     })
     .bindToScrollable([this.scroller])
     .hideBackButton(false)
