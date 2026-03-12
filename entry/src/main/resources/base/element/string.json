@@ -522,7 +522,7 @@
 		},
 		{
 			"name": "23_only_support",
-			"value": "仅 API>23 设备支持"
+          "value": "仅 API>= 23 设备支持"
 		},
 		{
 			"name": "api_name",

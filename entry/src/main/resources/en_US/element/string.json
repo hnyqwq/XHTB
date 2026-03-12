@@ -522,7 +522,7 @@
     },
     {
       "name": "23_only_support",
-      "value": "API > 23 is required"
+      "value": "API >= 23 is required"
     },
     {
       "name": "api_name",
