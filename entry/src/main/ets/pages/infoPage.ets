@@ -87,6 +87,11 @@ export struct infoPage {
   topRectHeight: number = 0;
   @State isImmersiveTab: boolean = false; // 沉浸式Tab栏样式状态（包含底部Tab栏和顶部材质效果）
   @State showNewYearCard: boolean = false; // 春节卡片开关状态，默认关闭
+  @State supportedMaterialTypes: string = ''; // 支持的材质类型
+  @State supportedMaterialLevel: string = ''; // 支持的材质等级
+  @State allMaterialTypes: string = ''; // 所有材质类型枚举
+  @State allMaterialLevels: string = ''; // 所有材质等级枚举
+  @State isHdsMaterialAvailable: boolean = true; // 标记hdsMaterial是否可用
   private preferences: dataPreferences.Preferences | null = null;
   private scroller: Scroller = new Scroller();
   //设置条目信息数组
@@ -125,12 +130,57 @@ export struct infoPage {
     AppStorage.setOrCreate('currentPageUrl', 'pages/infoPage');
     AppStorage.delete('currentRouteParams');
 
+    // 设置所有材质类型枚举说明
+    this.allMaterialTypes = 'NONE(无材质效果) | ADAPTIVE(自适应系统材质) | IMMERSIVE(沉浸式材质)';
+
+    // 设置所有材质等级枚举说明
+    this.allMaterialLevels = 'EXQUISITE(精美) | GENTLE(轻柔) | SMOOTH(流畅) | ADAPTIVE(系统自适应)';
+
     // 检查系统支持的材质类型
     try {
       let materialTypes: Array<hdsMaterial.MaterialType> = hdsMaterial.getSystemMaterialTypes();
-      console.info(`getSystemMaterialTypes successed, types: ${materialTypes}`);
+      console.info(`infoPage: getSystemMaterialTypes successed, types: ${JSON.stringify(materialTypes)}, length: ${materialTypes.length}`);
+
+      // 格式化材质类型显示
+      if (materialTypes.length === 0) {
+        // 返回空数组，说明设备不支持任何材质类型
+        this.supportedMaterialTypes = '无（系统返回空数组 什么bug我在查...）';
+        this.supportedMaterialLevel = '-';
+        console.info('infoPage: 设备不支持任何材质类型');
+      } else {
+        const types = materialTypes.map(type => {
+          switch (type) {
+            case hdsMaterial.MaterialType.NONE:
+              return 'NONE';
+            case hdsMaterial.MaterialType.ADAPTIVE:
+              return 'ADAPTIVE';
+            case hdsMaterial.MaterialType.IMMERSIVE:
+            case hdsMaterial.MaterialType.IMMERSIVE:
+              return 'IMMERSIVE';
+            default:
+              return `UNKNOWN(${type})`;
+          }
+        });
+        this.supportedMaterialTypes = types.join(', ');
+
+        // 根据支持的材质类型推荐材质等级
+        if (materialTypes.includes(hdsMaterial.MaterialType.IMMERSIVE)) {
+          this.supportedMaterialLevel = 'EXQUISITE, GENTLE, SMOOTH';
+        } else if (materialTypes.includes(hdsMaterial.MaterialType.ADAPTIVE)) {
+          this.supportedMaterialLevel = 'SMOOTH';
+        } else {
+          this.supportedMaterialLevel = '-';
+        }
+      }
     } catch (err) {
-      console.error(`getSystemMaterialTypes failed, error: ${err}`);
+      let message = (err as BusinessError).message;
+      let code = (err as BusinessError).code;
+      console.error(`infoPage: getSystemMaterialTypes failed, code: ${code}, message: ${message}`);
+      // hdsMaterial模块不可用时，禁用沉浸式Tab栏
+      this.isHdsMaterialAvailable = false;
+      this.isImmersiveTab = false;
+      this.supportedMaterialTypes = '获取失败';
+      this.supportedMaterialLevel = '-';
     }
 
     // 加载沉浸式tab栏设置
@@ -222,7 +272,7 @@ export struct infoPage {
 
   build() {
     Column() {
-      if (this.isImmersiveTab) {
+      if (this.isImmersiveTab && this.isHdsMaterialAvailable) {
         // 沉浸式模式：使用高版本 Material Design 3 API
         this.immersiveNavigation()
       } else {
@@ -406,7 +456,7 @@ export struct infoPage {
                 .margin({ left: $r('app.integer.layout_size_5') })
                 .layoutWeight(1)
                 .lineHeight($r('app.integer.layout_size_22'));
-              if (deviceInfo.sdkApiVersion > 23) {
+              if (deviceInfo.sdkApiVersion >= 23) {
                 Text(this.getTabStyleDescription())
                   .fontSize($r('app.integer.layout_size_14'))
                   .fontColor($r('app.float.opacity'))
@@ -441,6 +491,111 @@ export struct infoPage {
           })
           .borderRadius($r('app.integer.layout_size_24'))
           .backgroundColor($r('app.color.info'));
+
+          // 材质能力信息（仅当沉浸式Tab栏打开时显示）
+          /*if (this.isImmersiveTab) {
+            Column() {
+              // 第一行：MaterialType 材质类型枚举
+              Column() {
+                Row() {
+                  Text('MaterialType 材质类型枚举')
+                    .fontSize(14)
+                    .fontWeight(FontWeight.Bold)
+                    .fontColor($r('app.color.font_color_info'))
+                }
+                .width('100%')
+                .alignItems(VerticalAlign.Center)
+                .margin({ bottom: 6 })
+
+                Text(this.allMaterialTypes)
+                  .fontSize(12)
+                  .fontColor($r('sys.color.font_secondary'))
+                  .opacity(0.8)
+                  .width('100%')
+
+                Divider()
+                  .color($r('app.color.font_color_00000'))
+                  .strokeWidth(1)
+                  .margin({ top: 6, bottom: 6 })
+
+                Row() {
+                  Text('当前设备支持:')
+                    .fontSize(12)
+                    .fontWeight(FontWeight.Medium)
+                    .fontColor($r('app.color.font_color_info'))
+                    .margin({ right: 8 })
+                  Text(this.supportedMaterialTypes)
+                    .fontSize(12)
+                    .fontColor($r('sys.color.font_primary'))
+                    .fontWeight(FontWeight.Bold)
+                }
+                .width('100%')
+                .alignItems(VerticalAlign.Center)
+              }
+              .width('100%')
+              .padding({
+                left: $r('app.integer.layout_size_22'),
+                right: $r('app.integer.layout_size_12'),
+                top: 8,
+                bottom: 8
+              })
+
+              Divider()
+                .color($r('app.color.font_color_00000'))
+                .strokeWidth(1)
+                .margin({ left: 0, right: 0 })
+
+              // 第二行：MaterialLevel 材质等级枚举
+              Column() {
+                Row() {
+                  Text('MaterialLevel 材质等级枚举')
+                    .fontSize(14)
+                    .fontWeight(FontWeight.Bold)
+                    .fontColor($r('app.color.font_color_info'))
+                }
+                .width('100%')
+                .alignItems(VerticalAlign.Center)
+                .margin({ bottom: 6 })
+
+                Text(this.allMaterialLevels)
+                  .fontSize(12)
+                  .fontColor($r('sys.color.font_secondary'))
+                  .opacity(0.8)
+                  .width('100%')
+
+                Divider()
+                  .color($r('app.color.font_color_00000'))
+                  .strokeWidth(1)
+                  .margin({ top: 6, bottom: 6 })
+
+                Row() {
+                  Text('当前设备支持:')
+                    .fontSize(12)
+                    .fontWeight(FontWeight.Medium)
+                    .fontColor($r('app.color.font_color_info'))
+                    .margin({ right: 8 })
+                  Text(this.supportedMaterialLevel)
+                    .fontSize(12)
+                    .fontColor($r('sys.color.font_primary'))
+                    .fontWeight(FontWeight.Bold)
+                }
+                .width('100%')
+                .alignItems(VerticalAlign.Center)
+              }
+              .width('100%')
+              .padding({
+                left: $r('app.integer.layout_size_22'),
+                right: $r('app.integer.layout_size_12'),
+                top: 8,
+                bottom: 8
+              })
+            }
+            .width('90%')
+            .alignSelf(ItemAlign.Center)
+            .borderRadius($r('app.integer.layout_size_24'))
+            .backgroundColor($r('app.color.info'))
+            .margin({ bottom: $r('app.integer.layout_size_12') })
+          }*/
 
           // 系统能力信息
           Column() {

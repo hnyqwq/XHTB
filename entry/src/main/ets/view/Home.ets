@@ -4,10 +4,9 @@ import { HomePage } from '../pages/HomePage';
 import { SecondPage } from '../pages/SecondPage';
 import { MinePage } from '../pages/MinePage';
 import { router } from '@kit.ArkUI';
-import { hdsMaterial } from '@hms.hds.hdsMaterial'
-import { HdsTabs, HdsTabsController, HdsTabsAttribute } from '@kit.UIDesignKit';
 import { preferences } from '@kit.ArkData';
 import type { common } from '@kit.AbilityKit';
+import { hdsMaterial, HdsTabs, HdsTabsController, HdsTabsAttribute } from '@kit.UIDesignKit';
 
 @Component
 export struct Home {
@@ -18,10 +17,35 @@ export struct Home {
   @State secondLevelIndex: number = 0;
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
+  @State customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
   private controller: HdsTabsController = new HdsTabsController();
   private preferences: preferences.Preferences | null = null;
 
   aboutToAppear(): void {
+    // 查询当前设备所支持的材质能力
+    try {
+      let materialTypes: Array<hdsMaterial.MaterialType> = hdsMaterial.getSystemMaterialTypes();
+      console.info('Home: 支持的材质类型:', JSON.stringify(materialTypes), ', length:', materialTypes.length);
+
+      if (materialTypes.length === 0) {
+        // 返回空数组，说明设备不支持任何材质类型，使用SMOOTH效果
+        this.customMaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+        console.info('Home: 设备不支持任何材质类型，使用SMOOTH效果');
+      } else if (materialTypes.indexOf(hdsMaterial.MaterialType.IMMERSIVE) < 0) {
+        // 当前设备不支持IMMERSIVE材质类型，则使用SMOOTH效果，以降低卡顿和发热风险
+        this.customMaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+        console.info('Home: 设备不支持IMMERSIVE材质，使用SMOOTH效果');
+      } else {
+        // 当前设备支持IMMERSIVE材质类型，使用EXQUISITE效果
+        this.customMaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+        console.info('Home: 设备支持IMMERSIVE材质，使用EXQUISITE效果');
+      }
+    } catch (err) {
+      console.error('Home: Failed to get system material types:', err);
+      // 出错时使用默认值
+      this.customMaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+    }
+
     // 从Preferences加载沉浸式Tab栏设置
     this.loadImmersiveTabSetting();
 
@@ -163,7 +187,7 @@ export struct Home {
     // [Start diff_device_container]
     // entry/src/main/ets/view/Home.ets
     // 根据沉浸式Tab栏开关决定布局样式
-    if (this.isImmersiveTab) {
+    if (this.isImmersiveTab && this.currentWidthBreakpoint !== 'lg') {
       // 沉浸式底部Tab栏样式（悬浮+材质效果）
       HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
         TabContent() {
@@ -188,12 +212,11 @@ export struct Home {
       .vertical(false)
       // 设置页签栏悬浮样式
       .barFloatingStyle({
-        //barWidth: { smallWidth: 200, mediumWidth: 300, largeWidth: 400 },
         barBottomMargin: 28,
         gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
         systemMaterialEffect: {
-          materialType: hdsMaterial.MaterialType.IMMERSIVE,
-          materialLevel: hdsMaterial.MaterialLevel.EXQUISITE
+          materialType: hdsMaterial.MaterialType.ADAPTIVE,
+          materialLevel: this.customMaterialLevel
         }
       })
       // [EndExclude tab_to_page]
@@ -245,7 +268,10 @@ export struct Home {
         .width('100%')
       } else {
         // 手机模式：使用传统式底部Tab栏（无悬浮效果）
-        HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
+        Tabs({
+          barPosition: BarPosition.End,
+          index: this.firstLevelIndex
+        }) {
           TabContent() {
             HomePage()
           }
