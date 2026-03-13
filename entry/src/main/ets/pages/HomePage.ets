@@ -134,13 +134,37 @@ export struct HomePage {
 
   // 断点变化回调
   onBreakpointChange() {
-    // 如果是平板设备且当前是碰一碰模式，自动切换到隔空投送模式
-    if ((this.currentBreakpointWatcher === 'lg' || this.currentBreakpointWatcher === 'xl') &&
-        this.selectedShareMode === 0) {
+    // 如果是平板设备（屏幕宽度>=840vp）且当前是碰一碰模式，自动切换到隔空投送模式
+    if (this.useSplitLayoutByWidth && this.selectedShareMode === 0) {
       this.selectedShareMode = 1;
       this.currentDescription = $r('app.string.gekong_description');
       console.log('检测到大屏设备，自动切换到隔空投送模式');
     }
+    // 同时更新分栏布局状态
+    this.updateSplitLayoutByWidth();
+  }
+
+  // 使用屏幕宽度判断分栏布局（>=840vp时使用分栏布局）
+  @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
+  @State useSplitLayoutByWidth: boolean = false;
+
+  // 监听GlobalInfoModel变化,动态更新分栏布局状态
+  @Watch('onGlobalInfoModelChange')
+  @StorageProp('GlobalInfoModel') globalInfoModelWatcher: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
+
+  // GlobalInfoModel变化回调
+  onGlobalInfoModelChange() {
+    this.updateSplitLayoutByWidth();
+  }
+
+  // 根据屏幕宽度更新分栏布局状态
+  updateSplitLayoutByWidth() {
+    if (this.globalInfoModel && this.globalInfoModel.deviceWidth >= 840) {
+      this.useSplitLayoutByWidth = true;
+    } else {
+      this.useSplitLayoutByWidth = false;
+    }
+    console.info(`HomePage: deviceWidth=${this.globalInfoModel?.deviceWidth}, useSplitLayoutByWidth=${this.useSplitLayoutByWidth}`);
   }
 
   //隔空投送
@@ -854,9 +878,9 @@ export struct HomePage {
     // 检查是否支持碰一碰分享能力
     const supportHarmonyShare = canIUse('SystemCapability.Collaboration.HarmonyShare');
     
-    // 根据设备类型返回不同的卡片资源
-    if (this.currentBreakpoint === 'xl' || this.currentBreakpoint === 'lg') {
-      // PC设备（xl）或平板设备（lg）：显示PC端卡片（第2、3张）
+    // 根据设备类型返回不同的卡片资源（使用屏幕宽度判断）
+    if (this.useSplitLayoutByWidth) {
+      // 大屏设备（>=840vp）：显示PC端卡片（第2、3张）
       return [
         {
           text: $r('app.string.knock_guide_pc_hos6'),
@@ -1116,6 +1140,8 @@ export struct HomePage {
 
   aboutToAppear(): void {
     console.log('=== aboutToAppear 开始 ===');
+    // 根据屏幕宽度判断是否使用分栏布局
+    this.updateSplitLayoutByWidth();
     this.DownloadToSandbox();
     this.whiteListening()
     this.immersiveListening();
@@ -2038,9 +2064,9 @@ export struct HomePage {
 
   build() {
     Column() {
-      // 根据断点选择不同的布局
-      if (this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl') {
-        // lg/xl 断点：使用左右两栏布局
+      // 根据屏幕宽度选择不同的布局（>=840vp使用分栏布局）
+      if (this.useSplitLayoutByWidth) {
+        // 大屏：使用左右两栏布局
         Row() {
           // 左侧：预览区域（胶囊按钮 + Stack 图片预览）
           Column() {
@@ -3862,7 +3888,7 @@ export struct HomePage {
 
           //碰一碰提示
           Column() {
-            Text(this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl' ?
+            Text(this.useSplitLayoutByWidth ?
               $r('app.string.large_device_hint') : $r('app.string.nowplayingon'))
               .padding({ top: 10 , left: 24, right: 24 })
               .maxLines(2)

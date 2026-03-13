@@ -170,6 +170,10 @@ export struct SecondPage {
   @StorageProp('currentWidthBreakpoint') currentBreakpoint: string = 'sm';
   @State useSplitLayout: boolean = false;
 
+  // 监听GlobalInfoModel变化,动态更新分栏布局状态
+  @Watch('onGlobalInfoModelChange')
+  @StorageProp('GlobalInfoModel') globalInfoModelWatcher: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
+
   aboutToAppear() {
     // 接续场景下不设置分栏模式,确保返回按钮显示
     const isContinuation = AppStorage.get<boolean>('isContinuation');
@@ -179,15 +183,35 @@ export struct SecondPage {
     }
 
     // 根据屏幕宽度决定使用分栏布局还是垂直布局
-    // lg及以上使用分栏布局(lg>=840vp)
-    this.useSplitLayout = this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl';
-    // 设置全局标志,告诉GridItemComponent当前在SecondPage分栏模式
-    AppStorage.setOrCreate<boolean>('SecondPageSplitMode', this.useSplitLayout);
+    this.updateSplitLayoutByWidth();
     console.info(`========== SecondPage初始化 ==========`);
-    console.info(`currentBreakpoint: ${this.currentBreakpoint}`);
+    console.info(`deviceWidth: ${this.globalInfoModel?.deviceWidth}`);
     console.info(`useSplitLayout: ${this.useSplitLayout}`);
     console.info(`设置SecondPageSplitMode=${this.useSplitLayout}`);
     console.info(`========== SecondPage初始化结束 ==========`);
+  }
+
+  // GlobalInfoModel变化回调
+  onGlobalInfoModelChange() {
+    // 接续场景下不更新分栏模式
+    const isContinuation = AppStorage.get<boolean>('isContinuation');
+    if (isContinuation) {
+      console.info('SecondPage: 接续场景,不更新分栏模式');
+      return;
+    }
+    this.updateSplitLayoutByWidth();
+  }
+
+  // 根据屏幕宽度更新分栏布局状态
+  updateSplitLayoutByWidth() {
+    if (this.globalInfoModel && this.globalInfoModel.deviceWidth >= 840) {
+      this.useSplitLayout = true;
+    } else {
+      this.useSplitLayout = false;
+    }
+    // 设置全局标志,告诉GridItemComponent当前在SecondPage分栏模式
+    AppStorage.setOrCreate<boolean>('SecondPageSplitMode', this.useSplitLayout);
+    console.info(`SecondPage: deviceWidth=${this.globalInfoModel?.deviceWidth}, useSplitLayout=${this.useSplitLayout}`);
   }
 
   build() {

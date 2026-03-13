@@ -219,8 +219,8 @@ export default class EntryAbility extends UIAbility {
         this.windowUtil!.updateWidthBp(windowStage.getMainWindowSync().getUIContext());
         data.on('windowSizeChange', (windowSize: window.Size) => {
           this.onWindowSizeChange(windowSize, windowStage.getMainWindowSync().getUIContext());
-          // 在窗口大小变化时更新导航条高度，针对平板横竖屏切换
-          this.updateNaviIndicatorHeight(data);
+          // 在窗口大小变化时更新GlobalInfoModel的deviceWidth
+          this.updateGlobalInfoModelWidth(data);
         });
         windowClass = data;
         if (deviceInfo.deviceType === '2in1') {
@@ -330,8 +330,8 @@ export default class EntryAbility extends UIAbility {
         this.windowUtil!.updateWidthBp(windowStage.getMainWindowSync().getUIContext());
         data.on('windowSizeChange', (windowSize: window.Size) => {
           this.onWindowSizeChange(windowSize, windowStage.getMainWindowSync().getUIContext());
-          // 在窗口大小变化时更新导航条高度，针对平板横竖屏切换
-          this.updateNaviIndicatorHeight(data);
+          // 在窗口大小变化时更新GlobalInfoModel的deviceWidth
+          this.updateGlobalInfoModelWidth(data);
         });
         windowClass = data;
         if (deviceInfo.deviceType === '2in1') {
@@ -478,5 +478,20 @@ export default class EntryAbility extends UIAbility {
   onBackground(): void {
     // Ability has back to background
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onBackground');
+  }
+
+  // 在窗口大小变化时更新GlobalInfoModel的deviceWidth
+  updateGlobalInfoModelWidth(windowClass: window.Window): void {
+    try {
+      const windowProperties = windowClass.getWindowProperties();
+      const globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel') || new GlobalInfoModel();
+      globalInfoModel.deviceWidth = px2vp(windowProperties.windowRect.width);
+      globalInfoModel.deviceHeight = px2vp(windowProperties.windowRect.height);
+      AppStorage.setOrCreate('GlobalInfoModel', globalInfoModel);
+      hilog.info(0x0000, TAG, 'Update deviceWidth: %{public}d, deviceHeight: %{public}d', globalInfoModel.deviceWidth, globalInfoModel.deviceHeight);
+    } catch (error) {
+      let err = error as BusinessError;
+      hilog.error(0x0000, TAG, 'Failed to update GlobalInfoModel deviceWidth, error code=%{public}d, message=%{public}s', err.code, err.message);
+    }
   }
 }
