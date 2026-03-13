@@ -850,29 +850,63 @@ export struct HomePage {
   }
 
   //碰一碰分享
-  private readonly cardSwiperResources: CardRes[] = [
-    {
-      text: $r('app.string.knock_guide_phone_hos5'),
-      urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
-      framesCount: 128,
-      startDelay: 50,
-      stopDelay: 500,
-    },
-    {
-      text: $r('app.string.knock_guide_pc_hos6'),
-      urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
-      framesCount: 104,
-      startDelay: 50,
-      stopDelay: 50,
-    },
-    {
-      text: $r('app.string.knock_guide_phone_hos6'),
-      urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
-      framesCount: 150,
-      startDelay: 500,
-      stopDelay: 1000,
-    },
-  ];
+  private get cardSwiperResources(): CardRes[] {
+    // 根据设备类型返回不同的卡片资源
+    if (this.currentBreakpoint === 'xl') {
+      // PC设备（xl）：显示PC端卡片（第2、3张）
+      return [
+        {
+          text: $r('app.string.knock_guide_pc_hos6'),
+          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
+          framesCount: 104,
+          startDelay: 50,
+          stopDelay: 50,
+        },
+        {
+          text: $r('app.string.knock_guide_phone_hos6'),
+          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
+          framesCount: 150,
+          startDelay: 500,
+          stopDelay: 1000,
+        },
+      ];
+    } else {
+      // 手机设备（sm/md）和平板设备（lg）：显示所有卡片（第1、2、3张卡片）
+      return [
+        {
+          text: $r('app.string.knock_guide_phone_hos5'),
+          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
+          framesCount: 128,
+          startDelay: 50,
+          stopDelay: 500,
+        },
+        {
+          text: $r('app.string.knock_guide_pc_hos6'),
+          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
+          framesCount: 104,
+          startDelay: 50,
+          stopDelay: 50,
+        },
+        {
+          text: $r('app.string.knock_guide_phone_hos6'),
+          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
+          framesCount: 150,
+          startDelay: 500,
+          stopDelay: 1000,
+        },
+      ];
+    }
+  }
+
+  // 获取是否显示卡片的标志
+  private get showCards(): boolean {
+    // 手机端和平板端显示卡片，PC端显示卡片
+    // 平板端（lg）不显示卡片，只显示提示
+    if (this.currentBreakpoint === 'lg') {
+      return false;
+    }
+    return true;
+  }
   private debounceTimer: number = 0
   private urlDebounceTimer: number = 0
   // 修改 handleImageUpdate 方法
@@ -3820,36 +3854,26 @@ export struct HomePage {
             .margin({ bottom: 20 })
 
           //碰一碰提示
-          if (this.currentBreakpoint !== 'lg' && this.currentBreakpoint !== 'xl') {
-            Column() {
-              Text($r('app.string.nowplayingon'))
-                .padding({ top: 10 , left: 24, right: 24 })
-                .maxLines(2)
-                .fontSize(11)
-                .maxFontScale(1.75)
-                .width('100%')
-                .constraintSize({ minHeight: 16 })
-                .fontColor($r('app.color.font_secondary'))
-                .fontFamily('HarmonyHeiTi')
-                .textAlign(TextAlign.Center)
-              KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
+          Column() {
+            Text(this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl' ?
+              $r('app.string.large_device_hint') : $r('app.string.nowplayingon'))
+              .padding({ top: 10 , left: 24, right: 24 })
+              .maxLines(2)
+              .fontSize(11)
+              .maxFontScale(1.75)
+              .width('100%')
+              .constraintSize({ minHeight: 16 })
+              .fontColor($r('app.color.font_secondary'))
+              .fontFamily('HarmonyHeiTi')
+              .textAlign(TextAlign.Center)
+
+            // 只在手机端（sm/md）和PC端（xl）显示卡片，平板端（lg）不显示
+            if (this.showCards) {
+              KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources })
                 .padding({ top: 2 })
             }
-            .width('100%')
-          } else {
-            // 大屏设备提示
-            Column() {
-              Text($r('app.string.large_device_hint'))
-                .fontSize(11)
-                .maxFontScale(1.75)
-                .width('100%')
-                .fontColor($r('app.color.font_secondary'))
-                .fontFamily('HarmonyHeiTi')
-                .textAlign(TextAlign.Center)
-                .lineHeight(18)
-            }
-            .width('90%')
           }
+          .width('100%')
             // 底部避让空白区域(用于沉浸tab模式下的手机端)
             Blank().height(100).width('100%')
         }
