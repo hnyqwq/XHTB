@@ -177,8 +177,14 @@ export struct Home {
         .fontColor(index === this.firstLevelIndex ? '#0A59F7' : '#999999')
         .margin({ top: 4 })
     }
-    .padding({ bottom: this.currentWidthBreakpoint === 'lg' ? 24 : 0 })
-    .height(this.currentWidthBreakpoint === 'lg' ? 100 : '100%')
+    .padding({
+      bottom: (this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl') && !this.isImmersiveTab ? 24 : 0,
+      left: (this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl') && !this.isImmersiveTab ? 0 : 0,
+      right: (this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl') && !this.isImmersiveTab ? 0 : 0
+    })
+    .height(
+      (this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl') && !this.isImmersiveTab ? 100 : '100%'
+    )
     .width('100%')
     .justifyContent(FlexAlign.Center)
   }
@@ -187,52 +193,97 @@ export struct Home {
     // [Start diff_device_container]
     // entry/src/main/ets/view/Home.ets
     // 根据沉浸式Tab栏开关决定布局样式
-    if (this.isImmersiveTab && this.currentWidthBreakpoint !== 'lg') {
-      // 沉浸式底部Tab栏样式（悬浮+材质效果）
-      HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
-        TabContent() {
-          HomePage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+    if (this.isImmersiveTab) {
+      // 沉浸式Tab栏样式（悬浮+材质效果）
+      if (this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl') {
+        // 平板模式：沉浸式底部Tab栏
+        HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
+          TabContent() {
+            HomePage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
 
-        TabContent() {
-          SecondPage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+          TabContent() {
+            SecondPage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
 
-        TabContent() {
-          MinePage()
+          TabContent() {
+            MinePage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
         }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+        // [StartExclude tab_to_page]
+        // 设置barOverlap为true，vertical为false，barPosition为BarPosition.End，可实现页签栏的悬浮样式
+        .barOverlap(true)
+        .barPosition(BarPosition.End)
+        .vertical(false)
+        // 设置页签栏悬浮样式
+        .barFloatingStyle({
+          barBottomMargin: 28,
+          gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: this.customMaterialLevel
+          }
+        })
+        // [EndExclude tab_to_page]
+        .onChange((index: number) => {
+          this.firstLevelIndex = index;
+          // 保存当前 Tab 索引到 AppStorage,供接续功能使用
+          AppStorage.setOrCreate('currentTabIndex', index);
+        })
+        // [End tab_to_page]
+        .scrollable(false)
+        .height('100%')
+        .width('100%')
+      } else {
+        // 手机模式：沉浸式底部Tab栏
+        HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
+          TabContent() {
+            HomePage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+
+          TabContent() {
+            SecondPage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+
+          TabContent() {
+            MinePage()
+          }
+          .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+        }
+        // [StartExclude tab_to_page]
+        // 设置barOverlap为true，vertical为false，barPosition为BarPosition.End，可实现页签栏的悬浮样式
+        .barOverlap(true)
+        .barPosition(BarPosition.End)
+        .vertical(false)
+        // 设置页签栏悬浮样式
+        .barFloatingStyle({
+          barBottomMargin: 28,
+          gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: this.customMaterialLevel
+          }
+        })
+        // [EndExclude tab_to_page]
+        .onChange((index: number) => {
+          this.firstLevelIndex = index;
+          // 保存当前 Tab 索引到 AppStorage,供接续功能使用
+          AppStorage.setOrCreate('currentTabIndex', index);
+        })
+        // [End tab_to_page]
+        .scrollable(false)
+        .height('100%')
+        .width('100%')
       }
-      // [StartExclude tab_to_page]
-      // 设置barOverlap为true，vertical为false，barPosition为BarPosition.End，可实现页签栏的悬浮样式
-      .barOverlap(true)
-      .barPosition(BarPosition.End)
-      .vertical(false)
-      // 设置页签栏悬浮样式
-      .barFloatingStyle({
-        barBottomMargin: 28,
-        gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
-        systemMaterialEffect: {
-          materialType: hdsMaterial.MaterialType.ADAPTIVE,
-          materialLevel: this.customMaterialLevel
-        }
-      })
-      // [EndExclude tab_to_page]
-      .onChange((index: number) => {
-        this.firstLevelIndex = index;
-        // 保存当前 Tab 索引到 AppStorage,供接续功能使用
-        AppStorage.setOrCreate('currentTabIndex', index);
-      })
-      // [End tab_to_page]
-      .scrollable(false)
-      .height('100%')
-      .width('100%')
     } else {
       // 传统式Tab栏样式
-      if (this.currentWidthBreakpoint === 'lg') {
-        // 平板模式（lg breakpoint）：使用左侧垂直Tab栏
+      if (this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl') {
+        // 平板模式：使用左侧垂直Tab栏
         Tabs({
           barPosition: BarPosition.Start,
           index: this.firstLevelIndex
