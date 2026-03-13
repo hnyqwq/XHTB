@@ -482,7 +482,7 @@
     },
     {
       "name": "large_device_hint",
-      "value": "This device do not support Knock Share,\\nAirDrop preview has been automatically selected."
+      "value": "This device do not support Knock Share,\nAirDrop preview has been automatically selected."
     },
     {
       "name": "text_share",
