@@ -85,7 +85,7 @@ export struct infoPage {
   bottomRectHeight: number = 0;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
-  @State isImmersiveTab: boolean = true; // 沉浸式Tab栏样式状态（包含底部Tab栏和顶部材质效果）
+  @State isImmersiveTab: boolean = false; // 沉浸式Tab栏样式状态（包含底部Tab栏和顶部材质效果）
   @State showNewYearCard: boolean = false; // 春节卡片开关状态，默认关闭
   @State supportedMaterialTypes: string = ''; // 支持的材质类型
   @State supportedMaterialLevel: string = ''; // 支持的材质等级
@@ -335,6 +335,7 @@ export struct infoPage {
     .bindToScrollable([this.scroller])
     .hideBackButton(false)
     .titleMode(HdsNavigationTitleMode.MINI)
+    .mode(NavigationMode.Stack)
   }
 
   @Builder
@@ -373,6 +374,7 @@ export struct infoPage {
     .bindToScrollable([this.scroller])
     .hideBackButton(false)
     .titleMode(HdsNavigationTitleMode.MINI)
+    .mode(NavigationMode.Stack)
   }
 
   @Builder
