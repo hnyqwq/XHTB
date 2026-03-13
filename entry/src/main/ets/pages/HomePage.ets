@@ -851,9 +851,12 @@ export struct HomePage {
 
   //碰一碰分享
   private get cardSwiperResources(): CardRes[] {
+    // 检查是否支持碰一碰分享能力
+    const supportHarmonyShare = canIUse('SystemCapability.Collaboration.HarmonyShare');
+    
     // 根据设备类型返回不同的卡片资源
-    if (this.currentBreakpoint === 'xl') {
-      // PC设备（xl）：显示PC端卡片（第2、3张）
+    if (this.currentBreakpoint === 'xl' || this.currentBreakpoint === 'lg') {
+      // PC设备（xl）或平板设备（lg）：显示PC端卡片（第2、3张）
       return [
         {
           text: $r('app.string.knock_guide_pc_hos6'),
@@ -871,7 +874,7 @@ export struct HomePage {
         },
       ];
     } else {
-      // 手机设备（sm/md）和平板设备（lg）：显示所有卡片（第1、2、3张卡片）
+      // 手机设备（sm/md）：显示所有卡片（第1、2、3张卡片）
       return [
         {
           text: $r('app.string.knock_guide_phone_hos5'),
@@ -900,11 +903,15 @@ export struct HomePage {
 
   // 获取是否显示卡片的标志
   private get showCards(): boolean {
-    // 手机端和平板端显示卡片，PC端显示卡片
-    // 平板端（lg）不显示卡片，只显示提示
-    if (this.currentBreakpoint === 'lg') {
+    // 检查是否支持碰一碰分享能力
+    const supportHarmonyShare = canIUse('SystemCapability.Collaboration.HarmonyShare');
+    
+    // 不支持碰一碰分享，不显示卡片
+    if (!supportHarmonyShare) {
       return false;
     }
+    
+    // 支持碰一碰分享，所有设备都显示卡片
     return true;
   }
   private debounceTimer: number = 0

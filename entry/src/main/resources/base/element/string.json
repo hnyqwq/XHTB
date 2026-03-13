@@ -470,7 +470,7 @@
 		},
 		{
 			"name": "large_device_hint",
-			"value": "平板和PC/2in1设备不支持碰一碰传送，\n已为您自动选择隔空传送预览。"
+			"value": "当前设备不支持碰一碰传送，\\n已为您自动选择隔空传送预览。"
 		},
 		{
 			"name": "text_share",
