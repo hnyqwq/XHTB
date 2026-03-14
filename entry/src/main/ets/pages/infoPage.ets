@@ -4,13 +4,62 @@ import type { common } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { navigationManager } from '../common/NavigationManager';
 import dataPreferences from '@ohos.data.preferences';
-import { hdsMaterial, HdsNavigation, HdsNavigationTitleMode, ScrollEffectType } from '@kit.UIDesignKit';
+import { HdsNavigation, HdsNavigationTitleMode, ScrollEffectType } from '@kit.UIDesignKit';
 import { bundleManager } from '@kit.AbilityKit';
 
 import { deviceInfo } from '@kit.BasicServicesKit';
 
 import { promptAction } from '@kit.ArkUI';
 import { GlobalInfoModel } from '../common/GlobalInfoModel';
+
+// 定义材质相关的接口
+interface IMaterialLevel {
+  EXQUISITE: number;
+  GENTLE: number;
+  SMOOTH: number;
+  ADAPTIVE: number;
+}
+
+interface IMaterialType {
+  NONE: number;
+  ADAPTIVE: number;
+  IMMERSIVE: number;
+}
+
+// 定义材质相关的常量
+const MaterialLevel: IMaterialLevel = {
+  EXQUISITE: 0,
+  GENTLE: 1,
+  SMOOTH: 2,
+  ADAPTIVE: 3
+};
+
+const MaterialType: IMaterialType = {
+  NONE: 0,
+  ADAPTIVE: 1,
+  IMMERSIVE: 2
+};
+
+// 定义hdsMaterial接口
+interface IHdsMaterialModule {
+  MaterialLevel: IMaterialLevel;
+  MaterialType: IMaterialType;
+  getSystemMaterialTypes: () => Array<number>;
+}
+
+// 辅助函数：安全获取hdsMaterial模块
+function getHdsMaterialModule(): IHdsMaterialModule | null {
+  try {
+    const gThis: ESObject = globalThis;
+    const hdsMat: ESObject | null | undefined = gThis['hdsMaterial'] as ESObject | null | undefined;
+    if (hdsMat) {
+      return hdsMat as IHdsMaterialModule;
+    }
+  } catch (err) {
+    console.warn('infoPage: hdsMaterial not available:', err);
+  }
+  return null;
+}
 
 // 获取应用信息
 let bundleName = '';
@@ -151,51 +200,64 @@ export struct infoPage {
     // 设置所有材质等级枚举说明
     this.allMaterialLevels = 'EXQUISITE(精美) | GENTLE(轻柔) | SMOOTH(流畅) | ADAPTIVE(系统自适应)';
 
-    // 检查系统支持的材质类型
-    try {
-      let materialTypes: Array<hdsMaterial.MaterialType> = hdsMaterial.getSystemMaterialTypes();
-      console.info(`infoPage: getSystemMaterialTypes successed, types: ${JSON.stringify(materialTypes)}, length: ${materialTypes.length}`);
+    // 检查API版本，只有API >= 23才支持新材质
+    const isApi23OrHigher = deviceInfo.sdkApiVersion >= 23;
+    console.info('infoPage: API版本:', deviceInfo.sdkApiVersion, '是否支持新材质:', isApi23OrHigher);
 
-      // 格式化材质类型显示
-      if (materialTypes.length === 0) {
-        // 返回空数组，说明设备不支持任何材质类型
-        this.supportedMaterialTypes = '无（系统返回空数组 什么bug我在查...）';
-        this.supportedMaterialLevel = '-';
-        console.info('infoPage: 设备不支持任何材质类型');
-      } else {
-        const types = materialTypes.map(type => {
-          switch (type) {
-            case hdsMaterial.MaterialType.NONE:
-              return 'NONE';
-            case hdsMaterial.MaterialType.ADAPTIVE:
-              return 'ADAPTIVE';
-            case hdsMaterial.MaterialType.IMMERSIVE:
-            case hdsMaterial.MaterialType.IMMERSIVE:
-              return 'IMMERSIVE';
-            default:
-              return `UNKNOWN(${type})`;
+    // 仅在高版本API下检查材质能力
+    if (isApi23OrHigher) {
+      try {
+        // 动态获取hdsMaterial模块
+        const hdsMaterial = getHdsMaterialModule();
+        if (hdsMaterial) {
+          let materialTypes: Array<number> = hdsMaterial.getSystemMaterialTypes();
+          console.info(`infoPage: getSystemMaterialTypes successed, types: ${JSON.stringify(materialTypes)}, length: ${materialTypes.length}`);
+
+          // 格式化材质类型显示
+          if (materialTypes.length === 0) {
+            // 返回空数组，说明设备不支持任何材质类型
+            this.supportedMaterialTypes = '无（系统返回空数组 什么bug我在查...）';
+            this.supportedMaterialLevel = '-';
+            console.info('infoPage: 设备不支持任何材质类型');
+          } else {
+            const types = materialTypes.map(type => {
+              switch (type) {
+                case MaterialType.NONE:
+                  return 'NONE';
+                case MaterialType.ADAPTIVE:
+                  return 'ADAPTIVE';
+                case MaterialType.IMMERSIVE:
+                  return 'IMMERSIVE';
+                default:
+                  return `UNKNOWN(${type})`;
+              }
+            });
+            this.supportedMaterialTypes = types.join(', ');
+
+            // 根据支持的材质类型推荐材质等级
+            if (materialTypes.includes(MaterialType.IMMERSIVE)) {
+              this.supportedMaterialLevel = 'EXQUISITE, GENTLE, SMOOTH';
+            } else if (materialTypes.includes(MaterialType.ADAPTIVE)) {
+              this.supportedMaterialLevel = 'SMOOTH';
+            } else {
+              this.supportedMaterialLevel = '-';
+            }
           }
-        });
-        this.supportedMaterialTypes = types.join(', ');
-
-        // 根据支持的材质类型推荐材质等级
-        if (materialTypes.includes(hdsMaterial.MaterialType.IMMERSIVE)) {
-          this.supportedMaterialLevel = 'EXQUISITE, GENTLE, SMOOTH';
-        } else if (materialTypes.includes(hdsMaterial.MaterialType.ADAPTIVE)) {
-          this.supportedMaterialLevel = 'SMOOTH';
         } else {
-          this.supportedMaterialLevel = '-';
+          console.info('infoPage: hdsMaterial不可用');
         }
+      } catch (err) {
+        let message = (err as BusinessError).message;
+        let code = (err as BusinessError).code;
+        console.error(`infoPage: getSystemMaterialTypes failed, code: ${code}, message: ${message}`);
+        // hdsMaterial模块不可用时，禁用沉浸式Tab栏
+        this.isHdsMaterialAvailable = false;
+        this.isImmersiveTab = false;
+        this.supportedMaterialTypes = '获取失败';
+        this.supportedMaterialLevel = '-';
       }
-    } catch (err) {
-      let message = (err as BusinessError).message;
-      let code = (err as BusinessError).code;
-      console.error(`infoPage: getSystemMaterialTypes failed, code: ${code}, message: ${message}`);
-      // hdsMaterial模块不可用时，禁用沉浸式Tab栏
-      this.isHdsMaterialAvailable = false;
-      this.isImmersiveTab = false;
-      this.supportedMaterialTypes = '获取失败';
-      this.supportedMaterialLevel = '-';
+    } else {
+      console.info('infoPage: API版本低于23，跳过材质能力查询');
     }
 
     // 加载沉浸式tab栏设置
@@ -209,15 +271,32 @@ export struct infoPage {
       const context = getContext(this) as common.UIAbilityContext;
       this.preferences = await dataPreferences.getPreferences(context, 'app_settings');
 
-      // 检查是否已经设置过,如果没有则设置默认值为false
+      // 检查是否已经设置过
       const hasKey = await this.preferences.has('isImmersiveTab');
-      if (!hasKey) {
+
+      // 读取保存的值
+      let savedValue = false;
+      if (hasKey) {
+        savedValue = await this.preferences.get('isImmersiveTab', false) as boolean;
+      }
+
+      // 检查API版本，只有API >= 23才支持新材质
+      const isApi23OrHigher = deviceInfo.sdkApiVersion >= 23;
+
+      // 如果API版本低于23，强制设置为false（传统模式）
+      if (!isApi23OrHigher) {
+        savedValue = false;
+        console.info('infoPage: API版本低于23，强制使用传统式Tab栏');
+      } else if (!hasKey) {
+        // 首次运行，默认为false（传统模式）
+        savedValue = false;
         await this.preferences.put('isImmersiveTab', false);
         await this.preferences.flush();
+        console.info('infoPage: 首次运行，默认使用传统式Tab栏');
       }
 
       // 读取保存的值
-      this.isImmersiveTab = await this.preferences.get('isImmersiveTab', false) as boolean;
+      this.isImmersiveTab = savedValue;
       // 同步到AppStorage，供Home页面使用
       AppStorage.setOrCreate('isImmersiveTab', this.isImmersiveTab);
     } catch (err) {
@@ -287,7 +366,8 @@ export struct infoPage {
 
   build() {
     Column() {
-      if (this.isImmersiveTab && this.isHdsMaterialAvailable) {
+      // 检查API版本，只有API >= 23才支持新材质
+      if (this.isImmersiveTab && this.isHdsMaterialAvailable && deviceInfo.sdkApiVersion >= 23) {
         // 沉浸式模式：使用高版本 Material Design 3 API
         this.immersiveNavigation()
       } else {
@@ -343,8 +423,8 @@ export struct infoPage {
           }
         },
         systemMaterialEffect: {
-          materialLevel : hdsMaterial.MaterialLevel.EXQUISITE,
-          materialType : hdsMaterial.MaterialType.IMMERSIVE,
+          materialLevel : MaterialLevel.EXQUISITE,
+          materialType : MaterialType.IMMERSIVE
         }
       },
       enableHoverMode: true,
