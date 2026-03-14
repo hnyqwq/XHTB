@@ -125,6 +125,9 @@ export struct HomePage {
   @State newYearCards: NewYearCard[] = [];
   @State currentNewYearCardIndex: number = 0; // 当前显示的新年卡片索引
 
+  // 沉浸式Tab相关
+  @StorageLink('isImmersiveTab') isImmersiveTab: boolean = false; // 沉浸式Tab栏设置，从AppStorage读取
+
   // 断点相关
   @StorageProp('currentWidthBreakpoint') currentBreakpoint: string = 'md';
 
@@ -3947,8 +3950,8 @@ export struct HomePage {
             }
           })
           .width('100%')
-            // 底部避让空白区域(用于沉浸tab模式下的手机端)
-            Blank().height(100).width('100%')
+            // 底部避让空白区域(沉浸tab模式使用100vp，普通tab模式使用16vp)
+            Blank().height(this.isImmersiveTab ? 100 : 16).width('100%')
         }
         .width('90%')
         .alignItems(HorizontalAlign.Center) // 内容水平居中
