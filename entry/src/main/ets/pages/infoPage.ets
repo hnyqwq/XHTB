@@ -280,6 +280,9 @@ export struct infoPage {
         this.traditionalNavigation()
       }
     }
+    .width('100%')
+    .height('100%')
+    .backgroundColor($r('sys.color.ohos_id_color_background'))
   }
 
   @Builder
@@ -306,7 +309,7 @@ export struct infoPage {
         },
         originalStyle: {
           backgroundStyle: {
-            backgroundColor: $r('sys.color.ohos_id_color_background'),
+            backgroundColor: $r('sys.color.ohos_id_color_background_transparent'),
           },
           contentStyle: {
             titleStyle: { mainTitleColor: $r('sys.color.font_primary') },
