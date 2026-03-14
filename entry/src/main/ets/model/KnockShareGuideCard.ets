@@ -181,13 +181,33 @@ export default struct KnockShareGuideCard {
   @Provide swiperIndex: number = 0;
   private indicatorController: IndicatorComponentController = new IndicatorComponentController();
 
+  aboutToAppear(): void {
+    logger.info(`KnockShareGuideCard aboutToAppear: cardSwiperResources.length=${this.cardSwiperResources?.length}`);
+  }
+
   @Builder
   indicatorBuilder() {
     IndicatorComponent()
   }
 
   build() {
-    if (this.cardSwiperResources.length === 1) {
+    if (!this.cardSwiperResources || this.cardSwiperResources.length === 0) {
+      // 如果没有卡片资源,不渲染任何内容
+      Column() {
+        Text('卡片资源加载中...')
+          .fontSize(12)
+          .fontColor('#999999')
+      }
+      .width('100%')
+      // 如果没有卡片资源,不渲染任何内容
+      Column() {
+        Text('卡片资源加载中...')
+          .fontSize(12)
+          .fontColor('#999999')
+      }
+      .width('100%')
+      .height(100)
+    } else if (this.cardSwiperResources.length === 1) {
       KnockShareSingleGuideCard({
         running: true,
         res: this.cardSwiperResources[0],

@@ -132,8 +132,15 @@ export struct HomePage {
   @Watch('onBreakpointChange')
   @StorageProp('currentWidthBreakpoint') currentBreakpointWatcher: string = 'md';
 
+  // 用于响应式更新的断点状态
+  @State currentBreakpointForUI: string = 'md';
+
   // 断点变化回调
   onBreakpointChange() {
+    // 同步断点到状态变量以触发UI更新
+    this.currentBreakpointForUI = this.currentBreakpoint;
+    console.info(`HomePage onBreakpointChange: currentBreakpoint=${this.currentBreakpoint}, currentBreakpointForUI=${this.currentBreakpointForUI}`);
+
     // 如果是平板设备（屏幕宽度>=840vp）且当前是碰一碰模式，自动切换到隔空投送模式
     if (this.useSplitLayoutByWidth && this.selectedShareMode === 0) {
       this.selectedShareMode = 1;
@@ -874,13 +881,40 @@ export struct HomePage {
   }
 
   //碰一碰分享
-  private get cardSwiperResources(): CardRes[] {
-    // 检查是否支持碰一碰分享能力
-    const supportHarmonyShare = canIUse('SystemCapability.Collaboration.HarmonyShare');
-    
-    // 根据设备类型返回不同的卡片资源（使用屏幕宽度判断）
-    if (this.useSplitLayoutByWidth) {
-      // 大屏设备（>=840vp）：显示PC端卡片（第2、3张）
+  private getCardSwiperResources(): CardRes[] {
+    // 使用响应式状态变量
+    const bp = this.currentBreakpointForUI;
+    console.info(`HomePage getCardSwiperResources called: currentBreakpointForUI=${bp}`);
+    // 如果bp未定义,返回默认的3张卡片
+    if (!bp) {
+      console.warn('HomePage getCardSwiperResources: currentBreakpointForUI is undefined, using default resources');
+      return [
+        {
+          text: $r('app.string.knock_guide_phone_hos5'),
+          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
+          framesCount: 128,
+          startDelay: 50,
+          stopDelay: 500,
+        },
+        {
+          text: $r('app.string.knock_guide_pc_hos6'),
+          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
+          framesCount: 104,
+          startDelay: 50,
+          stopDelay: 50,
+        },
+        {
+          text: $r('app.string.knock_guide_phone_hos6'),
+          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
+          framesCount: 150,
+          startDelay: 500,
+          stopDelay: 1000,
+        },
+      ];
+    }
+    if (bp === 'xl') {
+      // PC设备（xl）：显示PC端卡片（第2、3张）
+      console.info('HomePage getCardSwiperResources: 返回PC端卡片（2张）');
       return [
         {
           text: $r('app.string.knock_guide_pc_hos6'),
@@ -898,7 +932,8 @@ export struct HomePage {
         },
       ];
     } else {
-      // 手机设备（sm/md）：显示所有卡片（第1、2、3张卡片）
+      // 手机设备（sm/md）和平板设备（lg）：显示所有卡片（第1、2、3张卡片）
+      console.info(`HomePage getCardSwiperResources: 返回${bp === 'sm' || bp === 'md' ? '手机端' : '平板端'}卡片（3张）`);
       return [
         {
           text: $r('app.string.knock_guide_phone_hos5'),
@@ -926,16 +961,16 @@ export struct HomePage {
   }
 
   // 获取是否显示卡片的标志
-  private get showCards(): boolean {
-    // 检查是否支持碰一碰分享能力
-    const supportHarmonyShare = canIUse('SystemCapability.Collaboration.HarmonyShare');
-    
-    // 不支持碰一碰分享，不显示卡片
-    if (!supportHarmonyShare) {
+  private shouldShowCards(): boolean {
+    // 使用响应式状态变量
+    const bp = this.currentBreakpointForUI;
+    console.info(`HomePage shouldShowCards: currentBreakpointForUI=${bp}, type=${typeof bp}`);
+    // 平板端（lg）不显示卡片，只显示提示
+    if (bp === 'lg') {
+      console.info('HomePage shouldShowCards: 返回 false (平板端)');
       return false;
     }
-    
-    // 支持碰一碰分享，所有设备都显示卡片
+    console.info('HomePage shouldShowCards: 返回 true (非平板端)');
     return true;
   }
   private debounceTimer: number = 0
@@ -1140,6 +1175,9 @@ export struct HomePage {
 
   aboutToAppear(): void {
     console.log('=== aboutToAppear 开始 ===');
+    // 初始化断点状态
+    this.currentBreakpointForUI = this.currentBreakpoint;
+    console.info(`HomePage aboutToAppear: currentBreakpoint=${this.currentBreakpoint}, currentBreakpointForUI=${this.currentBreakpointForUI}`);
     // 根据屏幕宽度判断是否使用分栏布局
     this.updateSplitLayoutByWidth();
     this.DownloadToSandbox();
@@ -2720,7 +2758,7 @@ export struct HomePage {
                           .textAlign(TextAlign.Center)
                           .width('55%')
                           .margin({ right: 10 })
-                        if (this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl') {
+                        if (this.currentBreakpointForUI === 'lg' || this.currentBreakpointForUI === 'xl') {
                           // 平板设备：使用跨设备菜单
                           Button($r('app.string.choosepad'))
                             .height(50)
@@ -2958,8 +2996,9 @@ export struct HomePage {
               .margin({ bottom: 20 })
 
               //碰一碰提示
-              if (this.currentBreakpoint !== 'lg' && this.currentBreakpoint !== 'xl') {
-                Text($r('app.string.nowplayingon'))
+              Column() {
+                Text(this.currentBreakpointForUI === 'lg' ?
+                  $r('app.string.large_device_hint') : $r('app.string.nowplayingon'))
                   .padding({ top: 10 , left: 24, right: 24 })
                   .maxLines(2)
                   .fontSize(11)
@@ -2969,21 +3008,12 @@ export struct HomePage {
                   .fontColor($r('app.color.font_secondary'))
                   .fontFamily('HarmonyHeiTi')
                   .textAlign(TextAlign.Center)
-                KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
-                  .padding({ top: 2 })
-              } else {
-                // 大屏设备提示
-                Column() {
-                  Text($r('app.string.large_device_hint'))
-                    .fontSize(11)
-                    .maxFontScale(1.75)
-                    .width('100%')
-                    .fontColor($r('app.color.font_secondary'))
-                    .fontFamily('HarmonyHeiTi')
-                    .textAlign(TextAlign.Center)
-                    .lineHeight(18)
+
+                // 只在手机端（sm/md）和PC端（xl）显示卡片，平板端（lg）不显示
+                if (this.shouldShowCards()) {
+                  KnockShareGuideCard({ cardSwiperResources: this.getCardSwiperResources() })
+                    .padding({ top: 2 })
                 }
-                .width('100%')
               }
             }
             .width('100%')
@@ -3383,7 +3413,7 @@ export struct HomePage {
                   onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer): void => this.doInsertPicture(stateCode,
                     bufferType, buffer)
                 })
-                if (this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl') {
+                if (this.currentBreakpointForUI === 'lg' || this.currentBreakpointForUI === 'xl') {
                   // 平板/PC设备：使用跨设备协作按钮
                   Button($r('app.string.choose'))
                     .height(50)
@@ -3888,7 +3918,7 @@ export struct HomePage {
 
           //碰一碰提示
           Column() {
-            Text(this.useSplitLayoutByWidth ?
+            Text(this.currentBreakpointForUI === 'lg' ?
               $r('app.string.large_device_hint') : $r('app.string.nowplayingon'))
               .padding({ top: 10 , left: 24, right: 24 })
               .maxLines(2)
@@ -3901,11 +3931,21 @@ export struct HomePage {
               .textAlign(TextAlign.Center)
 
             // 只在手机端（sm/md）和PC端（xl）显示卡片，平板端（lg）不显示
-            if (this.showCards) {
-              KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources })
+            if (this.shouldShowCards()) {
+              KnockShareGuideCard({ cardSwiperResources: this.getCardSwiperResources() })
                 .padding({ top: 2 })
             }
           }
+          .width('100%')
+          .onAppear(() => {
+            const shouldShowCards = this.currentBreakpointForUI !== 'lg';
+            console.info(`HomePage UI: currentBreakpointForUI=${this.currentBreakpointForUI}, shouldShowCards=${shouldShowCards}`);
+            if (shouldShowCards) {
+              console.info('HomePage UI: 显示碰一碰卡片');
+            } else {
+              console.info('HomePage UI: 不显示碰一碰卡片');
+            }
+          })
           .width('100%')
             // 底部避让空白区域(用于沉浸tab模式下的手机端)
             Blank().height(100).width('100%')
