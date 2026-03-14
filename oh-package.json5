@@ -1,8 +1,6 @@
 {
   "modelVersion": "6.1.0",
-  "dependencies": {
-    "@pura/harmony-utils": "^1.4.0"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "dynamicDependencies": {}
 }
