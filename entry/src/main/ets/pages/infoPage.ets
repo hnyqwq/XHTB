@@ -5,16 +5,31 @@ import { BusinessError } from '@kit.BasicServicesKit';
 import { navigationManager } from '../common/NavigationManager';
 import dataPreferences from '@ohos.data.preferences';
 import { hdsMaterial, HdsNavigation, HdsNavigationTitleMode, ScrollEffectType } from '@kit.UIDesignKit';
+import { bundleManager } from '@kit.AbilityKit';
 
 import { deviceInfo } from '@kit.BasicServicesKit';
 
-import { AppUtil } from '@pura/harmony-utils';
 import { promptAction } from '@kit.ArkUI';
 import { GlobalInfoModel } from '../common/GlobalInfoModel';
 
-let bundleName = AppUtil.getBundleName();
-let versionCode = AppUtil.getVersionCode();
-let versionName = AppUtil.getVersionName();
+// 获取应用信息
+let bundleName = '';
+let versionCode = 0;
+let versionName = '';
+try {
+  const bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION);
+  bundleName = bundleInfo.name;
+  versionCode = bundleInfo.versionCode;
+  versionName = bundleInfo.versionName;
+} catch (err) {
+  const error = err as BusinessError;
+  console.error(`Failed to get bundle info. Code: ${error.code}, message: ${error.message}`);
+  // 提供默认值
+  bundleName = 'com.example.app';
+  versionCode = 1;
+  versionName = '1.0.0';
+}
+
 let baoming = `${bundleName}`
 let banbenhao = `${versionName}（${versionCode}）`
 
