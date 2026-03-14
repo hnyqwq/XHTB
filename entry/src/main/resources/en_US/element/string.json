@@ -543,6 +543,26 @@
     {
       "name": "newyear_card_description",
       "value": "Show New Year Card"
+    },
+    {
+      "name": "immersive_tab_style",
+      "value": "Immersive Interface Style"
+    },
+    {
+      "name": "immersive_style_on",
+      "value": "Immersive (Float+Material)"
+    },
+    {
+      "name": "immersive_style_off",
+      "value": "Traditional (Separate)"
+    },
+    {
+      "name": "new_year_card_on",
+      "value": "Show"
+    },
+    {
+      "name": "new_year_card_off",
+      "value": "Hide"
     }
   ]
 }

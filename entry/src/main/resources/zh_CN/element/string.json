@@ -542,6 +542,26 @@
     {
       "name": "newyear_card_description",
       "value": "显示春节特色卡片"
+    },
+    {
+      "name": "immersive_tab_style",
+      "value": "沉浸式界面样式"
+    },
+    {
+      "name": "immersive_style_on",
+      "value": "沉浸式（悬浮+材质）"
+    },
+    {
+      "name": "immersive_style_off",
+      "value": "传统式（分离效果）"
+    },
+    {
+      "name": "new_year_card_on",
+      "value": "显示"
+    },
+    {
+      "name": "new_year_card_off",
+      "value": "隐藏"
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { updateManager } from '@kit.AppGalleryKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import type { common } from '@kit.AbilityKit';
+import { common } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { navigationManager } from '../common/NavigationManager';
 import dataPreferences from '@ohos.data.preferences';
@@ -357,11 +357,17 @@ export struct infoPage {
   }
 
   getTabStyleDescription(): string {
-    return this.isImmersiveTab ? '沉浸式（悬浮+材质）' : '传统式（分离效果）';
+    const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+    return this.isImmersiveTab
+      ? context.resourceManager.getStringSync($r('app.string.immersive_style_on').id)
+      : context.resourceManager.getStringSync($r('app.string.immersive_style_off').id);
   }
 
   getNewYearCardDescription(): string {
-    return this.showNewYearCard ? '显示' : '隐藏';
+    const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+    return this.showNewYearCard
+      ? context.resourceManager.getStringSync($r('app.string.new_year_card_on').id)
+      : context.resourceManager.getStringSync($r('app.string.new_year_card_off').id);
   }
 
   build() {
@@ -548,9 +554,9 @@ export struct infoPage {
           // 沉浸式Tab栏样式开关（包含底部Tab栏和顶部材质效果）
           Row() {
             Row() {
-              Text('沉浸式界面样式')
+              Text($r('app.string.immersive_tab_style'))
                 .fontSize($r('app.integer.layout_size_16'))
-                .fontWeight(400)
+                .fontWeight(FontWeight.Bold)
                 .fontFamily('HarmonyOS Sans')
                 .fontColor($r('app.color.font_color_info'))
                 .margin({ left: $r('app.integer.layout_size_5') })
@@ -784,7 +790,7 @@ export struct infoPage {
             Row() {
               Text($r('app.string.show_newyear_card'))
                 .fontSize($r('app.integer.layout_size_16'))
-                .fontWeight(400)
+                .fontWeight(FontWeight.Bold)
                 .fontFamily('HarmonyOS Sans')
                 .fontColor($r('app.color.font_color_info'))
                 .margin({ left: $r('app.integer.layout_size_5') })
