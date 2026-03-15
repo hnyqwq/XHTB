@@ -484,7 +484,7 @@ export struct infoPage {
   @Builder
   pageContent() {
       Column() {
-          Blank().height(120).width('100%')
+          Blank().height(px2vp(this.topRectHeight) + 56).width('100%')
           Stack() {
             Row() {
               Image($r('app.media.harmonyos'))
