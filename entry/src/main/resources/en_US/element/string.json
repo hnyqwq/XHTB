@@ -563,6 +563,10 @@
     {
       "name": "new_year_card_off",
       "value": "Hide"
+    },
+    {
+      "name": "select_feature_hint",
+      "value": "Please select a feature from the left"
     }
   ]
 }

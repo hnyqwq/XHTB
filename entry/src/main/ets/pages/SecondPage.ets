@@ -236,7 +236,7 @@ export struct SecondPage {
           if (this.currentRightPage === '') {
             // 未选择时显示占位内容
             Column() {
-              Text('请从左侧选择一个功能')
+              Text($r('app.string.select_feature_hint'))
                 .fontSize(18)
                 .fontColor($r('app.color.font_color_182431'))
             }
