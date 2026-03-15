@@ -18,27 +18,29 @@ struct SecondPageContent {
   @State currentIndex: number = 0;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
+  @StorageProp('isImmersiveTab')
+  isImmersiveTab: boolean = false;
   private scrollerForScroll: Scroller = new Scroller();
   private scrollerForList: Scroller = new Scroller();
   private scrollerForTitle: Scroller = new Scroller();
 
   build() {
     Column() {
-      Row() {
-        Text($r('app.string.page_title'))
-          .fontSize($r('app.float.page_title_font_size'))
-          .fontWeight(FontWeight.Bold)
-          .fontColor($r('app.color.font_primary'))
-      }
-      .margin({ top: 10, bottom: 10 })
-      .justifyContent(FlexAlign.Center)
-      .width(CommonConstants.FULL_PERCENT)
-      .height($r('app.float.page_title_height'))
-      .padding({ top: px2vp(this.topRectHeight) + 8 })
-
       Stack({ alignContent: Alignment.Top }) {
         Scroll(this.scrollerForScroll) {
           Column() {
+            Row() {
+              Text($r('app.string.page_title'))
+                .fontSize($r('app.float.page_title_font_size'))
+                .fontWeight(FontWeight.Bold)
+                .fontColor($r('app.color.font_primary'))
+            }
+            .margin({ top: 10, bottom: 10 })
+            .justifyContent(FlexAlign.Center)
+            .width(CommonConstants.FULL_PERCENT)
+            .height($r('app.float.page_title_height'))
+            .padding({ top: px2vp(this.topRectHeight) + 8 })
+
             GridComponent({ gridData: featureGridData })
             this.myBuilder();
             List({ scroller: this.scrollerForList }) {
@@ -114,8 +116,11 @@ struct SecondPageContent {
       }
       .width(CommonConstants.FULL_PERCENT)
       .height(CommonConstants.FULL_PERCENT)
+      .padding({ bottom: this.isImmersiveTab ? 84 : 0 })
     }
     .backgroundColor($r('app.color.White'))
+    .height('100%')
+    .width('100%')
   }
 
   @Builder
