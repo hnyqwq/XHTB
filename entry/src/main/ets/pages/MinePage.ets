@@ -32,6 +32,8 @@ export struct MinePage {
   topRectHeight: number = 0;
   @StorageProp('bottomRectHeight')
   bottomRectHeight: number = 0;
+  @StorageProp('isImmersiveTab')
+  isImmersiveTab: boolean = false;
 
   aboutToDisappear(): void {  // 显式声明返回类型
     if (this.isDialogActive) {
@@ -272,7 +274,7 @@ export struct MinePage {
     }
     .width('100%')
     .height('100%')
-    .padding({ top: 30 + px2vp(this.topRectHeight), bottom: px2vp(this.bottomRectHeight) })
+    .padding({ top: 30 + px2vp(this.topRectHeight), bottom: px2vp(this.bottomRectHeight) + (this.isImmersiveTab ? 84 : 0) })
     .scrollable(ScrollDirection.Vertical)
     .scrollBar(BarState.Auto)
     .edgeEffect(EdgeEffect.Spring)
