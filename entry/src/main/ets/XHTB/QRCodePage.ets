@@ -33,7 +33,7 @@ export struct QRCodePage {
       .padding({ top: px2vp(this.topRectHeight) })
       
       Column({ space: 20 }) {
-        Text($r('app.string.sub_title1_value2'))
+        Text($r('app.string.sub_title2_value2'))
           .fontSize(24)
           .fontWeight(FontWeight.Bold)
           .margin({ top: 20 })
