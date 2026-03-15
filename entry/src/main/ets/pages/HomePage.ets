@@ -1170,7 +1170,14 @@ export struct HomePage {
     return null;
   }
 
+  onPageShow(): void {
+    console.log('=== onPageShow 页面显示，重新注册监听 ===');
+    this.whiteListening();
+    this.immersiveListening();
+  }
+
   onPageHide(): void { //隔空传送
+    console.log('=== onPageHide 页面隐藏，解除监听 ===');
     let uiContext: UIContext = this.getUIContext();
     let context: Context = uiContext.getHostContext() as Context;
     context.eventHub.emit('onBackGround');
@@ -1337,6 +1344,60 @@ export struct HomePage {
   }
   // 在类成员变量区域定义箭头函数绑定回调
   private whiteCallback = async (sharableTarget: harmonyShare.SharableTarget): Promise<void> => {
+    console.log('=== 碰一碰回调触发 ===');
+    console.log('当前 shareTypeIndex: ' + this.shareTypeIndex);
+    console.log('shareLinkContent: ' + this.shareLinkContent);
+    console.log('networkVideoSrc: ' + this.networkVideoSrc);
+
+    // 根据分享类型验证是否可分享
+    switch (this.shareTypeIndex) {
+      case 0: // 链接分享
+        console.log('链接分享验证: shareLinkContent=' + this.shareLinkContent + ', networkVideoSrc=' + this.networkVideoSrc);
+        if (!this.shareLinkContent && !this.networkVideoSrc) {
+          console.log('链接分享验证失败: 内容为空');
+          sharableTarget.clarifyNonShare({ message: '请输入要分享的链接 ⪩ ⪨' });
+          return;
+        }
+        console.log('链接分享验证通过');
+        break;
+      case 1: // 文本分享
+        console.log('文本分享验证: shareTextContent=' + this.shareTextContent);
+        if (!this.shareTextContent) {
+          console.log('文本分享验证失败: 内容为空');
+          sharableTarget.clarifyNonShare({ message: '请输入要分享的文本 ⪩ ⪨' });
+          return;
+        }
+        console.log('文本分享验证通过');
+        break;
+      case 2: // 图片分享
+        console.log('图片分享验证: shareImagePaths.length=' + this.shareImagePaths.length);
+        if (this.shareImagePaths.length === 0) {
+          console.log('图片分享验证失败: 未选择图片');
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片 ⪩ ⪨' });
+          return;
+        }
+        console.log('图片分享验证通过');
+        break;
+      case 3: // 视频分享
+        console.log('视频分享验证: shareVideoPaths.length=' + this.shareVideoPaths.length);
+        if (this.shareVideoPaths.length === 0) {
+          console.log('视频分享验证失败: 未选择视频');
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频 ⪩ ⪨' });
+          return;
+        }
+        console.log('视频分享验证通过');
+        break;
+      case 4: // 文件分享
+        console.log('文件分享验证: shareFilePaths.length=' + this.shareFilePaths.length);
+        if (this.shareFilePaths.length === 0) {
+          console.log('文件分享验证失败: 未选择文件');
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件 ⪩ ⪨' });
+          return;
+        }
+        console.log('文件分享验证通过');
+        break;
+    }
+
     const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
 
     // 始终使用 sharepng 作为缩略图背景(第一个卡片的背景图片)
@@ -1565,52 +1626,35 @@ export struct HomePage {
 
   // 修改事件监听与解绑逻辑
   private whiteListening() {
-    if (this.isNoListening()) {
-      harmonyShare.on('knockShare', (sharableTarget: harmonyShare.SharableTarget) => {
-        // 根据分享类型验证是否可分享
-        switch (this.shareTypeIndex) {
-          case 0: // 链接分享
-            if (!this.shareLinkContent && !this.networkVideoSrc) {
-              sharableTarget.clarifyNonShare({ message: '请输入要分享的链接 ⪩ ⪨' });
-              return;
-            }
-            break;
-          case 1: // 文本分享
-            if (!this.shareTextContent) {
-              sharableTarget.clarifyNonShare({ message: '请输入要分享的文本 ⪩ ⪨' });
-              return;
-            }
-            break;
-          case 2: // 图片分享
-            if (this.shareImagePaths.length === 0) {
-              sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片 ⪩ ⪨' });
-              return;
-            }
-            break;
-          case 3: // 视频分享
-            if (this.shareVideoPaths.length === 0) {
-              sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频 ⪩ ⪨' });
-              return;
-            }
-            break;
-          case 4: // 文件分享
-            if (this.shareFilePaths.length === 0) {
-              sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件 ⪩ ⪨' });
-              return;
-            }
-            break;
-        }
-        this.whiteCallback(sharableTarget);
-      });
-      this.whiteStatus = true;
-    } else {
-      promptAction.showToast({ message: this.context.resourceManager.getStringSync($r('app.string.nopeng').id) });
+    console.log('=== whiteListening 被调用，whiteStatus=' + this.whiteStatus);
+
+    // 先解除之前的监听（如果存在）
+    if (this.whiteStatus) {
+      console.log('whiteStatus 为 true，先解除之前的监听');
+      try {
+        harmonyShare.off('knockShare', this.whiteCallback);
+      } catch (e) {
+        // 忽略错误
+      }
     }
+
+    console.log('开始注册 knockShare 监听...');
+    harmonyShare.on('knockShare', this.whiteCallback);
+    this.whiteStatus = true;
+    console.log('knockShare 监听注册成功');
   }
 
   private whiteDisablingListening() {
-    harmonyShare.off('knockShare', this.whiteCallback);
+    console.log('=== whiteDisablingListening 被调用 ===');
+    console.log('尝试解除 knockShare 监听...');
+    try {
+      harmonyShare.off('knockShare', this.whiteCallback);
+      console.log('knockShare 监听解除完成');
+    } catch (error) {
+      console.error('解除 knockShare 监听失败: ' + JSON.stringify(error));
+    }
     this.whiteStatus = false;
+    console.log('whiteStatus 已设置为 false');
   }
 
   private immersiveCallback = async (sharableTarget: harmonyShare.SharableTarget): Promise<void> => {
