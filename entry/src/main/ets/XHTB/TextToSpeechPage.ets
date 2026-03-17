@@ -78,11 +78,13 @@ export struct TextToSpeechPage {
           .fontFamily('HarmonyHeiTi')
           .textAlign(TextAlign.Center)
         Row({ space: 40 }) {
-          Button('', { type: ButtonType.Circle, stateEffect: true })
+          Button({ type: ButtonType.Circle, stateEffect: true }) {
+            SymbolGlyph(this.isPlaying ? $r('sys.symbol.pause') : $r('sys.symbol.play'))
+              .fontSize(24)
+              .fontColor([$r('sys.color.icon_primary')])
+          }
             .margin({ top: 10 })
             .backgroundColor(Color.Transparent)
-            .backgroundImage(this.isPlaying ? $r('app.media.pause') : $r('app.media.play_circle_fill'))
-            .backgroundImagePosition(Alignment.Center)
             .onClick(() => {
               try {
                 this.createByCallback();
@@ -93,11 +95,13 @@ export struct TextToSpeechPage {
             })
             .width('40vp')
 
-          Button('', { type: ButtonType.Circle, stateEffect: true })
+          Button({ type: ButtonType.Circle, stateEffect: true }) {
+            SymbolGlyph($r('sys.symbol.xmark'))
+              .fontSize(24)
+              .fontColor([$r('sys.color.icon_primary')])
+          }
             .margin({ top: 10 })
             .backgroundColor(Color.Transparent)
-            .backgroundImage($r('app.media.stop_circle'))
-            .backgroundImagePosition(Alignment.Center)
             .onClick(() => {
               try {
                 ttsEngine?.stop();
