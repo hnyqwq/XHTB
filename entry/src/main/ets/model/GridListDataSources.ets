@@ -1,12 +1,14 @@
 export class GridItemInfo {
   name: ResourceStr = '';
   pageUrl: ResourceStr | string = ''; // 页面路径，可以是 ResourceStr 或 string
-  icon: Resource = $r('app.media.ic_grid_item_entrances_icon'); // 默认图标
+  symbol?: Resource; // Symbol图标（优先使用）
+  icon?: Resource; // 图片图标（兼容）
 
-  constructor(name: ResourceStr, pageUrl: ResourceStr | string = '', icon: Resource = $r('app.media.ic_grid_item_entrances_icon')) {
+  constructor(name: ResourceStr, pageUrl: ResourceStr | string = '', icon?: Resource, symbol?: Resource) {
     this.name = name;
     this.pageUrl = pageUrl;
     this.icon = icon;
+    this.symbol = symbol;
   }
 }
 
@@ -22,9 +24,9 @@ export class GridData {
 
 export const featureGridData: GridData = new GridData($r('app.string.sub_title1'),
   [
-    new GridItemInfo($r('app.string.sub_title1_value1'), 'XHTB/TextToSpeechPage', $r('app.media.ic_swiper_grid_image2')),
-    new GridItemInfo($r('app.string.sub_title1_value2'), 'XHTB/QRCodePage', $r('app.media.ic_swiper_grid_image7')),
-    new GridItemInfo($r('app.string.sub_title2_value3'), 'XHTB/DocScan/OCR', $r('app.media.ic_swiper_grid_image8')),/*
+    new GridItemInfo($r('app.string.sub_title1_value1'), 'XHTB/TextToSpeechPage', undefined, $r('sys.symbol.speaker_wave_2')),
+    new GridItemInfo($r('app.string.sub_title1_value2'), 'XHTB/QRCodePage', undefined, $r('sys.symbol.wifi_router')),
+    new GridItemInfo($r('app.string.sub_title2_value3'), 'XHTB/DocScan/OCR', undefined, $r('sys.symbol.doc_text')),/*
     new GridItemInfo($r('app.string.sub_title1_value3'), 'pages/MinePage'),
     new GridItemInfo($r('app.string.sub_title1_value4'), 'pages/infoPage'),
     new GridItemInfo($r('app.string.sub_title1_value5'), 'XHTB/ReadQR'),
@@ -36,9 +38,9 @@ export const
   otherGridDataList: GridData[] = [
     new GridData($r('app.string.sub_title2'),
       [
-        new GridItemInfo($r('app.string.sub_title2_value1'), 'XHTB/TextToSpeechPage', $r('app.media.ic_swiper_grid_image2')),
-        new GridItemInfo($r('app.string.sub_title2_value2'), 'XHTB/QRCodePage', $r('app.media.ic_swiper_grid_image11')),
-        new GridItemInfo($r('app.string.sub_title2_value3'), 'XHTB/DocScan/OCR', $r('app.media.ic_swiper_grid_image8')),
+        new GridItemInfo($r('app.string.sub_title2_value1'), 'XHTB/TextToSpeechPage', undefined, $r('sys.symbol.speaker_wave_2')),
+        new GridItemInfo($r('app.string.sub_title2_value2'), 'XHTB/QRCodePage', undefined, $r('sys.symbol.qrcode')),
+        new GridItemInfo($r('app.string.sub_title2_value3'), 'XHTB/DocScan/OCR', undefined, $r('sys.symbol.doc_text')),
         /*new GridItemInfo($r('app.string.sub_title2_value4'), 'pages/infoPage'),
         new GridItemInfo($r('app.string.sub_title2_value5'), 'XHTB/ReadQR'),
         new GridItemInfo($r('app.string.sub_title2_value6')),
@@ -56,7 +58,7 @@ export const
       ]),
     new GridData($r('app.string.sub_title3'),
       [
-        new GridItemInfo($r('app.string.sub_title3_value1'), 'XHTB/Internet', $r('app.media.ic_swiper_grid_image7'))/*,
+        new GridItemInfo($r('app.string.sub_title3_value1'), 'XHTB/Internet', undefined, $r('sys.symbol.wifi_router'))/*,
         new GridItemInfo($r('app.string.sub_title3_value2'), 'XHTB/Internet', $r('app.media.ic_swiper_grid_image5')),
         new GridItemInfo($r('app.string.sub_title3_value3'), 'pages/MinePage')*/
       ]),

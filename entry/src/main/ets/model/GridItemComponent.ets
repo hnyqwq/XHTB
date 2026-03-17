@@ -6,7 +6,8 @@ import { router } from '@kit.ArkUI';
 @Component
 export default struct GridItemComponent {
   itemName: ResourceStr = '';
-  itemImage: Resource = $r('app.media.ic_grid_item_entrances_icon');
+  itemImage?: Resource;
+  itemSymbol?: Resource; // Symbol图标（优先使用）
   @State isPressed: boolean = false;
   // 页面路径参数，支持 ResourceStr 或 string 类型
   pageUrl: ResourceStr | string = '';
@@ -17,9 +18,15 @@ export default struct GridItemComponent {
 
     GridItem() {
       Column() {
-        Image(this.itemImage)
-          .width($r('app.float.grid_item_image_size'))
-          .height($r('app.float.grid_item_image_size'))
+        if (this.itemSymbol) {
+          SymbolGlyph(this.itemSymbol)
+            .fontSize($r('app.float.grid_item_image_size'))
+            .fontColor([$r('sys.color.icon_primary')])
+        } else if (this.itemImage) {
+          Image(this.itemImage)
+            .width($r('app.float.grid_item_image_size'))
+            .height($r('app.float.grid_item_image_size'))
+        }
         Text(this.itemName)
           .fontSize($r('app.float.grid_item_name_font_size'))
           .textAlign(TextAlign.Center)

@@ -50,12 +50,19 @@ export struct Internet {
   private controllerr: VideoController = new VideoController();
 
   @Builder
-  tabBuilder(tabName: string | Resource, tabIndex: number, tabIcon: Resource) {
+  tabBuilder(tabName: string | Resource, tabIndex: number, tabIcon: Resource, tabSymbol?: Resource) {
     Row() {
-      Image(tabIcon)
-        .width(20)
-        .height(20)
-        .margin({ right: 5 })
+      if (tabSymbol) {
+        SymbolGlyph(tabSymbol)
+          .fontSize(20)
+          .fontColor([$r('sys.color.icon_primary')])
+          .margin({ right: 5 })
+      } else {
+        Image(tabIcon)
+          .width(20)
+          .height(20)
+          .margin({ right: 5 })
+      }
       Text(tabName)
         .fontSize(13)
         .fontColor(tabIndex === this.focusIndex ? $r('app.color.tab_text_color') : $r('app.color.tab_text_color_unselected'))
@@ -83,7 +90,7 @@ export struct Internet {
         List({ scroller: this.listScroller }) {
           ForEach(this.tabArray.slice(0, 7),
             (item: TabItem, index: number) => {
-              this.tabBuilder(item.name, index, item.icon);
+              this.tabBuilder(item.name, index, item.icon, item.symbol);
             }, (item: TabItem, index: number) => JSON.stringify(item) + index)
         }
         // [End BackgroundLightTab_list]
@@ -119,29 +126,29 @@ export struct Internet {
                   .text()
                   Web({ src: 'http://connectivitycheck.platform.hicloud.com', controller: this.WebController })
                 } else if (index === 1) {
-                  Text('http://www.msftconnecttest.com/redirect')
-                    .text()
-                  Text($r('app.string.Internetmsnsuccess'))
-                    .text()
-                  Web({ src: 'http://www.msftconnecttest.com/redirect', controller: this.WebController })
-                } else if (index === 2) {
-                  Text('http://captive.apple.com')
-                    .text()
-                  Text($r('app.string.Internetapplesuccess'))
-                    .text()
-                  Web({ src: 'http://captive.apple.com', controller: this.WebController })
-                } else if (index === 3) {
-                  Text('http:///www.google.com/generate_204')
-                    .text()
-                  Text($r('app.string.Internet2success'))
-                    .text()
-                  Web({ src: 'http:///www.google.com/generate_204', controller: this.WebController })
-                } else if (index === 4) {
                   Text('http://1.1.1.1')
                     .text()
                   Text($r('app.string.Internet2success'))
                     .text()
                   Web({ src: 'http://1.1.1.1', controller: this.WebController })
+                } else if (index === 2) {
+                  Text('http://www.msftconnecttest.com/redirect')
+                    .text()
+                  Text($r('app.string.Internetmsnsuccess'))
+                    .text()
+                  Web({ src: 'http://www.msftconnecttest.com/redirect', controller: this.WebController })
+                } else if (index === 3) {
+                  Text('http://captive.apple.com')
+                    .text()
+                  Text($r('app.string.Internetapplesuccess'))
+                    .text()
+                  Web({ src: 'http://captive.apple.com', controller: this.WebController })
+                } else if (index === 4) {
+                  Text('http:///www.google.com/generate_204')
+                    .text()
+                  Text($r('app.string.Internet2success'))
+                    .text()
+                  Web({ src: 'http:///www.google.com/generate_204', controller: this.WebController })
                 } else if (index === 5) {
                   Text('https://developer.huawei.com/consumer/cn/doc/harmonyos-releases/overview-allversion')
                     .text()

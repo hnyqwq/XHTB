@@ -2,11 +2,13 @@ export class TabItem {
   id: number;
   name: string | Resource;
   icon: Resource;
+  symbol?: Resource; // Symbol图标（优先使用）
 
-  constructor(id: number, name: string | Resource, icon: Resource) {
+  constructor(id: number, name: string | Resource, icon: Resource, symbol?: Resource) {
     this.id = id;
     this.name = name;
     this.icon = icon;
+    this.symbol = symbol;
   }
 }
 
