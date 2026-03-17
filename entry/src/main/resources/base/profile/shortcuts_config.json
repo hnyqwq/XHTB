@@ -14,21 +14,6 @@
           }
         }
       ]
-    },
-  {
-    "shortcutId": "id2",
-    "label": "$string:app_name",
-    "icon": "$media:shareicon",
-    "wants": [
-      {
-        "bundleName": "yylx.hny.qwq",
-        "moduleName": "entry",
-        "abilityName": "EntryAbility",
-        "parameters": {
-          "ShortCutPage": "IndexPage"
-        }
-      }
-    ]
-  }
-]
+    }
+  ]
 }
