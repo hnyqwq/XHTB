@@ -43,10 +43,6 @@
 					{
 						"name":"ohos.ability.continuation",
 						"value":"true"
-					},
-					{
-						"name": "ohos.ability.shortcuts",
-						"resource": "$profile:shortcuts_config"
 					}
 				],
 				"description":"$string:EntryAbility_desc",
