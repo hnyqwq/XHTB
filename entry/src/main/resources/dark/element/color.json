@@ -9,8 +9,12 @@
       "value": "#CC1C1C1E"
     },
     {
+      "name": "font_color_00000",
+      "value": "#0cFFFFFF"
+    },
+    {
       "name": "font_color_182431",
-      "value": "#000000"
+      "value": "#E5E5E5"
     },
     {
       "name": "font_color_FFFFFF",
@@ -30,11 +34,11 @@
     },
     {
       "name": "pengtitle",
-      "value": "#000000"
+      "value": "#FFFFFF"
     },
     {
       "name": "mine",
-      "value": "#8da2e0"
+      "value": "#1C1C1E"
     },
     {
       "name": "second",
@@ -42,7 +46,7 @@
     },
     {
       "name": "info",
-      "value": "#455b98"
+      "value": "#1C1C1E"
     },
     {
       "name": "isChick_title_color",

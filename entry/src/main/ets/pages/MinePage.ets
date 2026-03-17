@@ -9,13 +9,13 @@ import { GlobalInfoModel } from '../common/GlobalInfoModel';
 class SettingMenu {
   public uri?: string;
   public id: string;
-  public image: Resource;
+  public symbol: Resource;
   public text: Resource;
   public des: Resource;
 
-  constructor(id: string, image: Resource, text: Resource, des: Resource) {
+  constructor(id: string, symbol: Resource, text: Resource, des: Resource) {
     this.id = id;
-    this.image = image;
+    this.symbol = symbol;
     this.text = text;
     this.des = des;
   }
@@ -45,11 +45,11 @@ export struct MinePage {
   }
   private iconStr: ResourceStr = $r("app.media.CIcon");
   @State menuGroup: SettingMenu[] = [
-    new SettingMenu('setting', $r('app.media.mine_settings'), $r('app.string.mine1'), $r('app.string.void')),
-    new SettingMenu('vipownsetting', $r('app.media.mine_vipsettings'), $r('app.string.mine2'), $r('app.string.void')),
-    new SettingMenu('mycollection', $r('app.media.ic_collect'), $r('app.string.mine3'), $r('app.string.void')),
-    new SettingMenu('mylike', $r('app.media.mine_like'), $r('app.string.mine4'), $r('app.string.void')),
-    new SettingMenu('browsinghistory', $r('app.media.mine_time'), $r('app.string.mine5'), $r('app.string.void'))
+    new SettingMenu('setting', $r('sys.symbol.gearshape'), $r('app.string.mine1'), $r('app.string.void')),
+    new SettingMenu('vipownsetting', $r('sys.symbol.person_badge_plus'), $r('app.string.mine2'), $r('app.string.void')),
+    new SettingMenu('mycollection', $r('sys.symbol.star'), $r('app.string.mine3'), $r('app.string.void')),
+    new SettingMenu('mylike', $r('sys.symbol.heart'), $r('app.string.mine4'), $r('app.string.void')),
+    new SettingMenu('browsinghistory', $r('sys.symbol.clock'), $r('app.string.mine5'), $r('app.string.void'))
   ];
   //设置一镜到底动效
   @Builder
@@ -144,7 +144,7 @@ export struct MinePage {
               ForEach(this.menuGroup,
                 (item: SettingMenu) => {
                   ListItem() {
-                    SettingItemView({ image: item.image, text: item.text, des: item.des });
+                    SettingItemView({ symbol: item.symbol, text: item.text, des: item.des });
                   }
                   .width('100%')
                   .onClick(() => {
@@ -284,22 +284,21 @@ export struct MinePage {
 
 @Component
 export struct SettingItemView {
-  @Prop image: string | Resource;
+  @Prop symbol: Resource;
   @Prop text: string | Resource;
   @Prop des: string | Resource;
 
   build() {
     Row() {
       Row() {
-        Image(this.image)
-          .width($r('app.integer.layout_size_22'))
-          .height($r('app.integer.layout_size_32'))
-          .objectFit(ImageFit.Contain);
+        SymbolGlyph(this.symbol)
+          .fontSize($r('app.integer.layout_size_22'))
+          .fontColor([$r('sys.color.icon_primary')]);
         Text(this.text)
           .fontSize($r('app.integer.layout_size_16'))
           .fontWeight(400)
           .fontFamily('HarmonyHeiTi')
-          .fontColor($r('app.color.font_color_182431'))
+          .fontColor($r('sys.color.font_primary'))
           .margin({ left: $r('app.integer.layout_size_12') })
           .layoutWeight(1)
           .lineHeight($r('app.integer.layout_size_22'));
@@ -309,7 +308,7 @@ export struct SettingItemView {
           .fontSize($r('app.integer.layout_size_14'))
           .fontWeight(400)
           .fontFamily('HarmonyHeiTi')
-          .fontColor($r('app.color.font_color_182431'))
+          .fontColor($r('sys.color.font_secondary'))
           .lineHeight($r('app.integer.layout_size_19'));
       }
       .width('100%')
