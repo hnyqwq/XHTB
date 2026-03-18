@@ -4000,7 +4000,7 @@ export struct HomePage {
         .width('90%')
         .alignItems(HorizontalAlign.Center) // 内容水平居中
         .margin({ top: 10 })
-      }
+      }.scrollBar(BarState.Off)
       }
     }
     .width(CommonConstants.FULL_PARENT)

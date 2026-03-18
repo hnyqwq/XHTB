@@ -98,6 +98,15 @@ export default class EntryAbility extends UIAbility {
       // 触发页面刷新逻辑
       this.currentWindowStage?.loadContent('pages/HomePage')
     }
+
+    // 快捷方式的快速打开页面跳转（热启动场景）
+    if (want.parameters?.ShortCutPage) {
+      const shortCutPage = want.parameters.ShortCutPage as string;
+      AppStorage.setOrCreate<string>('ShortCutPage', shortCutPage);
+      hilog.info(DOMAIN_NUMBER, TAG, `onNewWant ShortCutPage: ${shortCutPage}`);
+      // 通过eventHub发送导航事件
+      this.context.eventHub.emit('shortcutNavigate', shortCutPage);
+    }
     // 保留原有逻辑
     this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
 

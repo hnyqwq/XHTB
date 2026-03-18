@@ -1,0 +1,19 @@
+{
+  "shortcuts": [
+    {
+      "shortcutId": "settings_shortcut",
+      "label": "$string:shortcut_settings_label",
+      "icon": "$media:app_icon",
+      "wants": [
+        {
+          "bundleName": "yylx.hny.qwq",
+          "moduleName": "entry",
+          "abilityName": "EntryAbility",
+          "parameters": {
+            "ShortCutPage": "pages/infoPage"
+          }
+        }
+      ]
+    }
+  ]
+}

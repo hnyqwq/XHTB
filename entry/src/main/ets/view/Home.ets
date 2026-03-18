@@ -8,6 +8,7 @@ import { preferences } from '@kit.ArkData';
 import type { common } from '@kit.AbilityKit';
 import { HdsTabs, HdsTabsController, HdsTabsAttribute } from '@kit.UIDesignKit';
 import { deviceInfo } from '@kit.BasicServicesKit';
+import { common as abilityCommon } from '@kit.AbilityKit';
 
 // 定义材质相关的接口
 interface IMaterialLevel {
@@ -70,8 +71,22 @@ export struct Home {
   @State customMaterialLevel: number = MaterialLevel.SMOOTH;
   private controller: HdsTabsController = new HdsTabsController();
   private preferences: preferences.Preferences | null = null;
+  private shortcutNavigateCallback = (url: string) => {
+    console.info('Home: 收到快捷方式导航事件, url=', url);
+    router.pushUrl({ url: url }).catch((err: Error) => {
+      console.error('Failed to navigate to shortcut page:', err);
+    });
+  };
 
   aboutToAppear(): void {
+    // 订阅快捷方式导航事件
+    try {
+      const context = getContext(this) as abilityCommon.UIAbilityContext;
+      context.eventHub.on('shortcutNavigate', this.shortcutNavigateCallback);
+    } catch (e) {
+      console.error('Home: Failed to subscribe shortcutNavigate event:', e);
+    }
+
     // 检查API版本，只有API >= 23才支持新材质
     const isApi23OrHigher = deviceInfo.sdkApiVersion >= 23;
     console.info('Home: API版本:', deviceInfo.sdkApiVersion, '是否支持新材质:', isApi23OrHigher);
@@ -124,6 +139,23 @@ export struct Home {
       AppStorage.delete('initialTabIndex');
     }
 
+    // 检查是否有快捷方式需要跳转
+    const shortCutPage = AppStorage.get<string>('ShortCutPage');
+    if (shortCutPage !== undefined && shortCutPage !== null && shortCutPage !== '') {
+      console.info('Home: 准备跳转到快捷方式页面, url=', shortCutPage);
+      // 延迟执行跳转,确保 Home 组件已经渲染
+      setTimeout(() => {
+        console.info('Home: 开始跳转到快捷方式页面', shortCutPage);
+        router.pushUrl({
+          url: shortCutPage
+        }).catch((err: Error) => {
+          console.error('Failed to navigate to shortcut page:', err);
+        });
+        // 清除快捷方式标记
+        AppStorage.delete('ShortCutPage');
+      }, 100);
+    }
+
     // 检查是否有接续的页面需要跳转
     const continuationPageUrl = AppStorage.get<string>('continuationPageUrl');
     if (continuationPageUrl !== undefined && continuationPageUrl !== null && continuationPageUrl !== '') {
@@ -160,6 +192,16 @@ export struct Home {
         AppStorage.delete('continuationPageUrl');
         AppStorage.delete('continuationRouteParams');
       }, 100);
+    }
+  }
+
+  aboutToDisappear(): void {
+    // 取消订阅快捷方式导航事件
+    try {
+      const context = getContext(this) as abilityCommon.UIAbilityContext;
+      context.eventHub.off('shortcutNavigate', this.shortcutNavigateCallback);
+    } catch (e) {
+      console.error('Home: Failed to unsubscribe shortcutNavigate event:', e);
     }
   }
 
