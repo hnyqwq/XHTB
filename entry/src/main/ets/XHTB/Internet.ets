@@ -39,7 +39,7 @@ export struct Internet {
 
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
   @State isShortcutKeyEnabled: boolean = false
-  @State networkVideoSrc: string = 'https://www.hnyqwq.cn/hvideo/dly.mp4';
+  @State networkVideoSrc: string = 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/dly.mp4?token=fe4a7c67-a063-401a-a787-f78644d3d159';
   @State isPlaying: boolean = true;
   @State picture: PixelMap | undefined = undefined;
   @State savefileUri:string = ' ';
@@ -156,7 +156,7 @@ export struct Internet {
                     .text()
                   Web({ src: 'https://developer.huawei.com/consumer/cn/doc/harmonyos-releases/overview-allversion', controller: this.WebController })
                 } else {
-                  Text('https://www.hnyqwq.cn/hvideo/dly.mp4')
+                  Text('https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/dly.mp4?token=fe4a7c67-a063-401a-a787-f78644d3d159')
                     .text()
                   Text($r('app.string.Internetselfsuccess'))
                     .text()
