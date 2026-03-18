@@ -375,7 +375,7 @@ export default class EntryAbility extends UIAbility {
       }
 
       // 恢复背景图片地址
-      if (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/png/sharelink.png') {
+      if (restoredSharepng && restoredSharepng !== 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharelink.png?token=01db909c-fd6a-4dcc-8c57-4538e4689629') {
         AppStorage.setOrCreate('sharepng', restoredSharepng);
         hilog.info(DOMAIN_NUMBER, TAG, 'Restored sharepng: %{public}s', restoredSharepng);
       }
@@ -397,7 +397,7 @@ export default class EntryAbility extends UIAbility {
       }
 
       const hasData = (restoredUrl && restoredUrl !== 'default_url') ||
-                      (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/png/sharelink.png') ||
+                      (restoredSharepng && restoredSharepng !== 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharelink.png?token=01db909c-fd6a-4dcc-8c57-4538e4689629') ||
                       (restoredPengtitle && restoredPengtitle !== ' ') ||
                       (restoredShareLinkContent && restoredShareLinkContent !== '');
 

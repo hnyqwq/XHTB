@@ -59,8 +59,8 @@ export struct HomePage {
   @State picture: PixelMap | undefined = undefined;
   @State localPixelMap: PixelMap | undefined = undefined; // 本地图片的PixelMap
   //@State networkPreviewUri: string = ''; // 默认网络预览图
-  @StorageLink('sharepng') sharepng: string = 'https://www.hnyqwq.cn/png/sharelink.png' // 背景图片(预览卡片显示)
-  @State backgroundImagePath: string = 'https://www.hnyqwq.cn/png/sharelink.png' // 背景图片路径(独立)
+  @StorageLink('sharepng') sharepng: string = 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharelink.png?token=01db909c-fd6a-4dcc-8c57-4538e4689629' // 背景图片(预览卡片显示)
+  @State backgroundImagePath: string = 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharelink.png?token=01db909c-fd6a-4dcc-8c57-4538e4689629' // 背景图片路径(独立)
   @State backgroundPixelMap: PixelMap | undefined = undefined; // 背景图片的PixelMap(独立)
   @State backgroundImageKey: string = ''; // 背景图片key(独立)
   @State useCustomBackground: boolean = false; // 标记是否用户手动设置了自定义背景图片
@@ -1222,7 +1222,7 @@ export struct HomePage {
 
     // 初始化 AppStorage 中的默认值（如果不存在）
     if (!AppStorage.get('sharepng')) {
-      AppStorage.setOrCreate('sharepng', 'https://www.hnyqwq.cn/png/sharelink.png');
+      AppStorage.setOrCreate('sharepng', 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharelink.png?token=01db909c-fd6a-4dcc-8c57-4538e4689629');
     }
 
     // 保存当前页面信息到 AppStorage,供接续功能使用
@@ -1280,7 +1280,7 @@ export struct HomePage {
 
     // 恢复接续的数据（优先级最高）- 从 AppStorage 读取
     const restoredSharepng = AppStorage.get<string>('sharepng');
-    if (restoredSharepng && restoredSharepng !== 'https://www.hnyqwq.cn/png/sharelink.png') {
+    if (restoredSharepng && restoredSharepng !== 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharelink.png?token=01db909c-fd6a-4dcc-8c57-4538e4689629') {
       console.log('接续恢复 sharepng:', restoredSharepng);
     }
 
@@ -1292,14 +1292,14 @@ export struct HomePage {
         // 是链接，填充到链接类型，背景图片设置为 sharelink.png
         this.shareLinkContent = restoredShareLinkContent;
         this.shareTypeIndex = 0;
-        this.sharepng = 'https://www.hnyqwq.cn/png/sharelink.png';
+        this.sharepng = 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharelink.png?token=01db909c-fd6a-4dcc-8c57-4538e4689629';
         AppStorage.setOrCreate('sharepng', this.sharepng);
         console.log('接续内容为链接，切换到链接分享类型，设置背景图片为 sharelink.png');
       } else {
         // 是文本内容，填充到文本类型，背景图片设置为 sharetext.png
         this.shareTextContent = restoredShareLinkContent;
         this.shareTypeIndex = 1;
-        this.sharepng = 'https://www.hnyqwq.cn/png/sharetext.png';
+        this.sharepng = 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharetext.png?token=0ff083d9-0f48-4848-b090-b3ecab82e5dd';
         AppStorage.setOrCreate('sharepng', this.sharepng);
         console.log('接续内容为文本，切换到文本分享类型，设置背景图片为 sharetext.png');
       }
@@ -1955,19 +1955,19 @@ export struct HomePage {
     // 根据分享类型设置对应的背景图片
     switch (typeIndex) {
       case 0: // 链接
-        this.sharepng = 'https://www.hnyqwq.cn/png/sharelink.png';
+        this.sharepng = 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharelink.png?token=01db909c-fd6a-4dcc-8c57-4538e4689629';
         break;
       case 1: // 文本
-        this.sharepng = 'https://www.hnyqwq.cn/png/sharetext.png';
+        this.sharepng = 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharetext.png?token=0ff083d9-0f48-4848-b090-b3ecab82e5dd';
         break;
       case 2: // 图片
-        this.sharepng = 'https://www.hnyqwq.cn/png/sharepic.png';
+        this.sharepng = 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharepic.png?token=86d11f71-7f41-4ba8-9e2a-f2adda0e6974';
         break;
       case 3: // 视频
-        this.sharepng = 'https://www.hnyqwq.cn/png/sharevideo.png';
+        this.sharepng = 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharevideo.png?token=b0fb7863-52d0-471d-b228-c8d565e0b07c';
         break;
       default:
-        this.sharepng = 'https://www.hnyqwq.cn/png/sharelink.png';
+        this.sharepng = 'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharelink.png?token=01db909c-fd6a-4dcc-8c57-4538e4689629';
     }
     // 同步到 AppStorage
     AppStorage.set('pengtitle', this.pengtitle);
