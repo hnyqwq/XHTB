@@ -30,7 +30,12 @@ export class WindowUtil {
 
   updateWidthBp(context: UIContext): void {
     try {
-      let mainWindow: window.WindowProperties = this.mainWindowClass!.getWindowProperties();
+      // 检查mainWindowClass是否已初始化
+      if (!this.mainWindowClass) {
+        hilog.warn(0x0000, TAG, 'mainWindowClass is not initialized yet');
+        return;
+      }
+      let mainWindow: window.WindowProperties = this.mainWindowClass.getWindowProperties();
       let windowWidth: number = mainWindow.windowRect.width;
       let windowWidthVp = context.px2vp(windowWidth);
       if (deviceInfo.deviceType === '2in1') {

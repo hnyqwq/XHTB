@@ -2091,8 +2091,8 @@ export struct HomePage {
     }
   }
 
-  // 获取顶部背景颜色
-  private async extractTopBgColor(): Promise<void> {
+  // 获取顶部背景颜色（带重试机制）
+  private async extractTopBgColor(retryCount: number = 0, maxRetries: number = 3): Promise<void> {
     try {
       let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
       let pixelMap: PixelMap;
@@ -2114,6 +2114,7 @@ export struct HomePage {
         if (err) {
           console.error('创建 ColorPicker 失败: ' + err.message);
           this.topBgColor = '#FFFFFF';
+          this.retryExtractTopBgColor(retryCount, maxRetries);
           return;
         }
 
@@ -2128,10 +2129,25 @@ export struct HomePage {
         } catch (error) {
           console.error('获取顶部背景颜色失败: ' + JSON.stringify(error));
           this.topBgColor = '#FFFFFF';
+          this.retryExtractTopBgColor(retryCount, maxRetries);
         }
       });
     } catch (error) {
       console.error('获取顶部背景颜色失败: ' + JSON.stringify(error));
+      this.topBgColor = '#FFFFFF';
+      this.retryExtractTopBgColor(retryCount, maxRetries);
+    }
+  }
+
+  // 重试获取顶部背景颜色
+  private retryExtractTopBgColor(retryCount: number, maxRetries: number) {
+    if (retryCount < maxRetries) {
+      console.log(`获取顶部背景颜色失败，第 ${retryCount + 1} 次重试...`);
+      setTimeout(() => {
+        this.extractTopBgColor(retryCount + 1, maxRetries);
+      }, 500); // 延迟500ms后重试
+    } else {
+      console.error(`已重试 ${maxRetries} 次，获取顶部背景颜色仍然失败，使用默认白色`);
       this.topBgColor = '#FFFFFF';
     }
   }

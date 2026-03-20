@@ -69,7 +69,7 @@ export struct Home {
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
   @State customMaterialLevel: number = MaterialLevel.SMOOTH;
-  private controller: HdsTabsController = new HdsTabsController();
+  private controller: HdsTabsController | null = null;  // 延迟实例化，避免低API设备闪退
   private preferences: preferences.Preferences | null = null;
   private shortcutNavigateCallback = (url: string) => {
     console.info('Home: 收到快捷方式导航事件, url=', url);
@@ -91,9 +91,10 @@ export struct Home {
     const isApi23OrHigher = deviceInfo.sdkApiVersion >= 23;
     console.info('Home: API版本:', deviceInfo.sdkApiVersion, '是否支持新材质:', isApi23OrHigher);
 
-    // 仅在高版本API下查询材质能力
+    // 仅在高版本API下实例化HdsTabsController，避免低API设备闪退
     if (isApi23OrHigher) {
       try {
+        this.controller = new HdsTabsController();
         // 动态获取hdsMaterial模块
         const hdsMaterial = getHdsMaterialModule();
         if (hdsMaterial) {
@@ -324,7 +325,7 @@ export struct Home {
       // 沉浸式Tab栏样式（悬浮+材质效果）
       if (this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl') {
         // 平板模式：沉浸式底部Tab栏
-        HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
+        HdsTabs({ controller: this.controller!, index: this.firstLevelIndex }) {
           TabContent() {
             HomePage()
           }
@@ -366,7 +367,7 @@ export struct Home {
         .width('100%')
       } else {
         // 手机模式：沉浸式底部Tab栏
-        HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
+        HdsTabs({ controller: this.controller!, index: this.firstLevelIndex }) {
           TabContent() {
             HomePage()
           }

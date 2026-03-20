@@ -436,7 +436,6 @@ export struct infoPage {
       enableHoverMode: true,
       avoidLayoutSafeArea: true,
     })
-    .bindToScrollable([this.scroller])
     .hideBackButton(false)
     .titleMode(HdsNavigationTitleMode.MINI)
     .mode(NavigationMode.Stack)
@@ -475,7 +474,6 @@ export struct infoPage {
       enableHoverMode: true,
       avoidLayoutSafeArea: true,
     })
-    .bindToScrollable([this.scroller])
     .hideBackButton(false)
     .titleMode(HdsNavigationTitleMode.MINI)
     .mode(NavigationMode.Stack)
