@@ -128,6 +128,14 @@ export struct HomePage {
   // 沉浸式Tab相关
   @StorageLink('isImmersiveTab') isImmersiveTab: boolean = false; // 沉浸式Tab栏设置，从AppStorage读取
 
+  // 默认背景图片URL列表（四张默认图）
+  private readonly defaultBackgroundUrls: string[] = [
+    'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharelink.png?token=01db909c-fd6a-4dcc-8c57-4538e4689629',
+    'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharetext.png?token=0ff083d9-0f48-4848-b090-b3ecab82e5dd',
+    'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharepic.png?token=86d11f71-7f41-4ba8-9e2a-f2adda0e6974',
+    'https://agc-storage-drcn.platform.dbankcloud.cn/v0/xhtb-oteot/pngs%2Fsharevideo.png?token=b0fb7863-52d0-471d-b228-c8d565e0b07c'
+  ];
+
   // 断点相关
   @StorageProp('currentWidthBreakpoint') currentBreakpoint: string = 'md';
 
@@ -1217,6 +1225,14 @@ export struct HomePage {
 
     // scheme 后面必须有内容（可以是 // 或其他内容）
     return rest.length > 0;
+  }
+
+  // 判断是否为默认背景图片
+  isDefaultBackground(url: string): boolean {
+    if (!url) {
+      return false;
+    }
+    return this.defaultBackgroundUrls.some(defaultUrl => url === defaultUrl || url.includes(defaultUrl.split('?')[0]));
   }
 
   // 从文本中提取链接
@@ -2766,7 +2782,7 @@ export struct HomePage {
                   .width('100%')
 
                   Row() {
-                    TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
+                    TextArea({ placeholder: $r('app.string.sharepng'), text: this.isDefaultBackground(this.sharepng) ? '' : this.sharepng })
                       .layoutWeight(1)
                       .onChange((sharepng: string) => {
                         this.sharepng = sharepng;
@@ -3674,7 +3690,7 @@ export struct HomePage {
               .height(50)
 
               Row() {
-                TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
+                TextArea({ placeholder: $r('app.string.sharepng'), text: this.isDefaultBackground(this.sharepng) ? '' : this.sharepng })
                   .layoutWeight(1)
                   .onChange((sharepng: string) => {
                     this.sharepng = sharepng;
