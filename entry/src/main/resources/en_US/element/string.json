@@ -567,6 +567,10 @@
     {
       "name": "select_feature_hint",
       "value": "Please select a feature from the left"
+    },
+    {
+      "name": "shortcut_settings_label",
+      "value": "APP Settings"
     }
   ]
 }
