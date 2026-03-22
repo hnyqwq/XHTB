@@ -278,26 +278,25 @@ export struct Home {
   }
   */
 
-  getTabIcon(index: number, isSelected: boolean): Resource {
+  getTabSymbol(index: number): Resource {
     switch (index) {
       case 0:
-        return isSelected ? $r('app.media.home_active') : $r('app.media.home');
+        return $r('sys.symbol.share');
       case 1:
-        return isSelected ? $r('app.media.ocr_active') : $r('app.media.ocr');
+        return $r('sys.symbol.square_grid_2x2');
       case 2:
-        return isSelected ? $r('app.media.mine_active') : $r('app.media.mine');
+        return $r('sys.symbol.person');
       default:
-        return $r('app.media.home');
+        return $r('sys.symbol.house');
     }
   }
 
   @Builder
   tabBuilder(name: string, index: number) {
     Column() {
-      Image(this.getTabIcon(index, index === this.firstLevelIndex))
-        .width(24)
-        .height(24)
-        .fillColor(index === this.firstLevelIndex ? '#0A59F7' : '#999999')
+      SymbolGlyph(this.getTabSymbol(index))
+        .fontSize(24)
+        .fontColor([index === this.firstLevelIndex ? $r('sys.color.brand') : $r('sys.color.icon_secondary')])
       Text(name)
         .fontSize(10)
         .fontWeight(500)
