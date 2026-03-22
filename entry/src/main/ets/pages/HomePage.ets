@@ -258,10 +258,24 @@ export struct HomePage {
       const stat = fileIo.statSync(targetPath);
       hilog.info(0x0000, 'localsharepng' , 'File verified, size: ' + stat.size);
 
+      // 释放之前的背景PixelMap
+      if (this.backgroundPixelMap) {
+        this.backgroundPixelMap.release();
+        this.backgroundPixelMap = undefined;
+      }
+
       // 加载为 PixelMap,只更新背景图片,不更新分享图片
-      const imageSource = image.createImageSource(targetPath);
-      this.backgroundPixelMap = await imageSource.createPixelMap();
-      hilog.info(0x0000, 'localsharepng' , 'PixelMap created for background image');
+      let imageSource: image.ImageSource | undefined = undefined;
+      try {
+        imageSource = image.createImageSource(targetPath);
+        this.backgroundPixelMap = await imageSource.createPixelMap();
+        hilog.info(0x0000, 'localsharepng' , 'PixelMap created for background image');
+      } finally {
+        // 释放imageSource资源
+        if (imageSource) {
+          imageSource.release();
+        }
+      }
 
       // 更新 sharepng（第一个卡片的分享图片背景）
       this.sharepng = 'file://' + targetPath;
@@ -412,9 +426,23 @@ export struct HomePage {
         }, 100);
       });
 
+      // 释放之前的背景PixelMap
+      if (this.backgroundPixelMap) {
+        this.backgroundPixelMap.release();
+        this.backgroundPixelMap = undefined;
+      }
+
       // 加载为PixelMap
-      const imageSource = image.createImageSource(targetPath);
-      this.backgroundPixelMap = await imageSource.createPixelMap();
+      let imageSource: image.ImageSource | undefined = undefined;
+      try {
+        imageSource = image.createImageSource(targetPath);
+        this.backgroundPixelMap = await imageSource.createPixelMap();
+      } finally {
+        // 释放imageSource资源
+        if (imageSource) {
+          imageSource.release();
+        }
+      }
 
       // 更新背景图片(独立状态,不影响分享图片)
       this.backgroundImagePath = 'file://' + targetPath;
@@ -468,38 +496,59 @@ export struct HomePage {
       return;
     }
     if (bufferType == "general.image") {
-      let imageSource = image.createImageSource(buffer);
-      imageSource.createPixelMap().then((pixelMap) => {
-        this.localPixelMap = pixelMap;
+      let imageSource: image.ImageSource | undefined = undefined;
+      let packer: image.ImagePacker | undefined = undefined;
+      
+      try {
+        imageSource = image.createImageSource(buffer);
+        imageSource.createPixelMap().then((pixelMap) => {
+          // 释放之前的localPixelMap
+          if (this.localPixelMap) {
+            this.localPixelMap.release();
+          }
+          this.localPixelMap = pixelMap;
 
-        // 获取扩展名
-        this.imageExtension = '.png'; // 跨设备传输默认使用 png
-        let targetPath = context.filesDir + '/pengyipeng' + this.imageExtension;
+          // 获取扩展名
+          this.imageExtension = '.png'; // 跨设备传输默认使用 png
+          let targetPath = context.filesDir + '/pengyipeng' + this.imageExtension;
 
-        // 保存图片到本地
-        let packer = image.createImagePacker();
-        packer.packing(pixelMap, { format: 'image/png', quality: 100 }).then((data) => {
-          let file = fileIo.openSync(targetPath, fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
-          fileIo.writeSync(file.fd, data);
-          fileIo.closeSync(file);
+          // 保存图片到本地
+          packer = image.createImagePacker();
+          packer.packing(pixelMap, { format: 'image/png', quality: 100 }).then((data) => {
+            let file = fileIo.openSync(targetPath, fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+            fileIo.writeSync(file.fd, data);
+            fileIo.closeSync(file);
 
-          // 更新 sharepng
-          this.sharepng = 'file://' + targetPath;
+            // 更新 sharepng
+            this.sharepng = 'file://' + targetPath;
 
-          // 刷新图片
-          this.imageKey = Date.now().toString();
+            // 刷新图片
+            this.imageKey = Date.now().toString();
 
-          // 重新获取图片宽高比
-          this.getImageAspectRatio().then(() => {
-            // 如果是横屏+隔空模式，获取主颜色
-            if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
-              this.extractMainColor();
+            // 重新获取图片宽高比
+            this.getImageAspectRatio().then(() => {
+              // 如果是横屏+隔空模式，获取主颜色
+              if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
+                this.extractMainColor();
+              }
+            });
+          }).finally(() => {
+            // 释放packer资源
+            if (packer) {
+              packer.release();
             }
           });
+        }).catch((error: BusinessError) => {
+          hilog.error(0x0000, 'HomePage', `Failed to process image from other device: ${JSON.stringify(error)}`);
+        }).finally(() => {
+          // 释放imageSource资源
+          if (imageSource) {
+            imageSource.release();
+          }
         });
-      }).catch((error: BusinessError) => {
-        hilog.error(0x0000, 'HomePage', `Failed to process image from other device: ${JSON.stringify(error)}`);
-      });
+      } catch (error) {
+        hilog.error(0x0000, 'HomePage', `Failed to create ImageSource: ${JSON.stringify(error)}`);
+      }
     }
   }
 
@@ -594,29 +643,41 @@ export struct HomePage {
       thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
     }
 
-    let imageSource: image.ImageSource = image.createImageSource(thumbnailPath);
-    let imagePacker: image.ImagePacker = image.createImagePacker();
-    let buffer: ArrayBuffer = await imagePacker.packToData(imageSource, {
-      format: 'image/jpeg',
-      quality: 30
-    });
+    let imageSource: image.ImageSource | undefined = undefined;
+    let imagePacker: image.ImagePacker | undefined = undefined;
+    try {
+      imageSource = image.createImageSource(thumbnailPath);
+      imagePacker = image.createImagePacker();
+      let buffer: ArrayBuffer = await imagePacker.packToData(imageSource, {
+        format: 'image/jpeg',
+        quality: 30
+      });
 
-    let shareData: systemShare.SharedData = new systemShare.SharedData({
-      utd: utd.UniformDataType.HYPERLINK,
-      content: this.shareLinkContent,
-      title: this.pengtitle,
-      description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id),
-      thumbnail: new Uint8Array(buffer),
-    });
-    let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
-    controller.show(context, {
-      previewMode: systemShare.SharePreviewMode.DEFAULT,
-      selectionMode: systemShare.SelectionMode.SINGLE
-    }).then(() => {
-      console.info('ShareController show success.');
-    }).catch((error: BusinessError) => {
-      console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
-    });
+      let shareData: systemShare.SharedData = new systemShare.SharedData({
+        utd: utd.UniformDataType.HYPERLINK,
+        content: this.shareLinkContent,
+        title: this.pengtitle,
+        description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id),
+        thumbnail: new Uint8Array(buffer),
+      });
+      let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
+      controller.show(context, {
+        previewMode: systemShare.SharePreviewMode.DEFAULT,
+        selectionMode: systemShare.SelectionMode.SINGLE
+      }).then(() => {
+        console.info('ShareController show success.');
+      }).catch((error: BusinessError) => {
+        console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+      });
+    } finally {
+      // 释放资源，防止内存泄露
+      if (imageSource) {
+        imageSource.release();
+      }
+      if (imagePacker) {
+        imagePacker.release();
+      }
+    }
   }
 
   // 分享文本
@@ -684,11 +745,13 @@ export struct HomePage {
       thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
     }
 
-    let imageSource: image.ImageSource = image.createImageSource(thumbnailPath);
-    let imagePacker: image.ImagePacker = image.createImagePacker();
+    let imageSource: image.ImageSource | undefined = undefined;
+    let imagePacker: image.ImagePacker | undefined = undefined;
     let buffer: ArrayBuffer | undefined = undefined;
 
     try {
+      imageSource = image.createImageSource(thumbnailPath);
+      imagePacker = image.createImagePacker();
       buffer = await imagePacker.packToData(imageSource, {
         format: 'image/jpeg',
         quality: 30,
@@ -712,6 +775,14 @@ export struct HomePage {
       console.info('ShareController show success.');
     }).catch((error: BusinessError) => {
       console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+    }).finally(() => {
+      // 释放资源，防止内存泄露
+      if (imageSource) {
+        imageSource.release();
+      }
+      if (imagePacker) {
+        imagePacker.release();
+      }
     });
   }
 
@@ -840,11 +911,13 @@ export struct HomePage {
       thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
     }
 
-    let imageSource: image.ImageSource = image.createImageSource(thumbnailPath);
-    let imagePacker: image.ImagePacker = image.createImagePacker();
+    let imageSource: image.ImageSource | undefined = undefined;
+    let imagePacker: image.ImagePacker | undefined = undefined;
     let buffer: ArrayBuffer | undefined = undefined;
 
     try {
+      imageSource = image.createImageSource(thumbnailPath);
+      imagePacker = image.createImagePacker();
       buffer = await imagePacker.packToData(imageSource, {
         format: 'image/jpeg',
         quality: 30,
@@ -880,6 +953,14 @@ export struct HomePage {
       console.info('ShareController show success.');
     }).catch((error: BusinessError) => {
       console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+    }).finally(() => {
+      // 释放资源，防止内存泄露
+      if (imageSource) {
+        imageSource.release();
+      }
+      if (imagePacker) {
+        imagePacker.release();
+      }
     });
   }
 
@@ -894,21 +975,21 @@ export struct HomePage {
       return [
         {
           text: $r('app.string.knock_guide_phone_hos5'),
-          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
+          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
           framesCount: 128,
           startDelay: 50,
           stopDelay: 500,
         },
         {
           text: $r('app.string.knock_guide_pc_hos6'),
-          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
+          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
           framesCount: 104,
           startDelay: 50,
           stopDelay: 50,
         },
         {
           text: $r('app.string.knock_guide_phone_hos6'),
-          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
+          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
           framesCount: 150,
           startDelay: 500,
           stopDelay: 1000,
@@ -921,14 +1002,14 @@ export struct HomePage {
       return [
         {
           text: $r('app.string.knock_guide_pc_hos6'),
-          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
+          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
           framesCount: 104,
           startDelay: 50,
           stopDelay: 50,
         },
         {
           text: $r('app.string.knock_guide_phone_hos6'),
-          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
+          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
           framesCount: 150,
           startDelay: 500,
           stopDelay: 1000,
@@ -940,21 +1021,21 @@ export struct HomePage {
       return [
         {
           text: $r('app.string.knock_guide_phone_hos5'),
-          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
+          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
           framesCount: 128,
           startDelay: 50,
           stopDelay: 500,
         },
         {
           text: $r('app.string.knock_guide_pc_hos6'),
-          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
+          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
           framesCount: 104,
           startDelay: 50,
           stopDelay: 50,
         },
         {
           text: $r('app.string.knock_guide_phone_hos6'),
-          urlPrefix: 'https://www.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
+          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
           framesCount: 150,
           startDelay: 500,
           stopDelay: 1000,
@@ -1029,13 +1110,24 @@ export struct HomePage {
               // 只有当用户没有手动设置自定义背景时，才更新 backgroundPixelMap 和 backgroundImagePath
               if (!this.useCustomBackground) {
                 let localPath = filesDir + '/pengyipeng' + this.imageExtension;
+                let imageSource: image.ImageSource | undefined = undefined;
                 try {
-                  const imageSource = image.createImageSource(localPath);
+                  // 释放之前的背景PixelMap
+                  if (this.backgroundPixelMap) {
+                    this.backgroundPixelMap.release();
+                    this.backgroundPixelMap = undefined;
+                  }
+                  imageSource = image.createImageSource(localPath);
                   this.backgroundPixelMap = await imageSource.createPixelMap();
                   this.backgroundImagePath = 'file://' + localPath;
                   console.log('backgroundPixelMap 和 backgroundImagePath 已更新（跟随 sharepng）');
                 } catch (error) {
                   console.error('加载 backgroundPixelMap 失败:', JSON.stringify(error));
+                } finally {
+                  // 释放imageSource资源
+                  if (imageSource) {
+                    imageSource.release();
+                  }
                 }
               } else {
                 console.log('用户已设置自定义背景，保持不变');
@@ -1336,6 +1428,30 @@ export struct HomePage {
     let context = getContext(this);
     context.eventHub.off('onFocus');
     context.eventHub.off('onBackGround');
+    
+    // 释放所有PixelMap资源，防止内存泄露
+    this.releasePixelMapResources();
+  }
+  
+  // 释放所有PixelMap和ImageSource资源
+  private releasePixelMapResources(): void {
+    try {
+      if (this.picture) {
+        this.picture.release();
+        this.picture = undefined;
+      }
+      if (this.localPixelMap) {
+        this.localPixelMap.release();
+        this.localPixelMap = undefined;
+      }
+      if (this.backgroundPixelMap) {
+        this.backgroundPixelMap.release();
+        this.backgroundPixelMap = undefined;
+      }
+      logger.info('All PixelMap resources released');
+    } catch (e) {
+      logger.error(`Failed to release PixelMap resources: ${e}`);
+    }
   }
 
   private onBackGround = () => {
@@ -1744,20 +1860,35 @@ export struct HomePage {
     try {
       const stat = fileIo.statSync(thumbnailPath);
       if (stat && stat.size > 0) {
-        const imageSource = image.createImageSource(thumbnailPath);
-        const pixelMap = await imageSource.createPixelMap();
+        let imageSource: image.ImageSource | undefined = undefined;
+        let imagePacker: image.ImagePacker | undefined = undefined;
+        let pixelMap: image.PixelMap | undefined = undefined;
+        
+        try {
+          imageSource = image.createImageSource(thumbnailPath);
+          pixelMap = await imageSource.createPixelMap();
 
-        const imagePacker = image.createImagePacker();
-        const buffer = await imagePacker.packToData(pixelMap, {
-          format: 'image/jpeg',
-          quality: 60
-        });
+          imagePacker = image.createImagePacker();
+          const buffer = await imagePacker.packToData(pixelMap, {
+            format: 'image/jpeg',
+            quality: 60
+          });
 
-        if (buffer) {
-          thumbnailBuffer = new Uint8Array(buffer);
+          if (buffer) {
+            thumbnailBuffer = new Uint8Array(buffer);
+          }
+        } finally {
+          // 释放资源
+          if (pixelMap) {
+            pixelMap.release();
+          }
+          if (imageSource) {
+            imageSource.release();
+          }
+          if (imagePacker) {
+            imagePacker.release();
+          }
         }
-
-        pixelMap.release();
       }
     } catch (error) {
       logger.warn(`隔空投送缩略图处理失败: ${thumbnailPath}, 错误: ${error}`);
@@ -1982,7 +2113,7 @@ export struct HomePage {
   private async getImageAspectRatio(): Promise<void> {
     try {
       let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-      let imageSource: image.ImageSource;
+      let imageSource: image.ImageSource | undefined = undefined;
       // 优先使用背景图片路径
       let imagePath = this.backgroundImagePath !== '' ? this.backgroundImagePath : this.sharepng;
 
@@ -1992,44 +2123,51 @@ export struct HomePage {
       console.log('使用的图片路径: ' + imagePath);
       console.log('当前 imageExtension: ' + this.imageExtension);
 
-      if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-        // 如果是网络图片，使用本地缓存文件
-        let localPath = context.filesDir + '/pengyipeng' + this.imageExtension;
-        console.log('使用网络图片缓存路径: ' + localPath);
-        imageSource = image.createImageSource(localPath);
-      } else if (imagePath.startsWith('file://')) {
-        // 如果是本地文件
-        let filePath = imagePath.substring(7); // 移除 'file://' 前缀
-        console.log('使用本地文件路径: ' + filePath);
-        imageSource = image.createImageSource(filePath);
-      } else {
-        // 如果是资源文件
-        console.log('使用资源文件: ' + imagePath);
-        imageSource = image.createImageSource(imagePath);
-      }
-
-      const info = await imageSource.getImageInfo();
-      console.log('获取到的图片信息: ' + JSON.stringify(info));
-
-      if (info && info.size && info.size.width > 0 && info.size.height > 0) {
-        this.imageAspectRatio = info.size.width / info.size.height;
-        this.isImageLoaded = true;
-        console.log('宽高比: ' + this.imageAspectRatio);
-        console.log('图片宽度: ' + info.size.width);
-        console.log('图片高度: ' + info.size.height);
-
-        // 如果是横屏图片，自动获取主颜色
-        if (this.imageAspectRatio >= 1) {
-          console.log('检测到横屏图片，开始获取主颜色');
-          await this.extractMainColor();
-          console.log('主颜色获取完成: ' + this.mainColor);
+      try {
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+          // 如果是网络图片，使用本地缓存文件
+          let localPath = context.filesDir + '/pengyipeng' + this.imageExtension;
+          console.log('使用网络图片缓存路径: ' + localPath);
+          imageSource = image.createImageSource(localPath);
+        } else if (imagePath.startsWith('file://')) {
+          // 如果是本地文件
+          let filePath = imagePath.substring(7); // 移除 'file://' 前缀
+          console.log('使用本地文件路径: ' + filePath);
+          imageSource = image.createImageSource(filePath);
         } else {
-          console.log('不是横屏图片，不获取主颜色');
+          // 如果是资源文件
+          console.log('使用资源文件: ' + imagePath);
+          imageSource = image.createImageSource(imagePath);
         }
-      } else {
-        console.log('图片信息无效');
+
+        const info = await imageSource.getImageInfo();
+        console.log('获取到的图片信息: ' + JSON.stringify(info));
+
+        if (info && info.size && info.size.width > 0 && info.size.height > 0) {
+          this.imageAspectRatio = info.size.width / info.size.height;
+          this.isImageLoaded = true;
+          console.log('宽高比: ' + this.imageAspectRatio);
+          console.log('图片宽度: ' + info.size.width);
+          console.log('图片高度: ' + info.size.height);
+
+          // 如果是横屏图片，自动获取主颜色
+          if (this.imageAspectRatio >= 1) {
+            console.log('检测到横屏图片，开始获取主颜色');
+            await this.extractMainColor();
+            console.log('主颜色获取完成: ' + this.mainColor);
+          } else {
+            console.log('不是横屏图片，不获取主颜色');
+          }
+        } else {
+          console.log('图片信息无效');
+        }
+        console.log('=== getImageAspectRatio 结束 ===');
+      } finally {
+        // 释放imageSource资源
+        if (imageSource) {
+          imageSource.release();
+        }
       }
-      console.log('=== getImageAspectRatio 结束 ===');
     } catch (error) {
       console.error('Failed to get image info: ' + JSON.stringify(error));
       // 如果获取失败，默认按原始方式处理
@@ -2042,6 +2180,8 @@ export struct HomePage {
     try {
       let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
       let pixelMap: PixelMap;
+      let imageSource: image.ImageSource | undefined = undefined;
+      let needReleasePixelMap = false; // 标记是否需要释放pixelMap
 
       if (this.backgroundPixelMap) {
         // 使用背景图片的 PixelMap
@@ -2055,8 +2195,16 @@ export struct HomePage {
           imagePath = context.filesDir + '/pengyipeng' + this.imageExtension;
         }
 
-        const imageSource = image.createImageSource(imagePath);
-        pixelMap = await imageSource.createPixelMap();
+        try {
+          imageSource = image.createImageSource(imagePath);
+          pixelMap = await imageSource.createPixelMap();
+          needReleasePixelMap = true; // 需要释放这个新创建的pixelMap
+        } finally {
+          // 释放imageSource资源
+          if (imageSource) {
+            imageSource.release();
+          }
+        }
       }
 
       // 使用 ColorPicker 获取主颜色
@@ -2064,6 +2212,10 @@ export struct HomePage {
         if (err) {
           console.error('创建 ColorPicker 失败: ' + err.message);
           this.mainColor = '#FFFFFF';
+          // 释放pixelMap
+          if (needReleasePixelMap && pixelMap) {
+            pixelMap.release();
+          }
           return;
         }
 
@@ -2082,6 +2234,11 @@ export struct HomePage {
         } catch (error) {
           console.error('获取主颜色失败: ' + JSON.stringify(error));
           this.mainColor = '#FFFFFF';
+        } finally {
+          // 释放pixelMap
+          if (needReleasePixelMap && pixelMap) {
+            pixelMap.release();
+          }
         }
       });
     } catch (error) {
@@ -2096,6 +2253,8 @@ export struct HomePage {
     try {
       let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
       let pixelMap: PixelMap;
+      let imageSource: image.ImageSource | undefined = undefined;
+      let needReleasePixelMap = false; // 标记是否需要释放pixelMap
 
       if (this.backgroundPixelMap) {
         pixelMap = this.backgroundPixelMap;
@@ -2106,8 +2265,16 @@ export struct HomePage {
         } else {
           imagePath = context.filesDir + '/pengyipeng' + this.imageExtension;
         }
-        const imageSource = image.createImageSource(imagePath);
-        pixelMap = await imageSource.createPixelMap();
+        try {
+          imageSource = image.createImageSource(imagePath);
+          pixelMap = await imageSource.createPixelMap();
+          needReleasePixelMap = true; // 需要释放这个新创建的pixelMap
+        } finally {
+          // 释放imageSource资源
+          if (imageSource) {
+            imageSource.release();
+          }
+        }
       }
 
       effectKit.createColorPicker(pixelMap, (err: BusinessError, colorPicker: effectKit.ColorPicker) => {
@@ -2115,6 +2282,10 @@ export struct HomePage {
           console.error('创建 ColorPicker 失败: ' + err.message);
           this.topBgColor = '#FFFFFF';
           this.retryExtractTopBgColor(retryCount, maxRetries);
+          // 释放pixelMap
+          if (needReleasePixelMap && pixelMap) {
+            pixelMap.release();
+          }
           return;
         }
 
@@ -2130,6 +2301,11 @@ export struct HomePage {
           console.error('获取顶部背景颜色失败: ' + JSON.stringify(error));
           this.topBgColor = '#FFFFFF';
           this.retryExtractTopBgColor(retryCount, maxRetries);
+        } finally {
+          // 释放pixelMap
+          if (needReleasePixelMap && pixelMap) {
+            pixelMap.release();
+          }
         }
       });
     } catch (error) {

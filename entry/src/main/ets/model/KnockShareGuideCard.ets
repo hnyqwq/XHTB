@@ -35,6 +35,26 @@ export struct KnockShareSingleGuideCard {
     });
   }
 
+  aboutToDisappear(): void {
+    // 释放所有动画帧的PixelMap资源，防止内存泄露
+    this.releaseAnimFrames();
+  }
+
+  // 释放动画帧资源
+  private releaseAnimFrames(): void {
+    for (let frame of this.animFrames) {
+      if (frame.src && typeof frame.src !== 'string') {
+        try {
+          (frame.src as PixelMap).release();
+        } catch (e) {
+          logger.error(`Failed to release PixelMap: ${e}`);
+        }
+      }
+    }
+    this.animFrames = [];
+    this.animReady = false;
+  }
+
   @Builder
   tipTextsBuilder() {
     Column({ space: 2 }) {
