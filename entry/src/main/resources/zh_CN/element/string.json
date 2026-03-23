@@ -570,6 +570,10 @@
     {
       "name": "shortcut_settings_label",
       "value": "软件设置"
+    },
+    {
+      "name": "check_update",
+      "value": "检查更新"
     }
   ]
 }

@@ -66,11 +66,11 @@
     },
     {
       "name": "pengyipeng_description",
-      "value": "星河工具盒 · Tap to Transfer"
+      "value": "Xinghe Tool Box · Tap to Transfer"
     },
     {
       "name": "gekong_description",
-      "value": "星河工具盒 · AI Air Transfer Sharing"
+      "value": "Xinghe Tool Box · AI Air Transfer Sharing"
     },
     {
       "name":"nopeng",
@@ -571,6 +571,10 @@
     {
       "name": "shortcut_settings_label",
       "value": "APP Settings"
+    },
+    {
+      "name": "check_update",
+      "value": "Check for updates"
     }
   ]
 }

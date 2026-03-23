@@ -496,7 +496,7 @@ export struct infoPage {
             .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
             .borderRadius(20)
 
-            Button('检查更新')
+            Button($r('app.string.check_update'))
             //.type(ButtonType.Capsule)
               .width(200)
               .height(40)
