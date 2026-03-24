@@ -2,8 +2,8 @@
   "app": {
     "bundleName": "yylx.hny.qwq",
     "vendor": "",
-    "versionCode": 10802000,
-    "versionName": "1.8.2.0",
+    "versionCode": 10802001,
+    "versionName": "1.8.2.1",
     "icon": "$media:layered_image",
     "label": "$string:app_name",
     "multiAppMode": {
