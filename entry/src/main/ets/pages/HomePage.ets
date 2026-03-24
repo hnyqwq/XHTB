@@ -983,21 +983,21 @@ export struct HomePage {
       return [
         {
           text: $r('app.string.knock_guide_phone_hos5'),
-          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
+          urlPrefix: 'https://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
           framesCount: 128,
           startDelay: 50,
           stopDelay: 500,
         },
         {
           text: $r('app.string.knock_guide_pc_hos6'),
-          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
+          urlPrefix: 'https://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
           framesCount: 104,
           startDelay: 50,
           stopDelay: 50,
         },
         {
           text: $r('app.string.knock_guide_phone_hos6'),
-          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
+          urlPrefix: 'https://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
           framesCount: 150,
           startDelay: 500,
           stopDelay: 1000,
@@ -1010,14 +1010,14 @@ export struct HomePage {
       return [
         {
           text: $r('app.string.knock_guide_pc_hos6'),
-          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
+          urlPrefix: 'https://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
           framesCount: 104,
           startDelay: 50,
           stopDelay: 50,
         },
         {
           text: $r('app.string.knock_guide_phone_hos6'),
-          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
+          urlPrefix: 'https://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
           framesCount: 150,
           startDelay: 500,
           stopDelay: 1000,
@@ -1029,21 +1029,21 @@ export struct HomePage {
       return [
         {
           text: $r('app.string.knock_guide_phone_hos5'),
-          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
+          urlPrefix: 'https://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_phone_',
           framesCount: 128,
           startDelay: 50,
           stopDelay: 500,
         },
         {
           text: $r('app.string.knock_guide_pc_hos6'),
-          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
+          urlPrefix: 'https://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_',
           framesCount: 104,
           startDelay: 50,
           stopDelay: 50,
         },
         {
           text: $r('app.string.knock_guide_phone_hos6'),
-          urlPrefix: 'http://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
+          urlPrefix: 'https://app.hnyqwq.cn/hvideo/knock_share_guide/knock_share_guide_pc_pull_',
           framesCount: 150,
           startDelay: 500,
           stopDelay: 1000,
