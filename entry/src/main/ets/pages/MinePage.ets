@@ -1,4 +1,4 @@
-import { common, Want } from '@kit.AbilityKit';
+import { common, Want, bundleManager } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { navigationManager } from '../common/NavigationManager';
 import { commentManager } from '@kit.AppGalleryKit';
@@ -8,16 +8,19 @@ import { GlobalInfoModel } from '../common/GlobalInfoModel';
 @Observed
 class SettingMenu {
   public uri?: string;
+  public webUrl?: string;  // 备用网页链接
   public id: string;
   public symbol: Resource;
   public text: Resource;
   public des: Resource;
 
-  constructor(id: string, symbol: Resource, text: Resource, des: Resource) {
+  constructor(id: string, symbol: Resource, text: Resource, des: Resource, uri?: string, webUrl?: string) {
     this.id = id;
     this.symbol = symbol;
     this.text = text;
     this.des = des;
+    this.uri = uri;
+    this.webUrl = webUrl;
   }
 }
 
@@ -43,13 +46,80 @@ export struct MinePage {
   private safeCloseDialog() {
     if (this.customDialogComponentId === 0 || !this.isDialogActive) return
   }
+
+  /**
+   * 打开URL（支持URL Scheme和网页链接）
+   * @param url - 目标URL（可以是URL Scheme或网页链接）
+   * @param webUrl - 备用网页链接（当URL Scheme无法打开时使用）
+   */
+  private openUrl(url: string, webUrl?: string, context?: common.UIAbilityContext): void {
+    const ctx = context || getContext(this) as common.UIAbilityContext;
+    
+    // HTTP/HTTPS 直接打开网页
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      const want: Want = {
+        action: 'ohos.want.action.viewData',
+        entities: ['entity.system.browsable'],
+        uri: url
+      };
+      ctx.startAbility(want).catch((e: BusinessError) => {
+        console.error(`网页跳转失败: ${e.code}`, e.message);
+      });
+      return;
+    }
+    
+    // URL Scheme：判断是否可打开
+    try {
+      const canOpen: boolean = bundleManager.canOpenLink(url);
+      if (canOpen) {
+        // 拉起目标应用
+        ctx.openLink(url, { appLinkingOnly: false }).catch(() => {
+          // 拉起失败，使用备用网页
+          if (webUrl) {
+            this.openWebUrl(webUrl, ctx);
+          }
+        });
+      } else {
+        // 应用未安装，使用备用网页
+        if (webUrl) {
+          this.openWebUrl(webUrl, ctx);
+        } else {
+          console.warn(`无法打开URL: ${url}，且无备用网页`);
+        }
+      }
+    } catch (e) {
+      console.error(`URL跳转异常:`, e);
+      if (webUrl) {
+        this.openWebUrl(webUrl, ctx);
+      }
+    }
+  }
+
+  /**
+   * 打开网页链接
+   */
+  private openWebUrl(url: string, context: common.UIAbilityContext): void {
+    const want: Want = {
+      action: 'ohos.want.action.viewData',
+      entities: ['entity.system.browsable'],
+      uri: url
+    };
+    context.startAbility(want).catch((e: BusinessError) => {
+      console.error(`网页跳转失败: ${e.code}`, e.message);
+    });
+  }
+
   private iconStr: ResourceStr = $r("app.media.CIcon");
   @State menuGroup: SettingMenu[] = [
     new SettingMenu('setting', $r('sys.symbol.gearshape'), $r('app.string.mine1'), $r('app.string.void')),
-    new SettingMenu('vipownsetting', $r('sys.symbol.person_badge_plus'), $r('app.string.mine2'), $r('app.string.void')),
-    new SettingMenu('mycollection', $r('sys.symbol.star'), $r('app.string.mine3'), $r('app.string.void')),
-    new SettingMenu('mylike', $r('sys.symbol.heart'), $r('app.string.mine4'), $r('app.string.void')),
-    new SettingMenu('browsinghistory', $r('sys.symbol.clock'), $r('app.string.mine5'), $r('app.string.void'))
+    new SettingMenu('vipownsetting', $r('sys.symbol.person_badge_plus'), $r('app.string.mine2'), $r('app.string.void'),
+      'https://appgallery.huawei.com/apptest/8q2ifpJx0Qz'),
+    new SettingMenu('mycollection', $r('sys.symbol.star'), $r('app.string.mine3'), $r('app.string.void'),
+      'bilibili://space/338142387', 'https://space.bilibili.com/338142387'),
+    new SettingMenu('mylike', $r('sys.symbol.heart'), $r('app.string.mine4'), $r('app.string.void'),
+      'snssdk1128://user/profile/618379012226540?refer=web', 'https://www.douyin.com/user/MS4wLjABAAAAxFrsP4LK-iS49UNXIoHz_dwT1JU3FRHrvrKLs7HigGg'),
+    new SettingMenu('browsinghistory', $r('sys.symbol.clock'), $r('app.string.mine5'), $r('app.string.void'),
+      'https://blog.hnyqwq.cn')
   ];
   //设置一镜到底动效
   @Builder
@@ -149,33 +219,14 @@ export struct MinePage {
                   .width('100%')
                   .onClick(() => {
                     const context = getContext(this) as common.UIAbilityContext;
-                    let uri = '';
-                    switch (item.id) {
-                      case 'setting':
-                        navigationManager.pushPath('pages/infoPage');
-                        break;
-                      case 'vipownsetting':
-                        //uri = 'https://www.hnyqwq.cn';
-                        uri = 'https://appgallery.huawei.com/apptest/8q2ifpJx0Qz';
-                        //uri = 'bilibili://live/21220648';
-                        break;
-                      case 'mycollection':
-                        uri = 'bilibili://space/338142387';
-                        break;
-                      case 'mylike':
-                        uri =
-                          //'snssdk1128://user/profile/2118115953227692?refer=web';
-                           'snssdk1128://user/profile/618379012226540?refer=web';
-                        break;
-                      case 'browsinghistory':
-                        uri = 'https://blog.hnyqwq.cn';
-                        break;
+                    // 设置页特殊处理，使用应用内路由
+                    if (item.id === 'setting') {
+                      navigationManager.pushPath('pages/infoPage');
+                      return;
                     }
-                    if (uri) {
-                      const want: Want = { uri };
-                      context.startAbility(want).catch((e: BusinessError) => {
-                        console.error(`跳转失败: ${e.code}`, e.message);
-                      });
+                    // 有 URI 则进行跳转
+                    if (item.uri) {
+                      this.openUrl(item.uri, item.webUrl, context);
                     }
                   })
                 },
@@ -208,7 +259,7 @@ export struct MinePage {
                   let want: Want = {
                     "action": "ohos.want.action.viewData",
                     "entities": ["entity.system.browsable"],
-                    uri: 'https://hnyqwq.cn/hvideo/xhyhxy.html',
+                    uri: 'https://app.hnyqwq.cn/hvideo/xhyhxy.html',
                     "type": "text/plain"
                   }
                   let context = getContext(this) as common.UIAbilityContext;
@@ -228,7 +279,7 @@ export struct MinePage {
                   let want: Want = {
                     "action": "ohos.want.action.viewData",
                     "entities": ["entity.system.browsable"],
-                    uri: 'https://hnyqwq.cn/hvideo/xh.html',
+                    uri: 'https://agreement-drcn.hispace.dbankcloud.cn/index.html?lang=zh&agreementId=1745950820647618944',
                     "type": "text/plain"
                   }
                   let context = getContext(this) as common.UIAbilityContext;

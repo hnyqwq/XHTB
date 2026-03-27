@@ -163,6 +163,10 @@
 				"name": "shareBundleName",
 				"value": "yylx.hny.qwq",
 			}
+		],
+		"querySchemes": [
+			"bilibili",
+			"snssdk1128"
 		]
 	}
 }
