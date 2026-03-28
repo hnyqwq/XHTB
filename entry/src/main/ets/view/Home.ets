@@ -6,7 +6,7 @@ import { MinePage } from '../pages/MinePage';
 import { router } from '@kit.ArkUI';
 import { preferences } from '@kit.ArkData';
 import type { common } from '@kit.AbilityKit';
-import { HdsTabs, HdsTabsController, HdsTabsAttribute, hdsMaterial } from '@kit.UIDesignKit';
+import { HdsTabs, HdsTabsController, hdsMaterial } from '@kit.UIDesignKit';
 import { deviceInfo } from '@kit.BasicServicesKit';
 import { common as abilityCommon } from '@kit.AbilityKit';
 
@@ -20,6 +20,7 @@ export struct Home {
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
   @State customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+  @State customMaterialType: hdsMaterial.MaterialType = hdsMaterial.MaterialType.ADAPTIVE;
   private controller: HdsTabsController | null = null;  // 延迟实例化，避免低API设备闪退
   private preferences: preferences.Preferences | null = null;
   private shortcutNavigateCallback = (url: string) => {
@@ -42,34 +43,48 @@ export struct Home {
     const isApi23OrHigher = deviceInfo.sdkApiVersion >= 23;
     console.info('Home: API版本:', deviceInfo.sdkApiVersion, '是否支持新材质:', isApi23OrHigher);
 
-    // 仅在高版本API下实例化HdsTabsController，避免低API设备闪退
+
+    // 仅在高版本API下实例化HdsTabsController和设置材质，避免低API设备闪退
     if (isApi23OrHigher) {
       try {
         this.controller = new HdsTabsController();
-        // 使用官方API获取设备支持的材质类型
+        // 获取设备支持的材质类型
         let materialTypes: Array<hdsMaterial.MaterialType> = hdsMaterial.getSystemMaterialTypes();
+        // 打印详细的材质类型信息
         console.info('Home: 支持的材质类型:', JSON.stringify(materialTypes), ', length:', materialTypes.length);
+        console.info('Home: MaterialLevel枚举值: EXQUISITE=' + hdsMaterial.MaterialLevel.EXQUISITE +
+          ', GENTLE=' + hdsMaterial.MaterialLevel.GENTLE +
+          ', SMOOTH=' + hdsMaterial.MaterialLevel.SMOOTH);
+
+        // 检查是否支持IMMERSIVE材质
+        let hasImmersive: boolean = materialTypes.some((t: hdsMaterial.MaterialType) => t === hdsMaterial.MaterialType.IMMERSIVE);
+        console.info('Home: 是否支持IMMERSIVE材质:', hasImmersive);
 
         if (materialTypes.length === 0) {
           // 返回空数组，说明设备不支持任何材质类型，使用SMOOTH效果
           this.customMaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+          this.customMaterialType = hdsMaterial.MaterialType.ADAPTIVE;
           console.info('Home: 设备不支持任何材质类型，使用SMOOTH效果');
-        } else if (materialTypes.indexOf(hdsMaterial.MaterialType.IMMERSIVE) < 0) {
-          // 当前设备不支持IMMERSIVE材质类型，则使用GENTLE效果，以降低卡顿和发热风险
+        } else if (!hasImmersive) {
+          // 当前设备不支持IMMERSIVE材质类型，使用GENTLE效果
           this.customMaterialLevel = hdsMaterial.MaterialLevel.GENTLE;
-          console.info('Home: 设备不支持IMMERSIVE材质，使用SMOOTH效果');
+          this.customMaterialType = hdsMaterial.MaterialType.ADAPTIVE;
+          console.info('Home: 设备不支持IMMERSIVE材质，使用GENTLE效果');
         } else {
-          // 当前设备支持IMMERSIVE材质类型，使用EXQUISITE效果
+          // 当前设备支持IMMERSIVE材质类型，使用EXQUISITE效果和IMMERSIVE类型
           this.customMaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+          this.customMaterialType = hdsMaterial.MaterialType.IMMERSIVE;
           console.info('Home: 设备支持IMMERSIVE材质，使用EXQUISITE效果');
         }
+        console.info('Home: 最终设置 - materialType:', this.customMaterialType, ', materialLevel:', this.customMaterialLevel);
       } catch (err) {
         console.error('Home: Failed to get system material types:', err);
         // 出错时使用默认值
-        this.customMaterialLevel = hdsMaterial.MaterialLevel.ADAPTIVE;
+        this.customMaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+        this.customMaterialType = hdsMaterial.MaterialType.ADAPTIVE;
       }
     } else {
-      console.info('Home: API版本低于23，跳过材质能力查询，使用默认材质');
+      console.info('Home: API版本低于23，跳过沉浸式Tab初始化');
     }
 
     // 从Preferences加载沉浸式Tab栏设置
@@ -190,40 +205,6 @@ export struct Home {
     }
   }
 
-  // Tab 索引持久化相关方法(已禁用)
-  /*
-  async loadCurrentTabIndex() {
-    try {
-      const context = getContext(this) as common.UIAbilityContext;
-      if (!this.preferences) {
-        this.preferences = await preferences.getPreferences(context, 'app_settings');
-      }
-
-      // 读取保存的Tab索引
-      if (this.preferences) {
-        const savedIndex = await this.preferences.get('currentTabIndex', 0) as number;
-        // 同步到AppStorage
-        AppStorage.setOrCreate('currentTabIndex', savedIndex);
-      }
-    } catch (err) {
-      console.error('Failed to load current tab index:', err);
-      // 出错时使用默认值
-      AppStorage.setOrCreate('currentTabIndex', 0);
-    }
-  }
-
-  async saveCurrentTabIndex(index: number) {
-    try {
-      if (this.preferences) {
-        await this.preferences.put('currentTabIndex', index);
-        await this.preferences.flush();
-      }
-    } catch (err) {
-      console.error('Failed to save current tab index:', err);
-    }
-  }
-  */
-
   getTabSymbol(index: number): Resource {
     switch (index) {
       case 0:
@@ -294,9 +275,9 @@ export struct Home {
         // 设置页签栏悬浮样式
         .barFloatingStyle({
           barBottomMargin: 28,
-          gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
+          adaptToHandedness: true,
           systemMaterialEffect: {
-            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialType: this.customMaterialType,
             materialLevel: this.customMaterialLevel
           }
         })
@@ -336,9 +317,9 @@ export struct Home {
         // 设置页签栏悬浮样式
         .barFloatingStyle({
           barBottomMargin: 28,
-          gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
+          adaptToHandedness: true,
           systemMaterialEffect: {
-            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialType: this.customMaterialType,
             materialLevel: this.customMaterialLevel
           }
         })
