@@ -6,58 +6,9 @@ import { MinePage } from '../pages/MinePage';
 import { router } from '@kit.ArkUI';
 import { preferences } from '@kit.ArkData';
 import type { common } from '@kit.AbilityKit';
-import { HdsTabs, HdsTabsController, HdsTabsAttribute } from '@kit.UIDesignKit';
+import { HdsTabs, HdsTabsController, HdsTabsAttribute, hdsMaterial } from '@kit.UIDesignKit';
 import { deviceInfo } from '@kit.BasicServicesKit';
 import { common as abilityCommon } from '@kit.AbilityKit';
-
-// 定义材质相关的接口
-interface IMaterialLevel {
-  EXQUISITE: number;
-  GENTLE: number;
-  SMOOTH: number;
-  ADAPTIVE: number;
-}
-
-interface IMaterialType {
-  NONE: number;
-  ADAPTIVE: number;
-  IMMERSIVE: number;
-}
-
-// 定义材质相关的常量
-const MaterialLevel: IMaterialLevel = {
-  EXQUISITE: 0,
-  GENTLE: 1,
-  SMOOTH: 2,
-  ADAPTIVE: 3
-};
-
-const MaterialType: IMaterialType = {
-  NONE: 0,
-  ADAPTIVE: 1,
-  IMMERSIVE: 2
-};
-
-// 定义hdsMaterial接口
-interface IHdsMaterialModule {
-  MaterialLevel: IMaterialLevel;
-  MaterialType: IMaterialType;
-  getSystemMaterialTypes: () => Array<number>;
-}
-
-// 辅助函数：安全获取hdsMaterial模块
-function getHdsMaterialModule(): IHdsMaterialModule | null {
-  try {
-    const gThis: ESObject = globalThis;
-    const hdsMat: ESObject | null | undefined = gThis['hdsMaterial'] as ESObject | null | undefined;
-    if (hdsMat) {
-      return hdsMat as IHdsMaterialModule;
-    }
-  } catch (err) {
-    console.warn('Home: hdsMaterial not available:', err);
-  }
-  return null;
-}
 
 @Component
 export struct Home {
@@ -68,7 +19,7 @@ export struct Home {
   @State secondLevelIndex: number = 0;
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
-  @State customMaterialLevel: number = MaterialLevel.SMOOTH;
+  @State customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
   private controller: HdsTabsController | null = null;  // 延迟实例化，避免低API设备闪退
   private preferences: preferences.Preferences | null = null;
   private shortcutNavigateCallback = (url: string) => {
@@ -95,32 +46,27 @@ export struct Home {
     if (isApi23OrHigher) {
       try {
         this.controller = new HdsTabsController();
-        // 动态获取hdsMaterial模块
-        const hdsMaterial = getHdsMaterialModule();
-        if (hdsMaterial) {
-          let materialTypes: Array<number> = hdsMaterial.getSystemMaterialTypes();
-          console.info('Home: 支持的材质类型:', JSON.stringify(materialTypes), ', length:', materialTypes.length);
+        // 使用官方API获取设备支持的材质类型
+        let materialTypes: Array<hdsMaterial.MaterialType> = hdsMaterial.getSystemMaterialTypes();
+        console.info('Home: 支持的材质类型:', JSON.stringify(materialTypes), ', length:', materialTypes.length);
 
-          if (materialTypes.length === 0) {
-            // 返回空数组，说明设备不支持任何材质类型，使用SMOOTH效果
-            this.customMaterialLevel = MaterialLevel.SMOOTH;
-            console.info('Home: 设备不支持任何材质类型，使用SMOOTH效果');
-          } else if (materialTypes.indexOf(MaterialType.IMMERSIVE) < 0) {
-            // 当前设备不支持IMMERSIVE材质类型，则使用SMOOTH效果，以降低卡顿和发热风险
-            this.customMaterialLevel = MaterialLevel.SMOOTH;
-            console.info('Home: 设备不支持IMMERSIVE材质，使用SMOOTH效果');
-          } else {
-            // 当前设备支持IMMERSIVE材质类型，使用EXQUISITE效果
-            this.customMaterialLevel = MaterialLevel.EXQUISITE;
-            console.info('Home: 设备支持IMMERSIVE材质，使用EXQUISITE效果');
-          }
+        if (materialTypes.length === 0) {
+          // 返回空数组，说明设备不支持任何材质类型，使用SMOOTH效果
+          this.customMaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+          console.info('Home: 设备不支持任何材质类型，使用SMOOTH效果');
+        } else if (materialTypes.indexOf(hdsMaterial.MaterialType.IMMERSIVE) < 0) {
+          // 当前设备不支持IMMERSIVE材质类型，则使用GENTLE效果，以降低卡顿和发热风险
+          this.customMaterialLevel = hdsMaterial.MaterialLevel.GENTLE;
+          console.info('Home: 设备不支持IMMERSIVE材质，使用SMOOTH效果');
         } else {
-          console.info('Home: hdsMaterial不可用，使用默认材质');
+          // 当前设备支持IMMERSIVE材质类型，使用EXQUISITE效果
+          this.customMaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+          console.info('Home: 设备支持IMMERSIVE材质，使用EXQUISITE效果');
         }
       } catch (err) {
         console.error('Home: Failed to get system material types:', err);
         // 出错时使用默认值
-        this.customMaterialLevel = MaterialLevel.SMOOTH;
+        this.customMaterialLevel = hdsMaterial.MaterialLevel.ADAPTIVE;
       }
     } else {
       console.info('Home: API版本低于23，跳过材质能力查询，使用默认材质');
@@ -350,7 +296,7 @@ export struct Home {
           barBottomMargin: 28,
           gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
           systemMaterialEffect: {
-            materialType: MaterialType.ADAPTIVE,
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
             materialLevel: this.customMaterialLevel
           }
         })
@@ -392,7 +338,7 @@ export struct Home {
           barBottomMargin: 28,
           gradientMask: { maskColor: '#66F1F3F5', maskHeight: 92 },
           systemMaterialEffect: {
-            materialType: MaterialType.ADAPTIVE,
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
             materialLevel: this.customMaterialLevel
           }
         })
