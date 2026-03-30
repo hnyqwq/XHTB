@@ -1,6 +1,7 @@
 {
   "src": [
     "pages/Index",
+    "pages/IndexImmersive",
     "pages/HomePage",
     "pages/SecondPage",
     "pages/MinePage",

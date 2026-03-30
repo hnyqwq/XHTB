@@ -5,21 +5,26 @@ import { SecondPage } from '../pages/SecondPage';
 import { MinePage } from '../pages/MinePage';
 import { router } from '@kit.ArkUI';
 import { preferences } from '@kit.ArkData';
+import type { common } from '@kit.AbilityKit';
+import { deviceInfo } from '@kit.BasicServicesKit';
 import { common as abilityCommon } from '@kit.AbilityKit';
+import { HdsTabs, HdsTabsController, hdsMaterial } from '@kit.UIDesignKit';
 
-// 传统模式Home组件 - 不导入UIDesignKit，兼容所有API版本
 @Component
-export struct Home {
+export struct HomeImmersive {
   @StorageLink('currentWidthBreakpoint') currentWidthBreakpoint: string = 'sm';
-  @StorageLink('isImmersiveTab') isImmersiveTab: boolean = false;
+  @StorageLink('isImmersiveTab') isImmersiveTab: boolean = true;
   @StorageLink('currentTabIndex') firstLevelIndex: number = 0;
   @StorageProp('bottomRectHeight') bottomRectHeight: number = 0;
   @State secondLevelIndex: number = 0;
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
+  @State customMaterialLevel: number = hdsMaterial.MaterialLevel.SMOOTH;
+  @State customMaterialType: number = hdsMaterial.MaterialType.ADAPTIVE;
+  private controller: HdsTabsController = new HdsTabsController();
   private preferences: preferences.Preferences | null = null;
   private shortcutNavigateCallback = (url: string) => {
-    console.info('Home: 收到快捷方式导航事件, url=', url);
+    console.info('HomeImmersive: 收到快捷方式导航事件, url=', url);
     router.pushUrl({ url: url }).catch((err: Error) => {
       console.error('Failed to navigate to shortcut page:', err);
     });
@@ -31,12 +36,33 @@ export struct Home {
       const context = getContext(this) as abilityCommon.UIAbilityContext;
       context.eventHub.on('shortcutNavigate', this.shortcutNavigateCallback);
     } catch (e) {
-      console.error('Home: Failed to subscribe shortcutNavigate event:', e);
+      console.error('HomeImmersive: Failed to subscribe shortcutNavigate event:', e);
     }
 
-    // 传统模式，强制设置isImmersiveTab为false
-    AppStorage.setOrCreate('isImmersiveTab', false);
-    console.info('Home: 传统模式 - isImmersiveTab = false');
+    // 初始化材质设置
+    try {
+      let materialTypes: Array<hdsMaterial.MaterialType> = hdsMaterial.getSystemMaterialTypes();
+      console.info('HomeImmersive: 支持的材质类型:', JSON.stringify(materialTypes));
+
+      let hasImmersive: boolean = materialTypes.some((t: hdsMaterial.MaterialType) => t === hdsMaterial.MaterialType.IMMERSIVE);
+
+      if (materialTypes.length === 0) {
+        this.customMaterialLevel = hdsMaterial.MaterialLevel.SMOOTH;
+        this.customMaterialType = hdsMaterial.MaterialType.ADAPTIVE;
+      } else if (!hasImmersive) {
+        this.customMaterialLevel = hdsMaterial.MaterialLevel.GENTLE;
+        this.customMaterialType = hdsMaterial.MaterialType.ADAPTIVE;
+      } else {
+        this.customMaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+        this.customMaterialType = hdsMaterial.MaterialType.IMMERSIVE;
+      }
+      console.info('HomeImmersive: materialType:', this.customMaterialType, ', materialLevel:', this.customMaterialLevel);
+    } catch (err) {
+      console.error('HomeImmersive: Failed to get material types:', err);
+    }
+
+    // 沉浸式Tab已启用，同步到AppStorage
+    AppStorage.setOrCreate('isImmersiveTab', true);
 
     // 初始化当前Tab索引
     AppStorage.setOrCreate('currentTabIndex', 0);
@@ -59,14 +85,14 @@ export struct Home {
       const context = getContext(this) as abilityCommon.UIAbilityContext;
       context.eventHub.off('shortcutNavigate', this.shortcutNavigateCallback);
     } catch (e) {
-      console.error('Home: Failed to unsubscribe shortcutNavigate event:', e);
+      console.error('HomeImmersive: Failed to unsubscribe shortcutNavigate event:', e);
     }
   }
 
   checkShortcutNavigation(): void {
     const shortCutPage = AppStorage.get<string>('ShortCutPage');
     if (shortCutPage !== undefined && shortCutPage !== null && shortCutPage !== '') {
-      console.info('Home: 准备跳转到快捷方式页面, url=', shortCutPage);
+      console.info('HomeImmersive: 准备跳转到快捷方式页面, url=', shortCutPage);
       setTimeout(() => {
         router.pushUrl({ url: shortCutPage }).catch((err: Error) => {
           console.error('Failed to navigate to shortcut page:', err);
@@ -127,82 +153,45 @@ export struct Home {
         .fontColor(index === this.firstLevelIndex ? '#0A59F7' : '#999999')
         .margin({ top: 4 })
     }
-    .padding({
-      bottom: (this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl') ? 24 : 0,
-      left: 0,
-      right: 0
-    })
-    .height((this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl') ? 100 : '100%')
     .width('100%')
+    .height('100%')
     .justifyContent(FlexAlign.Center)
   }
 
   build() {
-    if (this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl') {
-      // 平板模式：使用左侧垂直Tab栏
-      Tabs({
-        barPosition: BarPosition.Start,
-        index: this.firstLevelIndex
-      }) {
-        TabContent() {
-          HomePage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
-
-        TabContent() {
-          SecondPage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
-
-        TabContent() {
-          MinePage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+    HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
+      TabContent() {
+        HomePage()
       }
-      .barBackgroundColor($r('app.color.barBackgroundColor'))
-      .barWidth(96)
-      .barHeight('100%')
-      .barMode(BarMode.Scrollable, { nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER })
-      .barBackgroundBlurStyle(BlurStyle.COMPONENT_THICK)
-      .vertical(true)
-      .onChange((index: number) => {
-        this.firstLevelIndex = index;
-        AppStorage.setOrCreate('currentTabIndex', index);
-      })
-      .scrollable(false)
-      .height('100%')
-      .width('100%')
-    } else {
-      // 手机模式：使用传统式底部Tab栏
-      Tabs({
-        barPosition: BarPosition.End,
-        index: this.firstLevelIndex
-      }) {
-        TabContent() {
-          HomePage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+      .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
 
-        TabContent() {
-          SecondPage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
-
-        TabContent() {
-          MinePage()
-        }
-        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+      TabContent() {
+        SecondPage()
       }
-      .barPosition(BarPosition.End)
-      .vertical(false)
-      .onChange((index: number) => {
-        this.firstLevelIndex = index;
-        AppStorage.setOrCreate('currentTabIndex', index);
-      })
-      .scrollable(false)
-      .height('100%')
-      .width('100%')
-      .padding({ bottom: px2vp(this.bottomRectHeight) })
+      .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+
+      TabContent() {
+        MinePage()
+      }
+      .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
     }
+    .barOverlap(true)
+    .barPosition(BarPosition.End)
+    .vertical(false)
+    .barFloatingStyle({
+      barBottomMargin: 28,
+      adaptToHandedness: true,
+      systemMaterialEffect: {
+        materialType: this.customMaterialType,
+        materialLevel: this.customMaterialLevel
+      }
+    })
+    .onChange((index: number) => {
+      this.firstLevelIndex = index;
+      AppStorage.setOrCreate('currentTabIndex', index);
+    })
+    .scrollable(false)
+    .height('100%')
+    .width('100%')
   }
 }

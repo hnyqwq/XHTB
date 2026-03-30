@@ -1,19 +1,19 @@
-import { Home } from '../view/Home';
+import { HomeImmersive } from '../view/HomeImmersive';
 import { GlobalInfoModel } from '../common/GlobalInfoModel';
 
 @Entry
 @Component
-struct Index {
+struct IndexImmersive {
   @Provide('NavPathStack') pageStack: NavPathStack = new NavPathStack();
   @StorageLink('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
 
   aboutToAppear(): void {
-    console.info('Index.ets aboutToAppear - Legacy mode (API < 23)');
+    console.info('IndexImmersive.ets aboutToAppear - API >= 23');
   }
 
   build() {
     Column() {
-      Home()
+      HomeImmersive()
     }
     .width('100%')
     .height('100%')

@@ -3457,7 +3457,7 @@ export struct HomePage {
                   .fontWeight(600)
                   .fontSize('20fp')
                   .fontWeight(FontWeight.Bold)
-                  .fontColor(0xFFFFFFFF) // 竖屏+碰一碰/隔空模式下使用白色
+                  .fontColor($r('app.color.pengtitle')) // 使用资源引用，适配深色模式
                   .maxLines(2)
                   .textOverflow({ overflow: TextOverflow.Ellipsis })
                   .constraintSize({ maxWidth: 250 })
@@ -3468,7 +3468,7 @@ export struct HomePage {
                   .margin({ top: 5, bottom: 5 })
                   .fontWeight(FontWeight.Medium)
                   .opacity(0.5)
-                  .fontColor(0xFFFFFFFF) // 竖屏+碰一碰/隔空模式下使用白色
+                  .fontColor($r('app.color.font_secondary')) // 使用资源引用，适配深色模式
                 Image($r('app.media.CIcon'))
                   .width(20)
                   .height(20)
