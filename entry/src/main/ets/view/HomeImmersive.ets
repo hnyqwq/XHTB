@@ -10,12 +10,15 @@ import { deviceInfo } from '@kit.BasicServicesKit';
 import { common as abilityCommon } from '@kit.AbilityKit';
 import { HdsTabs, HdsTabsController, hdsMaterial } from '@kit.UIDesignKit';
 
+const PREFERENCES_NAME = 'app_settings'; // 与 infoPage.ets 保持一致
+
 @Component
 export struct HomeImmersive {
   @StorageLink('currentWidthBreakpoint') currentWidthBreakpoint: string = 'sm';
   @StorageLink('isImmersiveTab') isImmersiveTab: boolean = true;
   @StorageLink('currentTabIndex') firstLevelIndex: number = 0;
   @StorageProp('bottomRectHeight') bottomRectHeight: number = 0;
+  @StorageProp('topRectHeight') topRectHeight: number = 0;
   @State secondLevelIndex: number = 0;
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
@@ -61,8 +64,8 @@ export struct HomeImmersive {
       console.error('HomeImmersive: Failed to get material types:', err);
     }
 
-    // 沉浸式Tab已启用，同步到AppStorage
-    AppStorage.setOrCreate('isImmersiveTab', true);
+    // 从 Preferences 读取沉浸式Tab开关状态
+    this.loadImmersiveTabSetting();
 
     // 初始化当前Tab索引
     AppStorage.setOrCreate('currentTabIndex', 0);
@@ -78,6 +81,23 @@ export struct HomeImmersive {
 
     // 接续跳转
     this.checkContinuationNavigation();
+  }
+
+  // 从 Preferences 加载沉浸式Tab设置
+  private async loadImmersiveTabSetting(): Promise<void> {
+    try {
+      const context = getContext(this) as abilityCommon.UIAbilityContext;
+      this.preferences = await preferences.getPreferences(context, PREFERENCES_NAME);
+      const savedValue = await this.preferences.get('isImmersiveTab', true) as boolean; // 默认开启沉浸式Tab
+      this.isImmersiveTab = savedValue;
+      AppStorage.setOrCreate('isImmersiveTab', savedValue);
+      console.info('HomeImmersive: 从Preferences加载isImmersiveTab =', savedValue);
+    } catch (err) {
+      console.error('HomeImmersive: Failed to load immersive tab setting:', err);
+      // 加载失败时使用默认值
+      this.isImmersiveTab = true;
+      AppStorage.setOrCreate('isImmersiveTab', true);
+    }
   }
 
   aboutToDisappear(): void {
@@ -141,6 +161,11 @@ export struct HomeImmersive {
     }
   }
 
+  // 是否为平板模式（lg/xl断点）
+  private isTabletMode(): boolean {
+    return this.currentWidthBreakpoint === 'lg' || this.currentWidthBreakpoint === 'xl';
+  }
+
   @Builder
   tabBuilder(name: string, index: number) {
     Column() {
@@ -153,45 +178,118 @@ export struct HomeImmersive {
         .fontColor(index === this.firstLevelIndex ? '#0A59F7' : '#999999')
         .margin({ top: 4 })
     }
+    .padding({
+      bottom: this.isTabletMode() ? 24 : 0,
+      left: 0,
+      right: 0
+    })
+    .height(this.isTabletMode() ? 100 : '100%')
     .width('100%')
-    .height('100%')
     .justifyContent(FlexAlign.Center)
   }
 
   build() {
-    HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
-      TabContent() {
-        HomePage()
-      }
-      .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+    if (this.isImmersiveTab) {
+      // 沉浸式Tab模式（HdsTabs）
+      HdsTabs({ controller: this.controller, index: this.firstLevelIndex }) {
+        TabContent() {
+          HomePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
 
-      TabContent() {
-        SecondPage()
-      }
-      .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+        TabContent() {
+          SecondPage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
 
-      TabContent() {
-        MinePage()
+        TabContent() {
+          MinePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
       }
-      .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+      .barOverlap(true)
+      .barPosition(BarPosition.End)
+      .vertical(false)
+      .barFloatingStyle({
+        barBottomMargin: 28,
+        adaptToHandedness: true,
+        systemMaterialEffect: {
+          materialType: this.customMaterialType,
+          materialLevel: this.customMaterialLevel
+        }
+      })
+      .onChange((index: number) => {
+        this.firstLevelIndex = index;
+        AppStorage.setOrCreate('currentTabIndex', index);
+      })
+      .scrollable(false)
+      .height('100%')
+      .width('100%')
+    } else if (this.isTabletMode()) {
+      // 传统Tab模式 - 平板：左侧垂直Tab栏
+      Tabs({
+        barPosition: BarPosition.Start,
+        index: this.firstLevelIndex
+      }) {
+        TabContent() {
+          HomePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+
+        TabContent() {
+          SecondPage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+
+        TabContent() {
+          MinePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+      }
+      .barBackgroundColor($r('app.color.barBackgroundColor'))
+      .barWidth(96)
+      .barHeight('100%')
+      .barMode(BarMode.Scrollable, { nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER })
+      .barBackgroundBlurStyle(BlurStyle.COMPONENT_THICK)
+      .vertical(true)
+      .onChange((index: number) => {
+        this.firstLevelIndex = index;
+        AppStorage.setOrCreate('currentTabIndex', index);
+      })
+      .scrollable(false)
+      .height('100%')
+      .width('100%')
+    } else {
+      // 传统Tab模式 - 手机：底部Tab栏
+      Tabs({
+        barPosition: BarPosition.End,
+        index: this.firstLevelIndex
+      }) {
+        TabContent() {
+          HomePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[0], 0))
+
+        TabContent() {
+          SecondPage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[1], 1))
+
+        TabContent() {
+          MinePage()
+        }
+        .tabBar(this.tabBuilder(this.tabData.getFirstList()[2], 2))
+      }
+      .barPosition(BarPosition.End)
+      .vertical(false)
+      .onChange((index: number) => {
+        this.firstLevelIndex = index;
+        AppStorage.setOrCreate('currentTabIndex', index);
+      })
+      .scrollable(false)
+      .height('100%')
+      .width('100%')
+      .padding({ bottom: px2vp(this.bottomRectHeight) })
     }
-    .barOverlap(true)
-    .barPosition(BarPosition.End)
-    .vertical(false)
-    .barFloatingStyle({
-      barBottomMargin: 28,
-      adaptToHandedness: true,
-      systemMaterialEffect: {
-        materialType: this.customMaterialType,
-        materialLevel: this.customMaterialLevel
-      }
-    })
-    .onChange((index: number) => {
-      this.firstLevelIndex = index;
-      AppStorage.setOrCreate('currentTabIndex', index);
-    })
-    .scrollable(false)
-    .height('100%')
-    .width('100%')
   }
 }
