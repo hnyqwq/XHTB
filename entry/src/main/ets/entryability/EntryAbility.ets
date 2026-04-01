@@ -158,8 +158,13 @@ export default class EntryAbility extends UIAbility {
       }
     }
 
+    // 根据API版本选择入口页面
+    // API >= 23 使用沉浸式Tab页面，API < 23 使用传统页面
+    const entryPage = deviceInfo.sdkApiVersion >= 23 ? 'pages/IndexImmersive' : 'pages/Index';
+    hilog.info(DOMAIN_NUMBER, TAG, 'API版本: %{public}d, 入口页面: %{public}s', deviceInfo.sdkApiVersion, entryPage);
+
     // Main window is created, set main page for this ability
-    windowStage.loadContent('pages/Index', (err, data) => {
+    windowStage.loadContent(entryPage, (err, data) => {
       if (err.code) {
         hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
         return;
@@ -272,7 +277,11 @@ export default class EntryAbility extends UIAbility {
       AppStorage.setOrCreate('initialTabIndex', 0);
     }
 
-    windowStage.loadContent('pages/Index', (err, data) => {
+    // 根据API版本选择入口页面
+    const entryPage = deviceInfo.sdkApiVersion >= 23 ? 'pages/IndexImmersive' : 'pages/Index';
+    hilog.info(DOMAIN_NUMBER, TAG, 'onWindowStageRestore: API版本: %{public}d, 入口页面: %{public}s', deviceInfo.sdkApiVersion, entryPage);
+
+    windowStage.loadContent(entryPage, (err, data) => {
       if (err.code) {
         hilog.error(0x0000, 'testTag', 'Failed to load Index for continuation. Cause: %{public}s', JSON.stringify(err) ?? '');
         return;

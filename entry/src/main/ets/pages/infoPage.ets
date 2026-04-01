@@ -149,7 +149,7 @@ export struct infoPage {
   bottomRectHeight: number = 0;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
-  @State isImmersiveTab: boolean = false; // 沉浸式Tab栏样式状态（包含底部Tab栏和顶部材质效果）
+  @State isImmersiveTab: boolean = true; // 沉浸式Tab栏样式状态（API >= 23默认开启）
   @State showNewYearCard: boolean = false; // 春节卡片开关状态，默认关闭
   @State supportedMaterialTypes: string = ''; // 支持的材质类型
   @State supportedMaterialLevel: string = ''; // 支持的材质等级
@@ -288,11 +288,11 @@ export struct infoPage {
         savedValue = false;
         console.info('infoPage: API版本低于23，强制使用传统式Tab栏');
       } else if (!hasKey) {
-        // 首次运行，默认为false（传统模式）
-        savedValue = false;
-        await this.preferences.put('isImmersiveTab', false);
+        // 首次运行，API >= 23 默认为true（沉浸式模式）
+        savedValue = true;
+        await this.preferences.put('isImmersiveTab', true);
         await this.preferences.flush();
-        console.info('infoPage: 首次运行，默认使用传统式Tab栏');
+        console.info('infoPage: 首次运行，API >= 23 默认使用沉浸式Tab栏');
       }
 
       // 读取保存的值
